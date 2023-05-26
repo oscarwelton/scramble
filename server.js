@@ -5,11 +5,14 @@ const cron = require("node-cron");
 const { faker } = require("@faker-js/faker");
 const fetch = require("node-fetch-commonjs");
 
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public'));
 });
+
+
 
 function schedluedTask() {
   const wordList = {};
