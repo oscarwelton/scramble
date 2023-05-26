@@ -1,18 +1,21 @@
+
 body {
   height: 100vh;
   width: 100vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-
-
+  color: red;
+  font-family: 'Mukta', sans-serif;
+  position: absolute;
+  overflow: hidden;
 }
 
-main {
+.container {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   height: 75%;
   border: 1px solid black;
-  border-radius: 10px;
+  border-radius: 0.2rem;
   flex-direction: column;
   width: 95vw;
 }
@@ -24,7 +27,6 @@ main {
   justify-content: center;
 }
 
-
 #anagram {
   margin: auto;
   height: 150px;
@@ -32,24 +34,24 @@ main {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-
+  width: 100%;
 }
+
 .letter {
   text-transform: uppercase;
   font-size: 2rem;
   font-weight: bold;
-  height: 100px;
-  width: 100px;
+  height: 3rem;
+  width: 3rem;
   border: 1px solid black;
   display: flex;
   justify-content: center;
   align-items: center;
-  display: inline-block;
-
-  &:hover {
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
-    cursor: pointer;
-  }
+  margin: 0.25rem 0.25rem;
+}
+.letter:hover {
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+  cursor: pointer;
 }
 
 .active {
@@ -57,6 +59,22 @@ main {
   color: white;
 }
 
-body {
-  color: red;
+#submit-div {
+  position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%, -10%);
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+
+
+}
+
+.title {
+  font-size: 4rem;
+  text-align: center;
+  font-weight: 300;
+  margin-top: 1rem;
 }

@@ -5,7 +5,6 @@ let scoreValue;
 
 function onlineData(callback) {
   const apiUrl = "https://api.jsonbin.io/v3/b/646e08b29d312622a364787e";
-  // const apiKey = process.env.BIN_API_KEY;
 
   fetch(apiUrl, {
     method: "GET",
