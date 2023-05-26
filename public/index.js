@@ -103,7 +103,7 @@ function answerInput() {
       const letterLi = document.createElement("li");
       letterLi.innerText += letter.innerHTML;
       answer.appendChild(letterLi);
-      letter.remove();
+      letter.classList.add("hide");
       letterLi.className = "letter";
     });
   });
@@ -137,6 +137,12 @@ shuffle.addEventListener("click", () => {
     ul.appendChild(ul.children[Math.floor(Math.random() * (i + 1))]);
   }
 });
+
+const answer = document.getElementById("answer");
+if (answer.childElementCount === 0) {
+  const refreshButton = document.getElementById("refresh")
+  refreshButton.disabled = true
+}
 
 refresh = () => {
   document.getElementById("anagram").innerHTML = "";
