@@ -65,28 +65,30 @@
     <link rel="stylesheet" href="./stylesheets/styles.css" />
   </head>
 
-  <body itemscope itemtype="http://schema.org/WebPage">
-    <header></header>
-
+  <body itemscope itemtype="http://schema.org/WebPage" class="">
     <div class="container" role="main">
       <h1 class="title">Words</h1>
-      <div class="score">
-        <h3>Score: <span id="score">0</span></h3>
-      </div>
-      <div class="counter">
-        <h3>Counter: <span id="counter">0</span> / 5</h3>
-      </div>
+      <div class="game">
+        <div class="sub-header">
+          <div class="score">
+            <h3>Score: <span id="score">0</span></h3>
+          </div>
+          <div class="counter">
+            <h3>Counter: <span id="counter">0</span> / 5</h3>
+          </div>
+        </div>
 
-      <!-- <div class="timer">
+        <!-- <div class="timer">
           <h3>Timer: <span id="timer">60</span></h3>
         </div> -->
 
-      <ul id="answer"></ul>
-      <ul id="anagram"></ul>
-      <div id="submit-div">
-        <button id="shuffle">Shuffle</button>
-        <button id="refresh">Refresh</button>
-        <button id="submit" disabled="true">Submit</button>
+        <ul id="answer"></ul>
+        <ul id="anagram"></ul>
+        <div id="submit-div">
+          <button id="shuffle">Shuffle</button>
+          <button id="refresh">Clear</button>
+          <button id="submit" disabled="true">Submit</button>
+        </div>
       </div>
     </div>
     <script type="text/javascript" src="index.js"></script>

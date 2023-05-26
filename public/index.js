@@ -10,7 +10,8 @@ function onlineData(callback) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "X-Master-Key": '$2b$10$8RTwTXIW08NAev7bHuiPd.MUJff7.e3zn3StonuOdR2tnE1dYrbG2',
+      "X-Master-Key":
+        "$2b$10$8RTwTXIW08NAev7bHuiPd.MUJff7.e3zn3StonuOdR2tnE1dYrbG2",
     },
   })
     .then((response) => response.json())
@@ -22,19 +23,15 @@ function onlineData(callback) {
 }
 
 function handleData(data) {
-  const firstWord = data["one"]
-  const secondWord = data["two"]
-  const thirdWord = data["three"]
-  const fourthWord = data["four"]
-  const fifthWord = data["five"]
-  newWords = [firstWord, secondWord, thirdWord, fourthWord, fifthWord]
-  console.log(newWords)
+  const firstWord = data["one"];
+  const secondWord = data["two"];
+  const thirdWord = data["three"];
+  const fourthWord = data["four"];
+  const fifthWord = data["five"];
+  newWords = [firstWord, secondWord, thirdWord, fourthWord, fifthWord];
+  console.log(newWords);
   localStorage.setItem("wordList", JSON.stringify(data));
 }
-
-window.onload = () => {
-  onlineData(handleData);
-};
 
 const storedWords = localStorage.getItem("wordList");
 if (storedWords) {
@@ -98,15 +95,6 @@ const anagram = () => {
   });
 };
 
-const shuffle = document.getElementById("shuffle");
-shuffle.addEventListener("click", () => {
-  const ul = document.getElementById("anagram");
-  const lettersArray = Array.from(ul.children);
-  for (let i = lettersArray.length - 1; i >= 0; i--) {
-    ul.appendChild(ul.children[Math.floor(Math.random() * (i + 1))]);
-  }
-});
-
 function answerInput() {
   const answer = document.getElementById("answer");
   const anagramLetters = document.getElementById("anagram").childNodes;
@@ -120,7 +108,35 @@ function answerInput() {
     });
   });
 }
-answerInput();
+
+displayStart = () => {
+  // const body = document.querySelector("body");
+  const startButton = document.createElement("button");
+  const game = document.querySelector(".game");
+  startButton.innerHTML = "hello world!";
+  game.insertAdjacentElement("beforeBegin", startButton);
+  startButton.addEventListener("click", () => {
+    console.log(event);
+    game.classList.remove("game");
+    startButton.remove();
+    anagram();
+    answerInput();
+  });
+};
+
+window.onload = () => {
+  onlineData(handleData);
+  displayStart();
+};
+
+const shuffle = document.getElementById("shuffle");
+shuffle.addEventListener("click", () => {
+  const ul = document.getElementById("anagram");
+  const lettersArray = Array.from(ul.children);
+  for (let i = lettersArray.length - 1; i >= 0; i--) {
+    ul.appendChild(ul.children[Math.floor(Math.random() * (i + 1))]);
+  }
+});
 
 refresh = () => {
   document.getElementById("anagram").innerHTML = "";
