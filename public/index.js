@@ -57,12 +57,14 @@ if (storedCount) {
 }
 
 function gameOver() {
-  const main = document.querySelector("main");
+  const game = document.querySelector("game");
+  game.remove();
   const gameOver = document.createElement("h1");
   const submit = document.getElementById("submit-div");
   submit.innerHTML = "";
   gameOver.innerHTML = "Game Over";
-  main.appendChild(gameOver);
+  const container = document.querySelector(".container")
+  container.appendChild(gameOver);
 }
 
 const storedScore = localStorage.getItem("currentScore");
@@ -84,7 +86,7 @@ function shuffleLetters(letters) {
   return letters;
 }
 
-const anagram = () => {
+function anagram() {
   const word = shuffleLetters(newWords[indexPosition].split(""));
   const anagram = document.getElementById("anagram");
   word.forEach((letter) => {
@@ -138,11 +140,11 @@ shuffle.addEventListener("click", () => {
   }
 });
 
-const answer = document.getElementById("answer");
-if (answer.childElementCount === 0) {
-  const refreshButton = document.getElementById("refresh")
-  refreshButton.disabled = true
-}
+// const answer = document.getElementById("answer");
+// if (answer.childElementCount === 0) {
+//   const refreshButton = document.getElementById("refresh")
+//   refreshButton.disabled = true
+// }
 
 refresh = () => {
   document.getElementById("anagram").innerHTML = "";
@@ -219,25 +221,11 @@ document.addEventListener("DOMContentLoaded", () => {
   checkAnswer();
 });
 
-
-function resetLocalStorage() {
-  localStorage.clear();
-  const newExpirationTime = new Date().getTime() + 24 * 60 * 60 * 1000;
-  localStorage.setItem('expirationTime', newExpirationTime);
-}
-
-function getTimeUntilMidnight() {
-  const now = new Date();
-  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-  return midnight - now;
-}
-
 const now = new Date();
-if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
-  resetLocalStorage();
-} else {
-  const timeUntilMidnight = getTimeUntilMidnight();
-  setTimeout(resetLocalStorage, timeUntilMidnight);
-}
+const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+localStorage.setItem("midnight", JSON.stringify(midnight));
 
-setInterval(resetLocalStorage, 24 * 60 * 60 * 1000);
+const savedMidnight = JSON.parse(localStorage.getItem("midnight"));
+if (savedMidnight && savedMidnight < now) {
+  localStorage.clear();
+}
