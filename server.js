@@ -7,8 +7,8 @@ const fetch = require("node-fetch-commonjs");
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public'));
 });
 
 function schedluedTask() {
@@ -54,10 +54,12 @@ function schedluedTask() {
     .catch((error) => console.error(error));
 }
 
+
+
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
-  cron.schedule("*/10 * * * * *", () => {
+  cron.schedule("0 0 * * *", () => {
     console.log("Executing scheduled task...");
     schedluedTask();
   });

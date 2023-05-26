@@ -3,6 +3,20 @@ let indexPosition;
 let counterValue;
 let scoreValue;
 
+const now = new Date();
+const savedMidnight = new Date(JSON.parse(localStorage.getItem("midnight")));
+
+if (savedMidnight instanceof Date) {
+  console.log("Item exists:", savedMidnight);
+  if ((savedMidnight - now) <= 0) {
+    localStorage.clear();
+  }
+} else {
+  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+  console.log("Item did not exist", midnight);
+  localStorage.setItem("midnight", JSON.stringify(midnight));
+}
+
 function onlineData(callback) {
   const apiUrl = "https://api.jsonbin.io/v3/b/646e08b29d312622a364787e";
 
@@ -57,13 +71,21 @@ if (storedCount) {
 }
 
 function gameOver() {
-  const main = document.querySelector("main");
+  const game = document.querySelector(".game");
+  game.parentNode.removeChild(game);
+
   const gameOver = document.createElement("h1");
-  const submit = document.getElementById("submit-div");
-  submit.innerHTML = "";
   gameOver.innerHTML = "Game Over";
-  main.appendChild(gameOver);
+
+  const submit = document.getElementById("submit-div");
+  if (submit) {
+    submit.innerHTML = "";
+  }
+
+  const container = document.querySelector(".container");
+  container.appendChild(gameOver);
 }
+
 
 const storedScore = localStorage.getItem("currentScore");
 if (storedScore) {
