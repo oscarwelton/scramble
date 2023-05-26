@@ -110,10 +110,10 @@ function answerInput() {
 }
 
 displayStart = () => {
-  // const body = document.querySelector("body");
   const startButton = document.createElement("button");
   const game = document.querySelector(".game");
-  startButton.innerHTML = "hello world!";
+  startButton.className = "start"
+  startButton.innerHTML = "Begin!";
   game.insertAdjacentElement("beforeBegin", startButton);
   startButton.addEventListener("click", () => {
     console.log(event);
