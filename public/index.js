@@ -228,4 +228,4 @@ setInterval(() => {
   localStorage.setItem("currentCount", JSON.stringify(counterValue));
   localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
   localStorage.setItem("currentScore", JSON.stringify(scoreValue));
-}, 60 * 60 * 1000);
+}, 60 * 1000);
