@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-css": "sass --no-source-map ./scss/index.scss public/stylesheets/styles.css"
   },
   "author": "",
   "license": "ISC",
@@ -13,7 +13,7 @@
     "@faker-js/faker": "^8.0.1",
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
-    "live-server": "^1.2.2",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "sass": "^1.62.1"
   }
 }
