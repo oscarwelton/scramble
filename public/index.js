@@ -219,13 +219,25 @@ document.addEventListener("DOMContentLoaded", () => {
   checkAnswer();
 });
 
-setInterval(() => {
-  newWords = [];
-  onlineData(handleData);
-  indexPosition = 0;
-  counterValue = 0;
-  scoreValue = 0;
-  localStorage.setItem("currentCount", JSON.stringify(counterValue));
-  localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
-  localStorage.setItem("currentScore", JSON.stringify(scoreValue));
-}, 60 * 1000);
+
+function resetLocalStorage() {
+  localStorage.clear();
+  const newExpirationTime = new Date().getTime() + 24 * 60 * 60 * 1000;
+  localStorage.setItem('expirationTime', newExpirationTime);
+}
+
+function getTimeUntilMidnight() {
+  const now = new Date();
+  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+  return midnight - now;
+}
+
+const now = new Date();
+if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
+  resetLocalStorage();
+} else {
+  const timeUntilMidnight = getTimeUntilMidnight();
+  setTimeout(resetLocalStorage, timeUntilMidnight);
+}
+
+setInterval(resetLocalStorage, 24 * 60 * 60 * 1000);
