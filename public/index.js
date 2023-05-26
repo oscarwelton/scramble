@@ -1,7 +1,21 @@
 let newWords = [];
 let indexPosition;
-let counterValue;
 let scoreValue;
+
+
+const now = new Date();
+const savedMidnight = new Date(JSON.parse(localStorage.getItem("midnight")));
+
+if (savedMidnight instanceof Date) {
+  console.log("Item exists:", savedMidnight);
+  if (savedMidnight < now) {
+    localStorage.clear();
+  }
+} else {
+  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+  console.log("Item did not exist", midnight);
+  localStorage.setItem("midnight", JSON.stringify(midnight));
+}
 
 function onlineData(callback) {
   const apiUrl = "https://api.jsonbin.io/v3/b/646e08b29d312622a364787e";
@@ -28,33 +42,25 @@ function handleData(data) {
   const thirdWord = data["three"];
   const fourthWord = data["four"];
   const fifthWord = data["five"];
-  newWords = [firstWord, secondWord, thirdWord, fourthWord, fifthWord];
-  console.log(newWords);
-  localStorage.setItem("wordList", JSON.stringify(data));
-}
-
-const storedWords = localStorage.getItem("wordList");
-if (storedWords) {
-  newWords = JSON.parse(storedWords);
-} else {
-  onlineData(handleData);
+  wordList = [firstWord, secondWord, thirdWord, fourthWord, fifthWord];
+  console.log(wordList)
 }
 
 const storedIndex = localStorage.getItem("currentIndex");
 if (storedIndex) {
   indexPosition = JSON.parse(storedIndex);
+  document.getElementById("counter").innerHTML = indexPosition;
 } else {
   indexPosition = 0;
+  document.getElementById("counter").innerHTML = indexPosition;
 }
 
-const storedCount = localStorage.getItem("currentCount");
-if (storedCount) {
-  counterValue = JSON.parse(storedCount);
-  document.getElementById("counter").innerHTML = counterValue;
-} else {
-  counterValue = 0;
-  document.getElementById("counter").innerHTML = counterValue;
-}
+// const storedCount = localStorage.getItem("currentCount");
+// if (storedCount) {
+//   counterValue = JSON.parse(storedCount);
+// } else {
+//   counterValue = 0;
+// }
 
 function gameOver() {
   const game = document.querySelector("game");
@@ -185,12 +191,10 @@ function updateCounter() {
 
 function updateValues() {
   indexPosition += 1;
-  counterValue += 1;
   scoreValue += 1;
   updateCounter();
   updateScore();
   localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
-  localStorage.setItem("currentCount", JSON.stringify(counterValue));
   localStorage.setItem("currentScore", JSON.stringify(scoreValue));
 }
 
@@ -220,12 +224,3 @@ function checkAnswer() {
 document.addEventListener("DOMContentLoaded", () => {
   checkAnswer();
 });
-
-const now = new Date();
-const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-localStorage.setItem("midnight", JSON.stringify(midnight));
-
-const savedMidnight = JSON.parse(localStorage.getItem("midnight"));
-if (savedMidnight && savedMidnight < now) {
-  localStorage.clear();
-}

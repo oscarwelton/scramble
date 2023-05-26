@@ -5,11 +5,14 @@ const cron = require("node-cron");
 const { faker } = require("@faker-js/faker");
 const fetch = require("node-fetch-commonjs");
 
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
+
+
 
 function schedluedTask() {
   const wordList = {};
@@ -53,6 +56,8 @@ function schedluedTask() {
     .then((data) => console.log(data))
     .catch((error) => console.error(error));
 }
+
+
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
