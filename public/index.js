@@ -4,16 +4,18 @@ let counterValue;
 let scoreValue;
 
 const now = new Date();
-let savedMidnight = new Date(JSON.stringify(localStorage.getItem("midnight")));
+let savedMidnight = new Date(localStorage.getItem("midnight"));
 
 if (savedMidnight.getTime() < now.getTime()) {
-  console.log("hello")
+  console.log("hello");
   savedMidnight = new Date(
     now.getFullYear(),
     now.getMonth(),
     now.getDate() + 1,
-    0, 0, 0
-    );
+    0,
+    0,
+    0
+  );
   localStorage.setItem("midnight", savedMidnight);
   indexPosition = 0;
   counterValue = 0;
@@ -21,6 +23,28 @@ if (savedMidnight.getTime() < now.getTime()) {
   localStorage.setItem("currentCount", JSON.stringify(counterValue));
   localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
   localStorage.setItem("currentScore", JSON.stringify(scoreValue));
+} else {
+  const storedIndex = localStorage.getItem("currentIndex");
+  if (storedIndex) {
+    indexPosition = JSON.parse(storedIndex);
+  } else {
+    indexPosition = 0;
+  }
+  const storedScore = localStorage.getItem("currentScore");
+  if (storedScore) {
+    scoreValue = JSON.parse(storedScore);
+  } else {
+    scoreValue = 0;
+  }
+  document.getElementById("score").innerHTML = scoreValue;
+
+  const storedCount = localStorage.getItem("currentCount");
+  if (storedCount) {
+    counterValue = JSON.parse(storedCount);
+  } else {
+    counterValue = 0;
+  }
+  document.getElementById("counter").innerHTML = counterValue;
 }
 
 function onlineData(callback) {
@@ -59,45 +83,17 @@ if (storedWords) {
   onlineData(handleData);
 }
 
-const storedIndex = localStorage.getItem("currentIndex");
-if (storedIndex) {
-  indexPosition = JSON.parse(storedIndex);
-} else {
-  indexPosition = 0;
-}
-
-const storedCount = localStorage.getItem("currentCount");
-if (storedCount) {
-  counterValue = JSON.parse(storedCount);
-  document.getElementById("counter").innerHTML = counterValue;
-} else {
-  counterValue = 0;
-  document.getElementById("counter").innerHTML = counterValue;
-}
-
 function gameOver() {
   const game = document.querySelector(".game");
   game.parentNode.removeChild(game);
-
   const gameOver = document.createElement("h1");
   gameOver.innerHTML = "Game Over";
-
   const submit = document.getElementById("submit-div");
   if (submit) {
     submit.innerHTML = "";
   }
-
   const container = document.querySelector(".container");
   container.appendChild(gameOver);
-}
-
-const storedScore = localStorage.getItem("currentScore");
-if (storedScore) {
-  scoreValue = JSON.parse(storedScore);
-  document.getElementById("score").innerHTML = scoreValue;
-} else {
-  scoreValue = 0;
-  document.getElementById("score").innerHTML = scoreValue;
 }
 
 function shuffleLetters(letters) {
@@ -192,7 +188,6 @@ shuffle.addEventListener("click", () => {
   }
 });
 
-
 refresh = () => {
   document.getElementById("anagram").innerHTML = "";
   document.getElementById("answer").innerHTML = "";
@@ -263,5 +258,4 @@ document.addEventListener("DOMContentLoaded", () => {
 setInterval(() => {
   newWords = [];
   onlineData(handleData);
-
 }, 60 * 60 * 1000);
