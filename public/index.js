@@ -8,7 +8,7 @@ const savedMidnight = new Date(JSON.parse(localStorage.getItem("midnight")));
 
 if (savedMidnight instanceof Date) {
   console.log("Item exists:", savedMidnight);
-  if ((savedMidnight - now) <= 0) {
+  if ((savedMidnight - now) < 0) {
     localStorage.clear();
   }
 } else {
@@ -131,6 +131,32 @@ function answerInput() {
   });
 }
 
+function handleClick() {
+  const letterLi = document.createElement("li");
+  letterLi.textContent = this.textContent;
+  answer.appendChild(letterLi);
+  this.classList.add("hide");
+  letterLi.classList.add("letter");
+}
+
+function answerInput() {
+  const anagramLetters = Array.from(document.getElementById("anagram").childNodes);
+  anagramLetters.forEach((letter) => {
+    letter.addEventListener("click", handleClick);
+  });
+}
+
+const refreshButton = document.getElementById("refresh");
+refreshButton.addEventListener("click", () => {
+  const hidden = document.querySelectorAll("#anagram .hide");
+  hidden.forEach((element) => {
+    element.classList.remove("hide");
+    element.removeEventListener("click", handleClick);
+  });
+  document.getElementById("answer").innerHTML = "";
+  answerInput();
+});
+
 displayStart = () => {
   const startButton = document.createElement("button");
   const game = document.querySelector(".game");
@@ -160,11 +186,11 @@ shuffle.addEventListener("click", () => {
   }
 });
 
-const answer = document.getElementById("answer");
-if (answer.childElementCount === 0) {
-  const refreshButton = document.getElementById("refresh")
-  refreshButton.disabled = true
-}
+// const answer = document.getElementById("answer");
+// if (answer.childElementCount === 0) {
+//   const refreshButton = document.getElementById("refresh")
+//   refreshButton.disabled = true
+// }
 
 refresh = () => {
   document.getElementById("anagram").innerHTML = "";
@@ -183,13 +209,15 @@ document.addEventListener("click", () => {
     submitButton.disabled = false;
 });
 
-const refreshButton = document.getElementById("refresh");
-refreshButton.addEventListener("click", () => {
-  document.getElementById("anagram").innerHTML = "";
-  document.getElementById("answer").innerHTML = "";
-  anagram();
-  answerInput();
-});
+// const refreshButton = document.getElementById("refresh");
+// refreshButton.addEventListener("click", () => {
+//   const hidden = document.querySelectorAll("#anagram .hide");
+//   hidden.forEach((element) => {
+//     element.classList.remove("hide");
+//   });
+//   document.getElementById("answer").innerHTML = "";
+//   answerInput();
+// });
 
 function updateScore() {
   const score = document.getElementById("score");
