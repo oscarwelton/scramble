@@ -4,38 +4,27 @@ let counterValue;
 let scoreValue;
 
 const now = new Date();
-const savedMidnight = new Date(JSON.parse(localStorage.getItem("midnight")));
+let savedMidnight = new Date(JSON.stringify(localStorage.getItem("midnight")));
 
-let midnight;
-
-if (savedMidnight instanceof Date) {
-  if (savedMidnight - now < 0) {
-    console.log(savedMidnight - now);
-    localStorage.clear();
-    midnight = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate() + 1,
-      0, 0, 0
-    );
-    localStorage.setItem("midnight", JSON.stringify(now));
-  }
-
-} else {
-  midnight = new Date(
+if (savedMidnight.getTime() < now.getTime()) {
+  console.log("hello")
+  savedMidnight = new Date(
     now.getFullYear(),
     now.getMonth(),
     now.getDate() + 1,
     0, 0, 0
-  );
-  console.log(midnight)
-  localStorage.setItem("midnight", JSON.stringify(midnight));
+    );
+  localStorage.setItem("midnight", savedMidnight);
+  indexPosition = 0;
+  counterValue = 0;
+  scoreValue = 0;
+  localStorage.setItem("currentCount", JSON.stringify(counterValue));
+  localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
+  localStorage.setItem("currentScore", JSON.stringify(scoreValue));
 }
-
 
 function onlineData(callback) {
   const apiUrl = "https://api.jsonbin.io/v3/b/646e08b29d312622a364787e";
-
   fetch(apiUrl, {
     method: "GET",
     headers: {
@@ -274,10 +263,5 @@ document.addEventListener("DOMContentLoaded", () => {
 setInterval(() => {
   newWords = [];
   onlineData(handleData);
-  indexPosition = 0;
-  counterValue = 0;
-  scoreValue = 0;
-  localStorage.setItem("currentCount", JSON.stringify(counterValue));
-  localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
-  localStorage.setItem("currentScore", JSON.stringify(scoreValue));
+
 }, 60 * 60 * 1000);
