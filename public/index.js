@@ -6,16 +6,32 @@ let scoreValue;
 const now = new Date();
 const savedMidnight = new Date(JSON.parse(localStorage.getItem("midnight")));
 
+let midnight;
+
 if (savedMidnight instanceof Date) {
-  console.log("Item exists:", savedMidnight);
-  if ((savedMidnight - now) < 0) {
+  if (savedMidnight - now < 0) {
+    console.log(savedMidnight - now);
     localStorage.clear();
+    midnight = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + 1,
+      0, 0, 0
+    );
+    localStorage.setItem("midnight", JSON.stringify(now));
   }
+
 } else {
-  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-  console.log("Item did not exist", midnight);
+  midnight = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1,
+    0, 0, 0
+  );
+  console.log(midnight)
   localStorage.setItem("midnight", JSON.stringify(midnight));
 }
+
 
 function onlineData(callback) {
   const apiUrl = "https://api.jsonbin.io/v3/b/646e08b29d312622a364787e";
@@ -86,7 +102,6 @@ function gameOver() {
   container.appendChild(gameOver);
 }
 
-
 const storedScore = localStorage.getItem("currentScore");
 if (storedScore) {
   scoreValue = JSON.parse(storedScore);
@@ -140,7 +155,9 @@ function handleClick() {
 }
 
 function answerInput() {
-  const anagramLetters = Array.from(document.getElementById("anagram").childNodes);
+  const anagramLetters = Array.from(
+    document.getElementById("anagram").childNodes
+  );
   anagramLetters.forEach((letter) => {
     letter.addEventListener("click", handleClick);
   });
@@ -160,7 +177,7 @@ refreshButton.addEventListener("click", () => {
 displayStart = () => {
   const startButton = document.createElement("button");
   const game = document.querySelector(".game");
-  startButton.className = "start"
+  startButton.className = "start";
   startButton.innerHTML = "Begin!";
   game.insertAdjacentElement("beforeBegin", startButton);
   startButton.addEventListener("click", () => {
@@ -186,11 +203,6 @@ shuffle.addEventListener("click", () => {
   }
 });
 
-// const answer = document.getElementById("answer");
-// if (answer.childElementCount === 0) {
-//   const refreshButton = document.getElementById("refresh")
-//   refreshButton.disabled = true
-// }
 
 refresh = () => {
   document.getElementById("anagram").innerHTML = "";
@@ -208,16 +220,6 @@ document.addEventListener("click", () => {
   if (submitCount === newWords[indexPosition].split("").length)
     submitButton.disabled = false;
 });
-
-// const refreshButton = document.getElementById("refresh");
-// refreshButton.addEventListener("click", () => {
-//   const hidden = document.querySelectorAll("#anagram .hide");
-//   hidden.forEach((element) => {
-//     element.classList.remove("hide");
-//   });
-//   document.getElementById("answer").innerHTML = "";
-//   answerInput();
-// });
 
 function updateScore() {
   const score = document.getElementById("score");
