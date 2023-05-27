@@ -162,6 +162,7 @@ refreshButton.addEventListener("click", () => {
 displayStart = () => {
   const startButton = document.createElement("button");
   const game = document.querySelector(".game");
+  if (game) {
   startButton.className = "start";
   startButton.innerHTML = "Begin!";
   game.insertAdjacentElement("beforeBegin", startButton);
@@ -172,6 +173,7 @@ displayStart = () => {
     anagram();
     answerInput();
   });
+}
 };
 
 window.onload = () => {
