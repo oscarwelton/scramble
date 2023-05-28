@@ -1,4 +1,17 @@
-let newWords = [];
+let wordList;
+
+fetch('/wordList')
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    wordList = data;
+
+  })
+  .catch(error => {
+    console.log('Error:', error);
+  });
+
+
 let indexPosition;
 let scoreValue;
 
@@ -37,34 +50,6 @@ if (savedMidnight.getTime() < now.getTime()) {
   document.getElementById("score").innerHTML = scoreValue;
 }
 
-function onlineData(callback) {
-  const apiUrl = "https://api.jsonbin.io/v3/b/646e08b29d312622a364787e";
-  fetch(apiUrl, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Master-Key":
-        "$2b$10$8RTwTXIW08NAev7bHuiPd.MUJff7.e3zn3StonuOdR2tnE1dYrbG2",
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      const storedData = data["record"][0];
-      callback(storedData);
-    })
-    .catch((error) => console.error(error));
-}
-
-function handleData(data) {
-  const firstWord = data["one"];
-  const secondWord = data["two"];
-  const thirdWord = data["three"];
-  const fourthWord = data["four"];
-  const fifthWord = data["five"];
-  wordList = [firstWord, secondWord, thirdWord, fourthWord, fifthWord];
-}
-
-
 function gameOver() {
   const game = document.querySelector(".game");
   game.parentNode.removeChild(game);
@@ -99,26 +84,26 @@ const anagram = () => {
   });
 };
 
-function answerInput() {
-  const answer = document.getElementById("answer");
-  const anagramLetters = document.getElementById("anagram").childNodes;
-  anagramLetters.forEach((letter) => {
-    letter.addEventListener("click", () => {
-      const letterLi = document.createElement("li");
-      letterLi.innerText += letter.innerHTML;
-      answer.appendChild(letterLi);
-      letter.classList.add("hide");
-      letterLi.className = "letter";
-    });
-  });
-}
+// function answerInput() {
+//   const answer = document.getElementById("answer");
+//   const anagramLetters = document.getElementById("anagram").childNodes;
+//   anagramLetters.forEach((letter) => {
+//     letter.addEventListener("click", () => {
+//       const letterLi = document.createElement("li");
+//       letterLi.innerText += letter.innerHTML;
+//       answer.appendChild(letterLi);
+//       letter.classList.add("hide");
+//       letterLi.className = "letter";
+//     });
+//   });
+// }
 
 function handleClick() {
   const letterLi = document.createElement("li");
   letterLi.textContent = this.textContent;
   answer.appendChild(letterLi);
   this.classList.add("hide");
-  letterLi.classList.add("letter");
+  letterLi.className = "letter";
 }
 
 function answerInput() {
@@ -141,7 +126,7 @@ refreshButton.addEventListener("click", () => {
   answerInput();
 });
 
-displayStart = () => {
+function displayStart() {
   const startButton = document.createElement("button");
   const game = document.querySelector(".game");
   if (game) {
@@ -158,7 +143,6 @@ displayStart = () => {
 };
 
 window.onload = () => {
-  onlineData(handleData);
   displayStart();
 };
 
@@ -171,7 +155,7 @@ shuffle.addEventListener("click", () => {
   }
 });
 
-refresh = () => {
+function refresh () {
   document.getElementById("anagram").innerHTML = "";
   document.getElementById("answer").innerHTML = "";
   anagram();

@@ -2,8 +2,8 @@
   "name": "anagram-new",
   "version": "1.0.0",
   "description": "A fun anagram game, deployed on heroku.",
-  "main": "index.js",
-  "type": "commonjs",
+  "main": "index.mjs",
+  "type": "module",
   "scripts": {
     "build-css": "sass --no-source-map ./scss/index.scss public/stylesheets/styles.css"
   },
@@ -14,6 +14,7 @@
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
     "node-cron": "^3.0.2",
+    "node-fetch": "^3.3.1",
     "node-fetch-commonjs": "^3.2.4",
     "path": "^0.12.7",
     "sass": "^1.62.1"
