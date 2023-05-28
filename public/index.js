@@ -1,13 +1,11 @@
 let newWords = [];
 let indexPosition;
-let counterValue;
 let scoreValue;
 
 const now = new Date();
 let savedMidnight = new Date(localStorage.getItem("midnight"));
 
 if (savedMidnight.getTime() < now.getTime()) {
-  console.log("hello");
   savedMidnight = new Date(
     now.getFullYear(),
     now.getMonth(),
@@ -18,9 +16,7 @@ if (savedMidnight.getTime() < now.getTime()) {
   );
   localStorage.setItem("midnight", savedMidnight);
   indexPosition = 0;
-  counterValue = 0;
   scoreValue = 0;
-  localStorage.setItem("currentCount", JSON.stringify(counterValue));
   localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
   localStorage.setItem("currentScore", JSON.stringify(scoreValue));
 } else {
@@ -30,6 +26,8 @@ if (savedMidnight.getTime() < now.getTime()) {
   } else {
     indexPosition = 0;
   }
+  document.getElementById("counter").innerHTML = indexPosition;
+
   const storedScore = localStorage.getItem("currentScore");
   if (storedScore) {
     scoreValue = JSON.parse(storedScore);
@@ -37,14 +35,6 @@ if (savedMidnight.getTime() < now.getTime()) {
     scoreValue = 0;
   }
   document.getElementById("score").innerHTML = scoreValue;
-
-  const storedCount = localStorage.getItem("currentCount");
-  if (storedCount) {
-    counterValue = JSON.parse(storedCount);
-  } else {
-    counterValue = 0;
-  }
-  document.getElementById("counter").innerHTML = counterValue;
 }
 
 function onlineData(callback) {
@@ -71,17 +61,9 @@ function handleData(data) {
   const thirdWord = data["three"];
   const fourthWord = data["four"];
   const fifthWord = data["five"];
-  newWords = [firstWord, secondWord, thirdWord, fourthWord, fifthWord];
-  console.log(newWords);
-  localStorage.setItem("wordList", JSON.stringify(data));
+  wordList = [firstWord, secondWord, thirdWord, fourthWord, fifthWord];
 }
 
-const storedWords = localStorage.getItem("wordList");
-if (storedWords) {
-  newWords = JSON.parse(storedWords);
-} else {
-  onlineData(handleData);
-}
 
 function gameOver() {
   const game = document.querySelector(".game");
@@ -107,7 +89,7 @@ function shuffleLetters(letters) {
 }
 
 const anagram = () => {
-  const word = shuffleLetters(newWords[indexPosition].split(""));
+  const word = shuffleLetters(wordList[indexPosition].split(""));
   const anagram = document.getElementById("anagram");
   word.forEach((letter) => {
     const letterSpan = document.createElement("span");
@@ -167,7 +149,6 @@ displayStart = () => {
   startButton.innerHTML = "Begin!";
   game.insertAdjacentElement("beforeBegin", startButton);
   startButton.addEventListener("click", () => {
-    console.log(event);
     game.classList.remove("game");
     startButton.remove();
     anagram();
@@ -203,7 +184,7 @@ document.addEventListener("click", () => {
   const submitCount = Array.from(
     document.getElementById("answer").childNodes
   ).length;
-  if (submitCount === newWords[indexPosition].split("").length)
+  if (submitCount === wordList[indexPosition].split("").length)
     submitButton.disabled = false;
 });
 
@@ -221,12 +202,10 @@ function updateCounter() {
 
 function updateValues() {
   indexPosition += 1;
-  counterValue += 1;
   scoreValue += 1;
   updateCounter();
   updateScore();
   localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
-  localStorage.setItem("currentCount", JSON.stringify(counterValue));
   localStorage.setItem("currentScore", JSON.stringify(scoreValue));
 }
 
@@ -240,10 +219,10 @@ function checkAnswer() {
       const answerString = Array.from(answer)
         .map((letter) => letter.innerHTML)
         .join("");
-      if (answerString === newWords[indexPosition] && indexPosition === 4) {
+      if (answerString === wordList[indexPosition] && indexPosition === 4) {
         updateValues();
         gameOver();
-      } else if (answerString === newWords[indexPosition]) {
+      } else if (answerString === wordList[indexPosition]) {
         updateValues();
         refresh();
       } else {
@@ -256,8 +235,3 @@ function checkAnswer() {
 document.addEventListener("DOMContentLoaded", () => {
   checkAnswer();
 });
-
-setInterval(() => {
-  newWords = [];
-  onlineData(handleData);
-}, 60 * 60 * 1000);
