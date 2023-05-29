@@ -93,7 +93,7 @@ document.addEventListener('touchend', function(event) {
   let lastTouch = event.timeStamp || now;
   let delta = now - lastTouch;
 
-  if (delta < 500 && delta > 0) {
+  if (delta < 450 && delta > 0) {
     event.preventDefault();
     event.stopPropagation();
   }
