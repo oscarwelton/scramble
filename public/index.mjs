@@ -1,19 +1,31 @@
 let wordList;
-
-fetch('/wordList')
-  .then(response => response.json())
-  .then(data => {
-    console.log(data);
-    wordList = data;
-
-  })
-  .catch(error => {
-    console.log('Error:', error);
-  });
-
-
 let indexPosition;
 let scoreValue;
+
+fetch("/wordList")
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+    wordList = data;
+  })
+  .catch((error) => {
+    console.log("Error:", error);
+  });
+
+  function displayStart() {
+    const startButton = document.createElement("button");
+    const game = document.querySelector(".game");
+    if (game) {
+      startButton.className = "start";
+      startButton.innerHTML = "Begin!";
+      game.insertAdjacentElement("beforeBegin", startButton);
+      startButton.addEventListener("click", () => {
+        game.classList.remove("game");
+        startButton.remove();
+        anagram();
+        answerInput();
+      });
+    }}
 
 const now = new Date();
 let savedMidnight = new Date(localStorage.getItem("midnight"));
@@ -36,18 +48,30 @@ if (savedMidnight.getTime() < now.getTime()) {
   const storedIndex = localStorage.getItem("currentIndex");
   if (storedIndex) {
     indexPosition = JSON.parse(storedIndex);
+    if (indexPosition === 5) {
+      gameOver();
+    } else {
+      displayStart();
+    }
   } else {
     indexPosition = 0;
   }
-  document.getElementById("counter").innerHTML = indexPosition;
+
+  const counter = document.getElementById("counter");
+  if (counter) {
+    counter.innerHTML = indexPosition;
+  }
 
   const storedScore = localStorage.getItem("currentScore");
+  const score = document.getElementById("score");
   if (storedScore) {
     scoreValue = JSON.parse(storedScore);
   } else {
     scoreValue = 0;
   }
-  document.getElementById("score").innerHTML = scoreValue;
+  if (score) {
+    score.innerHTML = scoreValue;
+  }
 }
 
 function gameOver() {
@@ -84,20 +108,6 @@ const anagram = () => {
   });
 };
 
-// function answerInput() {
-//   const answer = document.getElementById("answer");
-//   const anagramLetters = document.getElementById("anagram").childNodes;
-//   anagramLetters.forEach((letter) => {
-//     letter.addEventListener("click", () => {
-//       const letterLi = document.createElement("li");
-//       letterLi.innerText += letter.innerHTML;
-//       answer.appendChild(letterLi);
-//       letter.classList.add("hide");
-//       letterLi.className = "letter";
-//     });
-//   });
-// }
-
 function handleClick() {
   const letterLi = document.createElement("li");
   letterLi.textContent = this.textContent;
@@ -116,52 +126,36 @@ function answerInput() {
 }
 
 const refreshButton = document.getElementById("refresh");
-refreshButton.addEventListener("click", () => {
-  const hidden = document.querySelectorAll("#anagram .hide");
-  hidden.forEach((element) => {
-    element.classList.remove("hide");
-    element.removeEventListener("click", handleClick);
-  });
-  document.getElementById("answer").innerHTML = "";
-  answerInput();
-});
-
-function displayStart() {
-  const startButton = document.createElement("button");
-  const game = document.querySelector(".game");
-  if (game) {
-  startButton.className = "start";
-  startButton.innerHTML = "Begin!";
-  game.insertAdjacentElement("beforeBegin", startButton);
-  startButton.addEventListener("click", () => {
-    game.classList.remove("game");
-    startButton.remove();
-    anagram();
+if (refreshButton) {
+  refreshButton.addEventListener("click", () => {
+    const hidden = document.querySelectorAll("#anagram .hide");
+    hidden.forEach((element) => {
+      element.classList.remove("hide");
+      element.removeEventListener("click", handleClick);
+    });
+    document.getElementById("answer").innerHTML = "";
     answerInput();
   });
 }
-};
-
-window.onload = () => {
-  displayStart();
-};
 
 const shuffle = document.getElementById("shuffle");
-shuffle.addEventListener("click", () => {
-  const ul = document.getElementById("anagram");
-  const lettersArray = Array.from(ul.children);
-  for (let i = lettersArray.length - 1; i >= 0; i--) {
-    ul.appendChild(ul.children[Math.floor(Math.random() * (i + 1))]);
-  }
-});
+if (shuffle) {
+  shuffle.addEventListener("click", () => {
+    const ul = document.getElementById("anagram");
+    const lettersArray = Array.from(ul.children);
+    for (let i = lettersArray.length - 1; i >= 0; i--) {
+      ul.appendChild(ul.children[Math.floor(Math.random() * (i + 1))]);
+    }
+  });
+}
 
-function refresh () {
+function refresh() {
   document.getElementById("anagram").innerHTML = "";
   document.getElementById("answer").innerHTML = "";
   anagram();
   answerInput();
   submitButton.disabled = true;
-};
+}
 
 const submitButton = document.getElementById("submit");
 document.addEventListener("click", () => {
@@ -193,29 +187,21 @@ function updateValues() {
   localStorage.setItem("currentScore", JSON.stringify(scoreValue));
 }
 
-function checkAnswer() {
-  if (indexPosition === 5) {
-    gameOver();
-  } else {
-    const submit = document.getElementById("submit");
-    submit.addEventListener("click", () => {
-      const answer = document.getElementById("answer").childNodes;
-      const answerString = Array.from(answer)
-        .map((letter) => letter.innerHTML)
-        .join("");
-      if (answerString === wordList[indexPosition] && indexPosition === 4) {
-        updateValues();
-        gameOver();
-      } else if (answerString === wordList[indexPosition]) {
-        updateValues();
-        refresh();
-      } else {
-        refresh();
-      }
-    });
-  }
+const submit = document.getElementById("submit");
+if (submit) {
+  submit.addEventListener("click", () => {
+    const answer = document.getElementById("answer").childNodes;
+    const answerString = Array.from(answer)
+      .map((letter) => letter.innerHTML)
+      .join("");
+    if (answerString === wordList[indexPosition] && indexPosition === 4) {
+      updateValues();
+      gameOver();
+    } else if (answerString === wordList[indexPosition]) {
+      updateValues();
+      refresh();
+    } else {
+      refresh();
+    }
+  });
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  checkAnswer();
-});
