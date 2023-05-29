@@ -85,8 +85,20 @@ if (savedMidnight instanceof Date) {
     }
   }
 } else {
-  console.log("hello world")
+  console.log("error: unable to read date format.")
 }
+
+document.addEventListener('touchend', function(event) {
+  now.getTime();
+  let lastTouch = event.timeStamp || now;
+  let delta = now - lastTouch;
+
+  if (delta < 500 && delta > 0) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  lastTouch = now;
+});
 
 function gameOver() {
   const index = document.getElementById("index");
@@ -179,6 +191,7 @@ function refresh() {
 }
 
 const submitButton = document.getElementById("submit");
+if (submitButton) {
 document.addEventListener("click", () => {
   const submitCount = Array.from(
     document.getElementById("answer").childNodes
@@ -186,6 +199,7 @@ document.addEventListener("click", () => {
   if (submitCount === wordList[indexPosition].split("").length)
     submitButton.disabled = false;
 });
+}
 
 function updateScore() {
   const score = document.getElementById("score");
