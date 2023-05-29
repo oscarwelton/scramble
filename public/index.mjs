@@ -36,14 +36,15 @@ function displayStart() {
   </div>
   <p>Simple right?</p>
   <p>
-    Earn points for each correctly solved anagram. You have five minutes
-    to solve them all and you earn more points the faster you are.
+    Earn points for each anagram solved. You have five minutes
+    to solve them all and you earn more points the quicker you are.
   </p>
   <p>Compete against your friends and family!</p>
   <p>Ready?</p>
   <div class="start-button">
     <button class="start">Start</button>
   </div>`;
+
   const game = document.querySelector(".game");
   if (game) {
     game.insertAdjacentHTML("beforeBegin", htmlBlock);

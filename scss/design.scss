@@ -20,7 +20,10 @@ body {
   overflow: hidden;
 }
 
-.container {}
+.container {
+  max-width: 600px;
+  margin: auto;
+}
 
 #answer {
   height: 150px;
@@ -47,6 +50,7 @@ body {
   button {
     background-color: transparent;
     border: none;
+    font-size: 1.5rem;
   }
 }
 

@@ -69,6 +69,11 @@ body {
   overflow: hidden;
 }
 
+.container {
+  max-width: 600px;
+  margin: auto;
+}
+
 #answer {
   height: 150px;
   display: flex;
@@ -94,6 +99,7 @@ body {
 .actions button {
   background-color: transparent;
   border: none;
+  font-size: 1.5rem;
 }
 
 #anagram {
@@ -193,6 +199,8 @@ body {
 }
 
 .start-screen {
+  max-width: 600px;
+  margin: auto;
   position: absolute;
   top: 10%;
   left: 50%;
@@ -206,7 +214,7 @@ body {
 }
 
 p {
-  margin: 8px 0px;
+  margin: 1rem 0px;
 }
 
 h4 {
@@ -220,11 +228,14 @@ h2 {
 
 .examples {
   margin: 2rem 0rem;
+  min-width: 100%;
+  max-width: 80%;
+  margin: auto;
 }
 
 .example {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 }
 .example span {
@@ -240,7 +251,8 @@ h2 {
   align-items: center;
   justify-content: center;
   height: 1.5rem;
-  width: 1.5rem;
+  width: 1.75rem;
+  padding: 0.25rem 0rem 0rem 0rem;
 }
 
 .start-button {
