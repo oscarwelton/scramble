@@ -1,24 +1,16 @@
 let wordList;
 let indexPosition;
 let scoreValue;
-let now = new Date();
-let savedMidnight = new Date(localStorage.getItem("midnight"));
-
-if (savedMidnight) {
-  savedMidnight = new Date(savedMidnight);
-}
-
-console.log(savedMidnight)
 
 fetch("/wordList")
-  .then((response) => response.json())
-  .then((data) => {
-    console.log(data);
-    wordList = data;
-  })
-  .catch((error) => {
-    console.log("Error:", error);
-  });
+.then((response) => response.json())
+.then((data) => {
+  console.log(data);
+  wordList = data;
+})
+.catch((error) => {
+  console.log("Error:", error);
+});
 
 function displayStart() {
   const startButton = document.createElement("button");
@@ -36,51 +28,64 @@ function displayStart() {
   }
 }
 
-if (savedMidnight.getTime() < now.getTime()) {
-  localStorage.clear();
-  console.log("Time was updated and indexes reset.")
-  savedMidnight = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate() + 1,
-    0,
-    0,
-    0
-  );
-  localStorage.setItem("midnight", savedMidnight);
-  indexPosition = 0;
-  scoreValue = 0;
-  localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
-  localStorage.setItem("currentScore", JSON.stringify(scoreValue));
-} else {
-  const storedIndex = localStorage.getItem("currentIndex");
-  if (storedIndex) {
-    indexPosition = JSON.parse(storedIndex);
-    if (indexPosition === 5) {
-      gameOver();
-    } else {
-      displayStart();
-    }
-  } else {
+let now = new Date();
+let savedMidnight = new Date(localStorage.getItem("midnight"));
+
+if (isNaN(savedMidnight.getTime())) {
+  savedMidnight = new Date();
+  savedMidnight.setHours(0, 0, 0, 0);
+  localStorage.setItem("midnight", savedMidnight.toISOString());
+}
+
+if (savedMidnight instanceof Date) {
+  if (savedMidnight.getTime() < now.getTime()) {
+    localStorage.clear();
+    console.log("Time was updated and indexes reset.")
+    savedMidnight = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + 1,
+      0,
+      0,
+      0
+    );
+    localStorage.setItem("midnight", savedMidnight);
     indexPosition = 0;
-    localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
-  }
-
-  const counter = document.getElementById("counter");
-  if (counter) {
-    counter.innerHTML = indexPosition;
-  }
-
-  const storedScore = localStorage.getItem("currentScore");
-  const score = document.getElementById("score");
-  if (storedScore) {
-    scoreValue = JSON.parse(storedScore);
-  } else {
     scoreValue = 0;
+    localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
+    localStorage.setItem("currentScore", JSON.stringify(scoreValue));
+  } else {
+    const storedIndex = localStorage.getItem("currentIndex");
+    if (storedIndex) {
+      indexPosition = JSON.parse(storedIndex);
+      if (indexPosition === 5) {
+        gameOver();
+      } else {
+        displayStart();
+      }
+    } else {
+      indexPosition = 0;
+      localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
+    }
+
+    const counter = document.getElementById("counter");
+    if (counter) {
+      counter.innerHTML = indexPosition;
+    }
+
+    const storedScore = localStorage.getItem("currentScore");
+    const score = document.getElementById("score");
+    if (storedScore) {
+      scoreValue = JSON.parse(storedScore);
+    } else {
+      scoreValue = 0;
+    }
+    if (score) {
+      score.innerHTML = scoreValue;
+    }
   }
-  if (score) {
-    score.innerHTML = scoreValue;
-  }
+} else {
+  console.log("hello world")
 }
 
 function gameOver() {
