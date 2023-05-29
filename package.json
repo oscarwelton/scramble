@@ -5,7 +5,7 @@
   "main": "index.mjs",
   "type": "module",
   "scripts": {
-    "build-css": "sass --no-source-map ./scss/index.scss public/stylesheets/styles.css"
+    "build-css": "sass --no-source-map --watch ./scss/index.scss public/stylesheets/styles.css"
   },
   "author": "",
   "license": "ISC",

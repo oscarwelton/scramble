@@ -6,7 +6,7 @@
     <meta name="msapplication-tap-highlight" content="no" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Project</title>
+    <title>Scrambled.</title>
 
     <meta name="author" content />
     <meta name="keywords" content />
@@ -57,7 +57,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Mukta:wght@200;400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Mukta:wght@200;400;700&family=Scope+One&display=swap"
       rel="stylesheet"
     />
     <link type="text/plain" rel="author" href="humans.txt" />
@@ -65,8 +65,10 @@
   </head>
 
   <body itemscope itemtype="http://schema.org/WebPage" class="">
+    <div class="header">
+      <h1 class="title">Scrambled.</h1>
+    </div>
     <div class="container" role="main">
-      <h1 class="title">Words</h1>
       <div class="game">
         <div class="sub-header">
           <div class="score">
@@ -77,18 +79,21 @@
           </div>
         </div>
 
-        <!-- <div class="timer">
-          <h3>Timer: <span id="timer">60</span></h3>
-        </div> -->
+        <div class="answer-string">
+          <ul id="answer"></ul>
+        </div>
 
-        <ul id="answer"></ul>
-        <ul id="anagram"></ul>
-        <div id="submit-div">
+        <div class="actions">
           <button id="shuffle">Shuffle</button>
           <button id="refresh">Clear</button>
+        </div>
+        <ul id="anagram"></ul>
+        <div id="submit-div">
           <button id="submit" disabled="true">Submit</button>
         </div>
       </div>
+
+
       <h2 id="index"></h2>
       <h2 id="now"></h2>
       <h2 id="midnight"></h2>

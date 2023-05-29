@@ -3,30 +3,14 @@ let indexPosition;
 let scoreValue;
 
 fetch("/wordList")
-.then((response) => response.json())
-.then((data) => {
-  console.log(data);
-  wordList = data;
-})
-.catch((error) => {
-  console.log("Error:", error);
-});
-
-function displayStart() {
-  const startButton = document.createElement("button");
-  const game = document.querySelector(".game");
-  if (game) {
-    startButton.className = "start";
-    startButton.innerHTML = "Begin!";
-    game.insertAdjacentElement("beforeBegin", startButton);
-    startButton.addEventListener("click", () => {
-      game.classList.remove("game");
-      startButton.remove();
-      anagram();
-      answerInput();
-    });
-  }
-}
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+    wordList = data;
+  })
+  .catch((error) => {
+    console.log("Error:", error);
+  });
 
 let now = new Date();
 let savedMidnight = new Date(localStorage.getItem("midnight"));
@@ -40,7 +24,7 @@ if (isNaN(savedMidnight.getTime())) {
 if (savedMidnight instanceof Date) {
   if (savedMidnight.getTime() < now.getTime()) {
     localStorage.clear();
-    console.log("Time was updated and indexes reset.")
+    console.log("Time was updated and indexes reset.");
     savedMidnight = new Date(
       now.getFullYear(),
       now.getMonth(),
@@ -67,12 +51,10 @@ if (savedMidnight instanceof Date) {
       indexPosition = 0;
       localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
     }
-
     const counter = document.getElementById("counter");
     if (counter) {
       counter.innerHTML = indexPosition;
     }
-
     const storedScore = localStorage.getItem("currentScore");
     const score = document.getElementById("score");
     if (storedScore) {
@@ -85,14 +67,13 @@ if (savedMidnight instanceof Date) {
     }
   }
 } else {
-  console.log("error: unable to read date format.")
+  console.log("error: unable to read date format.");
 }
 
-document.addEventListener('touchend', function(event) {
+document.addEventListener("touchend", function (event) {
   now.getTime();
   let lastTouch = event.timeStamp || now;
   let delta = now - lastTouch;
-
   if (delta < 450 && delta > 0) {
     event.preventDefault();
     event.stopPropagation();
@@ -101,23 +82,12 @@ document.addEventListener('touchend', function(event) {
 });
 
 function gameOver() {
-  const index = document.getElementById("index");
-  index.innerText = indexPosition;
-  const nowDiv = document.getElementById("now");
-  nowDiv.innerText = now;
-  const mid = document.getElementById("midnight")
-  mid.innerText = savedMidnight
-
-  const game = document.querySelector(".game");
-  game.parentNode.removeChild(game);
-  const gameOver = document.createElement("h1");
-  gameOver.innerHTML = "Game Over";
-  const submit = document.getElementById("submit-div");
-  if (submit) {
-    submit.innerHTML = "";
-  }
-  const container = document.querySelector(".container");
-  container.appendChild(gameOver);
+  const words = document.getElementById("word-list");
+  wordList.forEach((word) => {
+    const wor = document.createElement("li");
+    wor.innerText = word;
+    words.insertAdjacentElement.wor;
+  });
 }
 
 function shuffleLetters(letters) {
@@ -133,7 +103,12 @@ function shuffleLetters(letters) {
 const anagram = () => {
   const word = shuffleLetters(wordList[indexPosition].split(""));
   const anagram = document.getElementById("anagram");
+  const answer = document.getElementById("answer");
+
   word.forEach((letter) => {
+    const lets = document.createElement("span");
+    lets.className = "placeholder";
+    answer.insertAdjacentElement("beforeend", lets);
     const letterSpan = document.createElement("span");
     letterSpan.innerHTML = letter;
     anagram.appendChild(letterSpan);
@@ -141,12 +116,17 @@ const anagram = () => {
   });
 };
 
+let letterIndex = 0
+
 function handleClick() {
+  const answer = document.getElementById("answer");
+  const currentChild = answer.childNodes[letterIndex];
   const letterLi = document.createElement("li");
   letterLi.textContent = this.textContent;
-  answer.appendChild(letterLi);
+  letterLi.className = "answer-letter";
+  answer.replaceChild(letterLi, currentChild);
+  letterIndex++;
   this.classList.add("hide");
-  letterLi.className = "letter";
 }
 
 function answerInput() {
@@ -158,6 +138,49 @@ function answerInput() {
   });
 }
 
+function displayStart() {
+  const startHtmlBlock = `<div class="start-screen">
+  <h2>Welcome!</h2>
+  <p>
+    The objective of the game is to solve five anagrams. Simple, right?
+  </p>
+  <p>
+    Earn points for each correctly solved anagram. You have five minutes
+    to solve them all and you earn more points the faster you are.
+  </p>
+  <div class="examples">
+    <h4>Anagram:</h4>
+    <div class="example">
+      <span>c</span><span>l</span><span>a</span><span>m</span
+      ><span>b</span> <span>e</span><span>r</span><span>s</span>
+    </div>
+    <h4>Answer:</h4>
+    <div class="example">
+      <span>s</span><span>c</span><span>r</span><span>a</span
+      ><span>m</span><span>b</span><span>l</span><span>e</span>
+    </div>
+  </div>
+  <p>Compete against your friends and family!</p>
+  <p>Ready?</p>
+  <div class="start-button">
+    <button class="start">Start</button>
+  </div>
+</div>`;
+
+  const container = document.querySelector(".container");
+  container.insertAdjacentHTML("afterbegin", startHtmlBlock);
+  const game = document.querySelector(".game")
+
+  const startButton = document.querySelector(".start")
+    startButton.addEventListener("click", () => {
+      const startDiv = document.querySelector(".start-screen")
+      startDiv.remove();
+      game.classList.remove("game");
+      anagram();
+      answerInput();
+    });
+}
+
 const refreshButton = document.getElementById("refresh");
 if (refreshButton) {
   refreshButton.addEventListener("click", () => {
@@ -166,7 +189,8 @@ if (refreshButton) {
       element.classList.remove("hide");
       element.removeEventListener("click", handleClick);
     });
-    document.getElementById("answer").innerHTML = "";
+    const children = document.getElementById("answer").childNodes;
+    crossOriginIsolated.log(children)
     answerInput();
   });
 }
@@ -192,13 +216,13 @@ function refresh() {
 
 const submitButton = document.getElementById("submit");
 if (submitButton) {
-document.addEventListener("click", () => {
-  const submitCount = Array.from(
-    document.getElementById("answer").childNodes
-  ).length;
-  if (submitCount === wordList[indexPosition].split("").length)
-    submitButton.disabled = false;
-});
+  document.addEventListener("click", () => {
+    const submitCount = Array.from(
+      document.getElementById("answer").childNodes
+    ).length;
+    if (submitCount === wordList[indexPosition].split("").length)
+      submitButton.disabled = false;
+  });
 }
 
 function updateScore() {

@@ -1,39 +1,53 @@
+:root {
+  --gunmetal: rgba(0, 39, 43, 1);
+  --shadow: rgba(0, 39, 43, 0.5);
+  --antique-white: rgb(255, 246, 235);
+  --scope: 'Scope One', serif;
+  --mukta: 'Mukta', sans-serif;
+  --light: 200;
+  --regular: 400;
+  --bold: 700;
+}
+
 
 body {
   height: 100vh;
   width: 100vw;
-  color: red;
+  background-color: white;
+  color: var(--gunmetal);
   font-family: 'Mukta', sans-serif;
   position: absolute;
   overflow: hidden;
 }
 
-.container {
-  position: relative;
-  left: 50%;
-  transform: translate(-50%, 0%);
-  height: 90%;
-  border: 1px solid black;
-  border-radius: 0.2rem;
-  flex-direction: column;
-  width: 90vw;
-  height: 90vh;
-}
+.container {}
 
 #answer {
   height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  bottom: 50%;
-  width: 100%;
 }
 
 .sub-header {
+  font-size: 1.2rem;
   display: flex;
-  margin-top: 2rem;
+  padding: 1rem;
   justify-content: space-around;
+  border-bottom: 1px solid var(--shadow);
+  font-weight: var(--light);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  margin: 2rem auto;
+
+  button {
+    background-color: transparent;
+    border: none;
+  }
 }
 
 #anagram {
@@ -43,23 +57,37 @@ body {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  width: 100%;
-  position: absolute;
-  bottom: 25%;
+  width: 75%;
 }
 
 .letter {
   text-transform: uppercase;
   font-size: 2rem;
-  font-weight: bold;
-  height: 3rem;
-  width: 3rem;
-  border: 1px solid black;
+  font-family: var(--scope);
+  margin: 0.25rem 0.35rem;
+  border: 1px solid var(--shadow);
+  background-color: var(--antique-white);
+  border-radius: 10px;
+  box-shadow: 2px 3px rgba(0, 39, 43, 0.5);
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin: 0.25rem 0.25rem;
+  justify-content: center;
+  height: 2rem;
+  width: 2rem;
+  padding: 0.5rem 0.25rem 0.25rem 0.25rem;
 }
+
+.answer-letter {
+  font-size: 3rem;
+  font-family: var(--mukta);
+  font-weight: 700;
+  letter-spacing: 0.5rem;
+  width: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .letter:hover {
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
   cursor: pointer;
@@ -72,13 +100,13 @@ body {
 
 #submit-div {
   position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 100%;
-    transform: translate(-50%, -10%);
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 1rem;
+  bottom: 0;
+  left: 50%;
+  width: 100%;
+  transform: translate(-50%, -10%);
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1rem;
 
   button {
     font-size: 1.25rem;
@@ -88,25 +116,24 @@ body {
   }
 }
 
+.placeholder {
+  border-bottom: 1px solid black;
+  width: 2rem;
+  height: 2rem;
+  margin: 0rem 0.25rem;
+}
+
 .title {
-  font-size: 4rem;
+  font-size: 2rem;
   text-align: center;
-  font-weight: 300;
-  margin-top: 1rem;
+  padding: 1rem 0rem 0.5rem 0rem;
+  font-family: var(--scope);
+  border-bottom: 1px solid var(--gunmetal);
+  letter-spacing: 5px;
 }
 
 .game {
   display: none;
-}
-
-.start {
-  position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2rem;
-    width: 60%;
-    padding: 1rem;
 }
 
 .hide {
