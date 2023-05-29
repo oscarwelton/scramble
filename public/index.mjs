@@ -2,6 +2,8 @@ let wordList;
 let indexPosition;
 let scoreValue;
 
+// localStorage.clear();
+
 fetch("/wordList")
 .then((response) => response.json())
 .then((data) => {
@@ -129,13 +131,6 @@ document.addEventListener('touchend', function(event) {
 });
 
 function gameOver() {
-  const index = document.getElementById("index");
-  index.innerText = indexPosition;
-  const nowDiv = document.getElementById("now");
-  nowDiv.innerText = now;
-  const mid = document.getElementById("midnight")
-  mid.innerText = savedMidnight
-
   const game = document.querySelector(".game");
   game.parentNode.removeChild(game);
   const gameOver = document.createElement("h1");
@@ -161,20 +156,31 @@ function shuffleLetters(letters) {
 const anagram = () => {
   const word = shuffleLetters(wordList[indexPosition].split(""));
   const anagram = document.getElementById("anagram");
+  const answer = document.getElementById("answer");
+
   word.forEach((letter) => {
     const letterSpan = document.createElement("span");
     letterSpan.innerHTML = letter;
-    anagram.appendChild(letterSpan);
     letterSpan.className = "letter";
+    anagram.appendChild(letterSpan);
+
+    const placeholder = document.createElement("span")
+    placeholder.className = "placeholder"
+    answer.insertAdjacentElement("beforeend", placeholder)
   });
 };
 
+let letterIndex = 0
+
 function handleClick() {
+  const answer = document.getElementById("answer");
+  const currentChild = answer.childNodes[letterIndex];
   const letterLi = document.createElement("li");
   letterLi.textContent = this.textContent;
-  answer.appendChild(letterLi);
+  letterLi.className = "answer-letter";
+  answer.replaceChild(letterLi, currentChild);
+  letterIndex++;
   this.classList.add("hide");
-  letterLi.className = "letter";
 }
 
 function answerInput() {
@@ -189,12 +195,15 @@ function answerInput() {
 const refreshButton = document.getElementById("refresh");
 if (refreshButton) {
   refreshButton.addEventListener("click", () => {
+    letterIndex = 0
     const hidden = document.querySelectorAll("#anagram .hide");
     hidden.forEach((element) => {
       element.classList.remove("hide");
       element.removeEventListener("click", handleClick);
     });
     document.getElementById("answer").innerHTML = "";
+    document.getElementById("anagram").innerHTML = "";
+    anagram();
     answerInput();
   });
 }
@@ -213,8 +222,8 @@ if (shuffle) {
 function refresh() {
   document.getElementById("anagram").innerHTML = "";
   document.getElementById("answer").innerHTML = "";
-  anagram();
   answerInput();
+  anagram();
   submitButton.disabled = true;
 }
 
