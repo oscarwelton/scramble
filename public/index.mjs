@@ -132,14 +132,14 @@ document.addEventListener("touchend", function (event) {
 function gameOver() {
   const game = document.querySelector(".game");
   game.parentNode.removeChild(game);
-  const gameOver = document.createElement("h1");
-  gameOver.innerHTML = "Game Over";
+  const gamer = document.createElement("h1");
+  gamer.innerHTML = "Game Over";
   const submit = document.getElementById("submit-div");
   if (submit) {
     submit.innerHTML = "";
   }
   const container = document.querySelector(".container");
-  container.appendChild(gameOver);
+  container.appendChild(gamer);
 }
 
 function shuffleLetters(letters) {
@@ -246,9 +246,7 @@ function updateValues() {
 }
 
 document.addEventListener("click", () => {
-  const answerListItems = document
-    .getElementById("answer")
-    .querySelectorAll("li");
+  const answerListItems = document.getElementById("answer").querySelectorAll("li");
   if (answerListItems.length === wordList[indexPosition].split("").length) {
     const submitButton = document.getElementById("submit");
     submitButton.disabled = false;
@@ -256,6 +254,7 @@ document.addEventListener("click", () => {
 });
 
 const submitButton = document.getElementById("submit");
+if (submitButton) {
 submitButton.addEventListener("click", () => {
   const answer = document.getElementById("answer").childNodes;
   const answerString = Array.from(answer)
@@ -271,3 +270,4 @@ submitButton.addEventListener("click", () => {
     refresh();
   }
 });
+}
