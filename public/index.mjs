@@ -1,6 +1,8 @@
 let wordList;
 let indexPosition;
 let scoreValue;
+let now = new Date();
+let savedMidnight = new Date(localStorage.getItem("midnight"));
 
 fetch("/wordList")
   .then((response) => response.json())
@@ -12,25 +14,25 @@ fetch("/wordList")
     console.log("Error:", error);
   });
 
-  function displayStart() {
-    const startButton = document.createElement("button");
-    const game = document.querySelector(".game");
-    if (game) {
-      startButton.className = "start";
-      startButton.innerHTML = "Begin!";
-      game.insertAdjacentElement("beforeBegin", startButton);
-      startButton.addEventListener("click", () => {
-        game.classList.remove("game");
-        startButton.remove();
-        anagram();
-        answerInput();
-      });
-    }}
-
-const now = new Date();
-let savedMidnight = new Date(localStorage.getItem("midnight"));
+function displayStart() {
+  const startButton = document.createElement("button");
+  const game = document.querySelector(".game");
+  if (game) {
+    startButton.className = "start";
+    startButton.innerHTML = "Begin!";
+    game.insertAdjacentElement("beforeBegin", startButton);
+    startButton.addEventListener("click", () => {
+      game.classList.remove("game");
+      startButton.remove();
+      anagram();
+      answerInput();
+    });
+  }
+}
 
 if (savedMidnight.getTime() < now.getTime()) {
+  console.log("Time was updated and indexes reset.")
+  localStorage.clear();
   savedMidnight = new Date(
     now.getFullYear(),
     now.getMonth(),
@@ -55,7 +57,11 @@ if (savedMidnight.getTime() < now.getTime()) {
     }
   } else {
     indexPosition = 0;
+    localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
   }
+
+  console.log(savedMidnight)
+  console.log(now)
 
   const counter = document.getElementById("counter");
   if (counter) {
@@ -75,6 +81,13 @@ if (savedMidnight.getTime() < now.getTime()) {
 }
 
 function gameOver() {
+  const index = document.getElementById("index");
+  index.innerText = indexPosition;
+  const nowDiv = document.getElementById("now");
+  nowDiv.innerText = now;
+  const mid = document.getElementById("midnight")
+  mid.innerText = savedMidnight
+
   const game = document.querySelector(".game");
   game.parentNode.removeChild(game);
   const gameOver = document.createElement("h1");
