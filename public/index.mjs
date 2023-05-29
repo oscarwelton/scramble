@@ -4,6 +4,12 @@ let scoreValue;
 let now = new Date();
 let savedMidnight = new Date(localStorage.getItem("midnight"));
 
+if (savedMidnight) {
+  savedMidnight = new Date(savedMidnight);
+}
+
+console.log(savedMidnight)
+
 fetch("/wordList")
   .then((response) => response.json())
   .then((data) => {
@@ -31,8 +37,8 @@ function displayStart() {
 }
 
 if (savedMidnight.getTime() < now.getTime()) {
-  console.log("Time was updated and indexes reset.")
   localStorage.clear();
+  console.log("Time was updated and indexes reset.")
   savedMidnight = new Date(
     now.getFullYear(),
     now.getMonth(),
@@ -59,9 +65,6 @@ if (savedMidnight.getTime() < now.getTime()) {
     indexPosition = 0;
     localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
   }
-
-  console.log(savedMidnight)
-  console.log(now)
 
   const counter = document.getElementById("counter");
   if (counter) {
