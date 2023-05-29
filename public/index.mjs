@@ -5,14 +5,14 @@ let scoreValue;
 // localStorage.clear();
 
 fetch("/wordList")
-.then((response) => response.json())
-.then((data) => {
-  console.log(data);
-  wordList = data;
-})
-.catch((error) => {
-  console.log("Error:", error);
-});
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+    wordList = data;
+  })
+  .catch((error) => {
+    console.log("Error:", error);
+  });
 
 function displayStart() {
   var htmlBlock = `
@@ -44,11 +44,10 @@ function displayStart() {
   <div class="start-button">
     <button class="start">Start</button>
   </div>`;
-  // const container = document.querySelector(".container")
   const game = document.querySelector(".game");
   if (game) {
     game.insertAdjacentHTML("beforeBegin", htmlBlock);
-    const startButton = document.querySelector(".start")
+    const startButton = document.querySelector(".start");
     startButton.addEventListener("click", () => {
       game.classList.remove("game");
       document.querySelector(".start-screen").remove();
@@ -70,7 +69,7 @@ if (isNaN(savedMidnight.getTime())) {
 if (savedMidnight instanceof Date) {
   if (savedMidnight.getTime() < now.getTime()) {
     localStorage.clear();
-    console.log("Time was updated and indexes reset.")
+    console.log("Time was updated and indexes reset.");
     savedMidnight = new Date(
       now.getFullYear(),
       now.getMonth(),
@@ -115,15 +114,15 @@ if (savedMidnight instanceof Date) {
     }
   }
 } else {
-  console.log("error: unable to read date format.")
+  console.log("error: unable to read date format.");
 }
 
-document.addEventListener('touchend', function(event) {
+document.addEventListener("touchend", function (event) {
   now.getTime();
   let lastTouch = event.timeStamp || now;
   let delta = now - lastTouch;
 
-  if (delta < 450 && delta > 0) {
+  if (delta < 300 && delta > 0) {
     event.preventDefault();
     event.stopPropagation();
   }
@@ -164,13 +163,13 @@ const anagram = () => {
     letterSpan.className = "letter";
     anagram.appendChild(letterSpan);
 
-    const placeholder = document.createElement("span")
-    placeholder.className = "placeholder"
-    answer.insertAdjacentElement("beforeend", placeholder)
+    const placeholder = document.createElement("span");
+    placeholder.className = "placeholder";
+    answer.insertAdjacentElement("beforeend", placeholder);
   });
 };
 
-let letterIndex = 0
+let letterIndex = 0;
 
 function handleClick() {
   const answer = document.getElementById("answer");
@@ -192,19 +191,25 @@ function answerInput() {
   });
 }
 
-const refreshButton = document.getElementById("refresh");
-if (refreshButton) {
-  refreshButton.addEventListener("click", () => {
-    letterIndex = 0
-    const hidden = document.querySelectorAll("#anagram .hide");
-    hidden.forEach((element) => {
-      element.classList.remove("hide");
-      element.removeEventListener("click", handleClick);
-    });
-    document.getElementById("answer").innerHTML = "";
-    document.getElementById("anagram").innerHTML = "";
-    anagram();
-    answerInput();
+function refresh() {
+  letterIndex = 0;
+  const hidden = document.querySelectorAll("#anagram .hide");
+  hidden.forEach((element) => {
+    element.classList.remove("hide");
+    element.removeEventListener("click", handleClick);
+  });
+  document.getElementById("answer").innerHTML = "";
+  document.getElementById("anagram").innerHTML = "";
+  anagram();
+  answerInput();
+  const submitButton = document.getElementById("submit");
+  submitButton.disabled = true;
+}
+
+const clearButton = document.getElementById("clear");
+if (clearButton) {
+  clearButton.addEventListener("click", () => {
+    refresh();
   });
 }
 
@@ -217,25 +222,6 @@ if (shuffle) {
       ul.appendChild(ul.children[Math.floor(Math.random() * (i + 1))]);
     }
   });
-}
-
-function refresh() {
-  document.getElementById("anagram").innerHTML = "";
-  document.getElementById("answer").innerHTML = "";
-  answerInput();
-  anagram();
-  submitButton.disabled = true;
-}
-
-const submitButton = document.getElementById("submit");
-if (submitButton) {
-document.addEventListener("click", () => {
-  const submitCount = Array.from(
-    document.getElementById("answer").childNodes
-  ).length;
-  if (submitCount === wordList[indexPosition].split("").length)
-    submitButton.disabled = false;
-});
 }
 
 function updateScore() {
@@ -259,21 +245,29 @@ function updateValues() {
   localStorage.setItem("currentScore", JSON.stringify(scoreValue));
 }
 
-const submit = document.getElementById("submit");
-if (submit) {
-  submit.addEventListener("click", () => {
-    const answer = document.getElementById("answer").childNodes;
-    const answerString = Array.from(answer)
-      .map((letter) => letter.innerHTML)
-      .join("");
-    if (answerString === wordList[indexPosition] && indexPosition === 4) {
-      updateValues();
-      gameOver();
-    } else if (answerString === wordList[indexPosition]) {
-      updateValues();
-      refresh();
-    } else {
-      refresh();
-    }
-  });
-}
+document.addEventListener("click", () => {
+  const answerListItems = document
+    .getElementById("answer")
+    .querySelectorAll("li");
+  if (answerListItems.length === wordList[indexPosition].split("").length) {
+    const submitButton = document.getElementById("submit");
+    submitButton.disabled = false;
+  }
+});
+
+const submitButton = document.getElementById("submit");
+submitButton.addEventListener("click", () => {
+  const answer = document.getElementById("answer").childNodes;
+  const answerString = Array.from(answer)
+    .map((letter) => letter.innerHTML)
+    .join("");
+  if (answerString === wordList[indexPosition] && indexPosition === 4) {
+    updateValues();
+    gameOver();
+  } else if (answerString === wordList[indexPosition]) {
+    updateValues();
+    refresh();
+  } else {
+    refresh();
+  }
+});
