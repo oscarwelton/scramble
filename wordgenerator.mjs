@@ -10,7 +10,7 @@ async function generateWord(length) {
   const data = await response.json();
   const word = data[0];
   const regex = /^[a-zA-Z]+$/;
-  console.log(word)
+  // console.log(word)
   return regex.test(word) ? word : generateWord(length);
 }
 
@@ -62,9 +62,11 @@ async function runScheduledTask() {
 async function main() {
   await runScheduledTask();
   await fetchDefinitions();
-  console.log(wordList)
+  // console.log(wordList)
   const words = Object.keys(wordList);
+  console.log(words)
   const values = Object.values(wordList);
+  console.log(values)
   if (words.length !== 5 && values.length !== 5) {
     wordList = {};
     await main();
