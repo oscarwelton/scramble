@@ -2,6 +2,8 @@ let wordList;
 let indexPosition;
 let scoreValue;
 
+// localStorage.clear();
+
 fetch("/wordList")
   .then((response) => response.json())
   .then((data) => {
@@ -164,6 +166,7 @@ const anagram = () => {
     placeholder.className = "placeholder";
     answer.insertAdjacentElement("beforeend", placeholder);
   });
+  setTimeout(hintPrompt, 30000);
 };
 
 let letterIndex = 0;
@@ -243,7 +246,8 @@ function refresh() {
   shuffle();
   clear();
   submission();
-  setTimeout(hintPrompt, 30000);
+  document.getElementById("score").innerText = scoreValue;
+  document.getElementById("counter").innerText = indexPosition;
 }
 
 function updateScore() {
