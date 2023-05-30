@@ -4,7 +4,7 @@ import path from "path";
 import { dirname } from "path";
 import cron from "node-cron";
 import { exec } from 'child_process';
-import wordList from './wordgenerator.mjs';
+import { wordList } from './wordgenerator.mjs';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -19,6 +19,10 @@ app.get("/", (req, res) => {
 app.get('/wordList', (req, res) => {
   res.json(wordList);
 });
+
+app.get('/definitions', (req, res) => {
+  res.json(definitions);
+})
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

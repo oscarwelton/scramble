@@ -1,63 +1,22 @@
+
 let wordList;
+let definitions;
 let indexPosition;
 let scoreValue;
-
-// localStorage.clear();
+let now = new Date();
+let savedMidnight = new Date(localStorage.getItem("midnight"));
+let letterIndex = 0;
 
 fetch("/wordList")
   .then((response) => response.json())
   .then((data) => {
-    console.log(data);
-    wordList = data;
+    wordList = Object.keys(data);
+    definitions = Object.values(data);
   })
   .catch((error) => {
     console.log("Error:", error);
   });
 
-function displayStart() {
-  var htmlBlock = `<div class="sub-header">
-  <div class="score">
-    <h3>
-      <span id="score">0</span> <i class="fa-solid fa-trophy"></i>
-    </h3>
-  </div>
-  <div class="timer">
-    <h3>
-      <span id="clock">5:00</span> <i class="fa-solid fa-clock"></i>
-    </h3>
-  </div>
-  <div class="counter">
-    <h3><span id="counter">0</span> / 5</h3>
-  </div>
-</div>
-
-<div class="answer-string">
-  <ul id="answer"></ul>
-</div>
-
-<div class="actions">
-  <button id="shuffle"><i class="fa-solid fa-shuffle"></i></button>
-  <button id="clear">
-    <i class="fa-solid fa-arrows-rotate"></i>
-  </button>
-</div>
-<ul id="anagram"></ul>
-<h5 class="hint"></h5>
-<div id="submit-div">
-  <button id="submit" disabled="disabled">Submit</button>
-</div>`;
-
-  const startButton = document.querySelector(".start");
-  const container = document.querySelector(".container");
-  startButton.addEventListener("click", () => {
-    document.querySelector(".start-screen").remove();
-    container.insertAdjacentHTML("afterbegin", htmlBlock);
-    refresh();
-  });
-}
-
-let now = new Date();
-let savedMidnight = new Date(localStorage.getItem("midnight"));
 
 if (isNaN(savedMidnight.getTime())) {
   savedMidnight = new Date();
@@ -83,34 +42,32 @@ if (savedMidnight instanceof Date) {
     localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
     localStorage.setItem("currentScore", JSON.stringify(scoreValue));
   } else {
-    const storedIndex = localStorage.getItem("currentIndex");
-    if (storedIndex) {
-      indexPosition = JSON.parse(storedIndex);
-      if (indexPosition === 5) {
-        gameOver();
-      } else {
-        displayStart();
-      }
-    } else {
-      indexPosition = 0;
-      localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
-    }
 
     const counter = document.getElementById("counter");
     if (counter) {
       counter.innerHTML = indexPosition;
     }
 
-    const storedScore = localStorage.getItem("currentScore");
-    const score = document.getElementById("score");
-    if (storedScore) {
-      scoreValue = JSON.parse(storedScore);
+    const storedScore = JSON.parse(localStorage.getItem("currentScore"));
+    scoreValue = storedScore
+
+    const storedIndex = JSON.parse(localStorage.getItem("currentIndex"));
+    indexPosition = storedIndex
+    if (indexPosition === 5) {
+      gameOver();
     } else {
-      scoreValue = 0;
+      displayStart();
+      document.addEventListener("click", () => {
+        const answerListItems = document
+          .getElementById("answer")
+          .querySelectorAll("li");
+        if (answerListItems.length === wordList[indexPosition].split("").length) {
+          const submitButton = document.getElementById("submit");
+          submitButton.disabled = false;
+        }
+      });
     }
-    if (score) {
-      score.innerHTML = scoreValue;
-    }
+
   }
 } else {
   console.log("error: unable to read date format.");
@@ -128,17 +85,69 @@ document.addEventListener("touchend", function (event) {
   lastTouch = now;
 });
 
-function gameOver() {
-  const game = document.querySelector(".game");
-  game.parentNode.removeChild(game);
-  const gamer = document.createElement("h1");
-  gamer.innerHTML = "Game Over";
-  const submit = document.getElementById("submit-div");
-  if (submit) {
-    submit.innerHTML = "";
-  }
+
+function displayStart() {
+  var htmlBlock = `<div class="game">
+  <div class="sub-header">
+    <div class="score">
+      <h3>
+        <span id="score"></span> <i class="fa-solid fa-trophy"></i>
+      </h3>
+    </div>
+    <div class="timer">
+      <h3>
+        <span id="clock">5:00</span> <i class="fa-solid fa-clock"></i>
+      </h3>
+    </div>
+    <div class="counter">
+      <h3><span id="counter"></span> / 5</h3>
+    </div>
+  </div>
+
+  <div class="answer-string">
+    <ul id="answer"></ul>
+  </div>
+    <h5 class="hint"></h5>
+  <div class="actions">
+    <button id="shuffle"><i class="fa-solid fa-shuffle"></i></button>
+    <button id="clear">
+      <i class="fa-solid fa-arrows-rotate"></i>
+    </button>
+  </div>
+  <ul id="anagram"></ul>
+  <div id="submit-div">
+    <button id="submit" disabled="disabled">Submit</button>
+  </div>
+  </div>`;
+
+  const startButton = document.querySelector(".start");
   const container = document.querySelector(".container");
-  container.appendChild(gamer);
+  startButton.addEventListener("click", () => {
+    document.querySelector(".start-screen").remove();
+    container.insertAdjacentHTML("afterbegin", htmlBlock);
+    refresh();
+  });
+}
+
+function gameOver() {
+  var gameOverHtml = `<div class="game-over">
+  <h2>Stats: </h2>
+  <h3>Time taken: <span></span></h3>
+  <h3>Final Score: <span>${scoreValue}</span></h3>
+  <h3>Completed: <span>${indexPosition}/5</span></h3>
+
+  <ul>
+
+  </ul>
+
+  <p>Come back tomorrow for another challenge!</p>
+  <button>Share <i class="fa-solid fa-share"></i></button>
+</div>`;
+  const start = document.querySelector(".start-screen");
+  if (start) start.remove();
+  const game = document.querySelector(".game");
+  if (game) game.remove();
+  document.querySelector(".container").innerHTML = gameOverHtml;
 }
 
 function shuffleLetters(letters) {
@@ -169,8 +178,6 @@ const anagram = () => {
   setTimeout(hintPrompt, 30000);
 };
 
-let letterIndex = 0;
-
 function handleClick() {
   const answer = document.getElementById("answer");
   const currentChild = answer.childNodes[letterIndex];
@@ -193,17 +200,11 @@ function answerInput() {
 
 function hintPrompt() {
   const hint = document.querySelector(".hint");
-  const word = wordList[indexPosition]
-  fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
-  .then((response) => response.json())
-  .then((data) => {
-    const prompt = data[0]["meanings"][0]["definitions"][0]["definition"];
-    console.log(prompt)
-    hint.innerHTML = `<span>Hint: ${prompt}</span>`;
-  })
-  .catch((error) => {
-    console.log("Error:", error);
-  });
+  const define = definitions[indexPosition]["definition"];
+  console.log(define);
+  const speech = definitions[indexPosition]["partOfSpeech"];
+  console.log(speech);
+  hint.innerHTML = `<span>Hint: <i>(${speech})<i> ${define}</span>`;
 }
 
 function clear() {
@@ -267,19 +268,10 @@ function updateValues() {
   scoreValue += 1;
   updateCounter();
   updateScore();
+  document.querySelector(".hint").innerText = "";
   localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
   localStorage.setItem("currentScore", JSON.stringify(scoreValue));
 }
-
-document.addEventListener("click", () => {
-  const answerListItems = document
-    .getElementById("answer")
-    .querySelectorAll("li");
-  if (answerListItems.length === wordList[indexPosition].split("").length) {
-    const submitButton = document.getElementById("submit");
-    submitButton.disabled = false;
-  }
-});
 
 function submission() {
   const submitButton = document.getElementById("submit");
@@ -294,6 +286,7 @@ function submission() {
         gameOver();
       } else if (answerString === wordList[indexPosition]) {
         updateValues();
+        document.querySelector(".hint").innerText = "";
         refresh();
       } else {
         refresh();

@@ -76,10 +76,11 @@ body {
 }
 
 #answer {
-  height: 150px;
+  height: 4rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 3rem;
 }
 
 .sub-header {
@@ -185,10 +186,6 @@ body {
   letter-spacing: 5px;
 }
 
-.game {
-  display: none;
-}
-
 .hide {
   visibility: hidden;
 }
@@ -198,7 +195,8 @@ h3 {
 }
 
 .hint {
-  height: 2rem;
+  height: 3rem;
+  font-style: italic;
 }
 
 h5 {

@@ -1,28 +1,54 @@
 import fetch from "node-fetch";
 
-let wordList = [];
+let wordList = {};
 
 async function generateWord(length) {
-  const response = await fetch(`https://random-word-api.vercel.app/api?words=1&length=${length}`, {
-    method: "GET",
-  });
+  const response = await fetch(
+    `https://random-word-api.vercel.app/api?words=1&length=${length}`,
+    { method: "GET" }
+  );
   const data = await response.json();
   const word = data[0];
   const regex = /^[a-zA-Z]+$/;
   return regex.test(word) ? word : generateWord(length);
 }
 
+async function fetchDefinitions(word) {
+  const url = `https://wordsapiv1.p.rapidapi.com/words/${word}/definitions`;
+  const options = {
+    method: "GET",
+    headers: {
+      "X-RapidAPI-Key": "9bb9f93489msh6ae53331cd38f0ep172884jsn56ba60a74f0c",
+      "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com",
+    },
+  };
+
+  try {
+    const response = await fetch(url, options);
+    const result = await response.json();
+
+    if (result.definitions && result.definitions.length > 0) {
+      return result.definitions[0];
+    } else {
+      return fetchDefinitions(word);
+    }
+  } catch (error) {
+    return fetchDefinitions(word);
+  }
+}
+
+
 async function addToObject() {
   const one = await generateWord(4);
-  wordList.push(one);
+  wordList[one] = await fetchDefinitions(one);
   const two = await generateWord(5);
-  wordList.push(two);
+  wordList[two] = await fetchDefinitions(two);
   const three = await generateWord(6);
-  wordList.push(three);
+  wordList[three] = await fetchDefinitions(three);
   const four = await generateWord(7);
-  wordList.push(four);
+  wordList[four] = await fetchDefinitions(four);
   const five = await generateWord(8);
-  wordList.push(five);
+  wordList[five] = await fetchDefinitions(five);
 }
 
 async function runScheduledTask() {
@@ -33,9 +59,12 @@ async function runScheduledTask() {
   return wordList;
 }
 
-(async () => {
+async function main() {
   await runScheduledTask();
+  await fetchDefinitions();
   console.log(wordList);
-})();
+}
 
-export default wordList;
+main();
+
+export { wordList };
