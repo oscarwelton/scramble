@@ -2,18 +2,6 @@ import fetch from "node-fetch";
 
 let wordList = {};
 
-async function generateWord(length) {
-  const response = await fetch(
-    `https://random-word-api.vercel.app/api?words=1&length=${length}`,
-    { method: "GET" }
-  );
-  const data = await response.json();
-  const word = data[0];
-  const regex = /^[a-zA-Z]+$/;
-  // console.log(word)
-  return regex.test(word) ? word : generateWord(length);
-}
-
 async function fetchDefinitions(word) {
   const url = `https://wordsapiv1.p.rapidapi.com/words/${word}/definitions`;
   const options = {
@@ -29,7 +17,6 @@ async function fetchDefinitions(word) {
     const result = await response.json();
 
     if (result.definitions && result.definitions.length > 0) {
-      console.log(result.definitions[0])
       return result.definitions[0];
     } else {
       return fetchDefinitions(word);
@@ -37,6 +24,17 @@ async function fetchDefinitions(word) {
   } catch (error) {
     return fetchDefinitions(word);
   }
+}
+
+async function generateWord(length) {
+  const response = await fetch(
+    `https://random-word-api.vercel.app/api?words=1&length=${length}`,
+    { method: "GET" }
+  );
+  const data = await response.json();
+  const word = data[0];
+  const regex = /^[a-zA-Z]+$/;
+  return regex.test(word) ? word : generateWord(length);
 }
 
 async function addToObject() {
@@ -57,22 +55,16 @@ async function runScheduledTask() {
   for (let i = 0; i < times; i++) {
     await addToObject();
   }
+  return wordList;
 }
 
 async function main() {
   await runScheduledTask();
   await fetchDefinitions();
-  // console.log(wordList)
-  const words = Object.keys(wordList);
-  console.log(words)
-  const values = Object.values(wordList);
-  console.log(values)
-  if (words.length !== 5 && values.length !== 5) {
-    wordList = {};
-    await main();
-  }
+  console.log(wordList);
 }
 
 main();
 
+console.log(wordList)
 export { wordList };
