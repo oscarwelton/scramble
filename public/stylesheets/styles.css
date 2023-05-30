@@ -100,6 +100,7 @@ body {
   background-color: transparent;
   border: none;
   font-size: 2rem;
+  color: var(--gunmetal);
 }
 
 #anagram {
@@ -139,6 +140,7 @@ body {
   align-items: center;
   justify-content: center;
   margin: 0rem 0.25rem;
+  text-transform: uppercase;
 }
 
 .letter:hover {
@@ -156,12 +158,14 @@ body {
   margin-top: 5rem;
 }
 #submit-div button {
-  font-size: 1.25rem;
-  background-color: transparent;
-  border: none;
-  font-weight: 800;
-  padding: 1rem;
-  border: 1px solid;
+  font-size: 2rem;
+  width: 60%;
+  padding: 1rem 0rem 0.75rem 0rem;
+  border: 1px solid var(--shadow);
+  font-family: var(--scope);
+  border-radius: 10px;
+  box-shadow: 5px 5px var(--shadow);
+  background-color: var(--antique-white);
 }
 
 .placeholder {
@@ -188,15 +192,19 @@ body {
   visibility: hidden;
 }
 
+h3 {
+  font-size: 1.5rem;
+}
+
 .start {
   font-size: 2rem;
   width: 60%;
   padding: 1rem 0rem 0.75rem 0rem;
-  border: 1px solid black;
+  border: 1px solid var(--shadow);
   font-family: var(--scope);
   border-radius: 10px;
   box-shadow: 5px 5px var(--shadow);
-  background-color: var(--antique-white);
+  background-color: white;
 }
 
 .start-screen {

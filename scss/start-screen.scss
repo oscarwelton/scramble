@@ -3,11 +3,11 @@
   font-size: 2rem;
   width: 60%;
   padding: 1rem 0rem 0.75rem 0rem;
-  border: 1px solid black;
+  border: 1px solid var(--shadow);
   font-family: var(--scope);
   border-radius: 10px;
   box-shadow: 5px 5px var(--shadow);
-  background-color: var(--antique-white);
+  background-color: white;
 }
 
 .start-screen {
