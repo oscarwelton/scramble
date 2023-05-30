@@ -5,8 +5,6 @@ let scoreValue;
 let now = new Date();
 let savedMidnight = new Date(localStorage.getItem("midnight"));
 let letterIndex = 0;
-let timeTaken = 0;
-let timeLeft;
 
 // localStorage.clear();
 
@@ -49,10 +47,8 @@ if (savedMidnight instanceof Date) {
     if (counter) {
       counter.innerHTML = indexPosition;
     }
-    const storedScore = JSON.parse(localStorage.getItem("currentScore"));
-    scoreValue = storedScore;
-    const storedIndex = JSON.parse(localStorage.getItem("currentIndex"));
-    indexPosition = storedIndex;
+    scoreValue = JSON.parse(localStorage.getItem("currentScore"));
+    indexPosition = JSON.parse(localStorage.getItem("currentIndex"));
 
     if (indexPosition === 5) {
       gameOver();
@@ -131,14 +127,12 @@ function startClock() {
       seconds.toString().padStart(2, "0");
 
     countdownTime--;
-    timeTaken++;
 
     if (countdownTime <= 0) {
       clearInterval(timerInterval);
       gameOver();
     }
   }
-
   setInterval(updateTimer, 1000);
 }
 
@@ -154,25 +148,18 @@ if (startButton) {
 }
 
 function gameOver() {
-  var minutes = Math.floor(timeTaken / 60);
-  var seconds = timeTaken % 60;
-  timeTaken =
-    minutes.toString().padStart(1, "0") +
-    ":" +
-    seconds.toString().padStart(2, "0");
   var gameOverHtml = `<div class="game-over">
   <h2>Stats: </h2>
-  <h3><i class="fa-solid fa-clock"></i> <span>${timeTaken}</span></h3>
+  <h3><i class="fa-solid fa-clock"></i> <span id="time-taken">${0}</span></h3>
   <h3>Completed: <span>${indexPosition}/5</span></h3>
   <h3><i class="fa-solid fa-trophy"></i> <span>${scoreValue}</span></h3>
 
   <ul>
-
   </ul>
 
   <p>Come back tomorrow for another challenge!</p>
   <button>Share <i class="fa-solid fa-share"></i></button>
-</div>`;
+  </div>`;
   const start = document.querySelector(".start-screen");
   if (start) start.remove();
   const game = document.querySelector(".game");
@@ -190,6 +177,9 @@ const anagram = () => {
     }
     return letters;
   }
+  console.log(indexPosition)
+  console.log("hello")
+  console.log(wordList)
   const word = shuffleLetters(wordList[indexPosition].split(""));
   const anagram = document.getElementById("anagram");
   const answer = document.getElementById("answer");
@@ -303,7 +293,7 @@ function updateValues() {
   scoreValue += 1;
   updateCounter();
   updateScore();
-  document.querySelector(".hint").innerText = "";
+  // document.querySelector(".hint").innerText = "";
   localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
   localStorage.setItem("currentScore", JSON.stringify(scoreValue));
 }
@@ -311,41 +301,39 @@ function updateValues() {
 function submission() {
   const submitButton = document.getElementById("submit");
   if (submitButton) {
-    submitButton.removeEventListener("click", submitButtonClick); // Remove previous event listener
-    submitButton.addEventListener("click", submitButtonClick); // Add new event listener
+    submitButton.removeEventListener("click", submitButtonClick);
+    submitButton.addEventListener("click", submitButtonClick);
   }
 }
 
+console.log(indexPosition)
 function submitButtonClick() {
   const correctAnswer = wordList[indexPosition];
   const answer = document.getElementById("answer");
-  const correct = new Audio('/resources/audio/correct.mp3');
-  const wrong = new Audio('/resources/audio/error.mp3');
+  const correct = new Audio("/resources/audio/correct.mp3");
+  const wrong = new Audio("/resources/audio/error.mp3");
   const answerString = Array.from(answer.childNodes)
     .map((letter) => letter.innerHTML)
     .join("");
-
   if (answerString != correctAnswer) {
     wrong.play();
     answer.classList.add("shake");
     setTimeout(() => {
-      answer.classList.remove('shake');
+      answer.classList.remove("shake");
     }, 400);
     refresh();
   } else if (answerString == correctAnswer && indexPosition === 4) {
     updateValues();
     answer.classList.add("correct");
     correct.play();
-
     setTimeout(() => {
       answer.classList.remove("correct");
-      gameOver();
     }, 800);
+    gameOver();
   } else {
     updateValues();
     answer.classList.add("correct");
     correct.play();
-
     setTimeout(() => {
       answer.classList.remove("correct");
       refresh();
