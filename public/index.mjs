@@ -2,8 +2,6 @@ let wordList;
 let indexPosition;
 let scoreValue;
 
-// localStorage.clear();
-
 fetch("/wordList")
   .then((response) => response.json())
   .then((data) => {
@@ -15,47 +13,44 @@ fetch("/wordList")
   });
 
 function displayStart() {
-  var htmlBlock = `
-  <div class="start-screen">
-  <h2>Welcome!</h2>
-  <p>
-    The objective of the game is to solve five anagrams. Here's an
-    example:
-  </p>
-  <div class="examples">
-    <h4>Anagram:</h4>
-    <div class="example">
-      <span>c</span><span>l</span><span>a</span><span>m</span
-      ><span>b</span> <span>e</span><span>r</span><span>s</span>
-    </div>
-    <h4>Answer:</h4>
-    <div class="example">
-      <span>s</span><span>c</span><span>r</span><span>a</span
-      ><span>m</span><span>b</span><span>l</span><span>e</span>
-    </div>
+  var htmlBlock = `<div class="sub-header">
+  <div class="score">
+    <h3>
+      <span id="score">0</span> <i class="fa-solid fa-trophy"></i>
+    </h3>
   </div>
-  <p>Simple right?</p>
-  <p>
-    Earn points for each anagram solved. You have five minutes
-    to solve them all and you earn more points the quicker you are.
-  </p>
-  <p>Compete against your friends and family!</p>
-  <p>Ready?</p>
-  <div class="start-button">
-    <button class="start">Start</button>
-  </div>`;
+  <div class="timer">
+    <h3>
+      <span id="clock">5:00</span> <i class="fa-solid fa-clock"></i>
+    </h3>
+  </div>
+  <div class="counter">
+    <h3><span id="counter">0</span> / 5</h3>
+  </div>
+</div>
 
-  const game = document.querySelector(".game");
-  if (game) {
-    game.insertAdjacentHTML("beforeBegin", htmlBlock);
-    const startButton = document.querySelector(".start");
-    startButton.addEventListener("click", () => {
-      game.classList.remove("game");
-      document.querySelector(".start-screen").remove();
-      anagram();
-      answerInput();
-    });
-  }
+<div class="answer-string">
+  <ul id="answer"></ul>
+</div>
+
+<div class="actions">
+  <button id="shuffle"><i class="fa-solid fa-shuffle"></i></button>
+  <button id="clear">
+    <i class="fa-solid fa-arrows-rotate"></i>
+  </button>
+</div>
+<ul id="anagram"></ul>
+<div id="submit-div">
+  <button id="submit" disabled="disabled">Submit</button>
+</div>`;
+
+  const startButton = document.querySelector(".start");
+  const container = document.querySelector(".container");
+  startButton.addEventListener("click", () => {
+    document.querySelector(".start-screen").remove();
+    container.insertAdjacentHTML("afterbegin", htmlBlock);
+    refresh();
+  });
 }
 
 let now = new Date();
@@ -192,6 +187,30 @@ function answerInput() {
   });
 }
 
+function clear() {
+  const clearButton = document.getElementById("clear");
+  if (clearButton) {
+    clearButton.addEventListener("click", () => {
+      refresh();
+    });
+  } else {
+    console.log("not found");
+  }
+}
+
+function shuffle() {
+  const shuffle = document.getElementById("shuffle");
+  if (shuffle) {
+    shuffle.addEventListener("click", () => {
+      const ul = document.getElementById("anagram");
+      const lettersArray = Array.from(ul.children);
+      for (let i = lettersArray.length - 1; i >= 0; i--) {
+        ul.appendChild(ul.children[Math.floor(Math.random() * (i + 1))]);
+      }
+    });
+  }
+}
+
 function refresh() {
   letterIndex = 0;
   const hidden = document.querySelectorAll("#anagram .hide");
@@ -205,24 +224,9 @@ function refresh() {
   answerInput();
   const submitButton = document.getElementById("submit");
   submitButton.disabled = true;
-}
-
-const clearButton = document.getElementById("clear");
-if (clearButton) {
-  clearButton.addEventListener("click", () => {
-    refresh();
-  });
-}
-
-const shuffle = document.getElementById("shuffle");
-if (shuffle) {
-  shuffle.addEventListener("click", () => {
-    const ul = document.getElementById("anagram");
-    const lettersArray = Array.from(ul.children);
-    for (let i = lettersArray.length - 1; i >= 0; i--) {
-      ul.appendChild(ul.children[Math.floor(Math.random() * (i + 1))]);
-    }
-  });
+  shuffle();
+  clear();
+  submission();
 }
 
 function updateScore() {
@@ -247,28 +251,32 @@ function updateValues() {
 }
 
 document.addEventListener("click", () => {
-  const answerListItems = document.getElementById("answer").querySelectorAll("li");
+  const answerListItems = document
+    .getElementById("answer")
+    .querySelectorAll("li");
   if (answerListItems.length === wordList[indexPosition].split("").length) {
     const submitButton = document.getElementById("submit");
     submitButton.disabled = false;
   }
 });
 
-const submitButton = document.getElementById("submit");
-if (submitButton) {
-submitButton.addEventListener("click", () => {
-  const answer = document.getElementById("answer").childNodes;
-  const answerString = Array.from(answer)
-    .map((letter) => letter.innerHTML)
-    .join("");
-  if (answerString === wordList[indexPosition] && indexPosition === 4) {
-    updateValues();
-    gameOver();
-  } else if (answerString === wordList[indexPosition]) {
-    updateValues();
-    refresh();
-  } else {
-    refresh();
+function submission() {
+  const submitButton = document.getElementById("submit");
+  if (submitButton) {
+    submitButton.addEventListener("click", () => {
+      const answer = document.getElementById("answer").childNodes;
+      const answerString = Array.from(answer)
+        .map((letter) => letter.innerHTML)
+        .join("");
+      if (answerString === wordList[indexPosition] && indexPosition === 4) {
+        updateValues();
+        gameOver();
+      } else if (answerString === wordList[indexPosition]) {
+        updateValues();
+        refresh();
+      } else {
+        refresh();
+      }
+    });
   }
-});
 }
