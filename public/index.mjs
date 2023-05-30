@@ -40,6 +40,7 @@ function displayStart() {
   </button>
 </div>
 <ul id="anagram"></ul>
+<h5 class="hint"></h5>
 <div id="submit-div">
   <button id="submit" disabled="disabled">Submit</button>
 </div>`;
@@ -187,6 +188,21 @@ function answerInput() {
   });
 }
 
+function hintPrompt() {
+  const hint = document.querySelector(".hint");
+  const word = wordList[indexPosition]
+  fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+  .then((response) => response.json())
+  .then((data) => {
+    const prompt = data[0]["meanings"][0]["definitions"][0]["definition"];
+    console.log(prompt)
+    hint.innerHTML = `<span>Hint: ${prompt}</span>`;
+  })
+  .catch((error) => {
+    console.log("Error:", error);
+  });
+}
+
 function clear() {
   const clearButton = document.getElementById("clear");
   if (clearButton) {
@@ -227,6 +243,7 @@ function refresh() {
   shuffle();
   clear();
   submission();
+  setTimeout(hintPrompt, 30000);
 }
 
 function updateScore() {
