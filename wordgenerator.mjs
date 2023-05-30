@@ -10,6 +10,7 @@ async function generateWord(length) {
   const data = await response.json();
   const word = data[0];
   const regex = /^[a-zA-Z]+$/;
+  console.log(word)
   return regex.test(word) ? word : generateWord(length);
 }
 
@@ -28,6 +29,7 @@ async function fetchDefinitions(word) {
     const result = await response.json();
 
     if (result.definitions && result.definitions.length > 0) {
+      console.log(result.definitions[0])
       return result.definitions[0];
     } else {
       return fetchDefinitions(word);
@@ -59,6 +61,8 @@ async function runScheduledTask() {
 
 async function main() {
   await runScheduledTask();
+  await fetchDefinitions();
+  console.log(wordList)
   const words = Object.keys(wordList);
   const values = Object.values(wordList);
   if (words.length !== 5 && values.length !== 5) {
