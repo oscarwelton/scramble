@@ -1,4 +1,3 @@
-
 let wordList;
 let definitions;
 let indexPosition;
@@ -6,6 +5,8 @@ let scoreValue;
 let now = new Date();
 let savedMidnight = new Date(localStorage.getItem("midnight"));
 let letterIndex = 0;
+
+// localStorage.clear();
 
 fetch("/wordList")
   .then((response) => response.json())
@@ -16,7 +17,6 @@ fetch("/wordList")
   .catch((error) => {
     console.log("Error:", error);
   });
-
 
 if (isNaN(savedMidnight.getTime())) {
   savedMidnight = new Date();
@@ -42,32 +42,29 @@ if (savedMidnight instanceof Date) {
     localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
     localStorage.setItem("currentScore", JSON.stringify(scoreValue));
   } else {
-
     const counter = document.getElementById("counter");
     if (counter) {
       counter.innerHTML = indexPosition;
     }
 
     const storedScore = JSON.parse(localStorage.getItem("currentScore"));
-    scoreValue = storedScore
+    scoreValue = storedScore;
 
     const storedIndex = JSON.parse(localStorage.getItem("currentIndex"));
-    indexPosition = storedIndex
+    indexPosition = storedIndex;
     if (indexPosition === 5) {
       gameOver();
     } else {
-      displayStart();
       document.addEventListener("click", () => {
         const answerListItems = document
           .getElementById("answer")
           .querySelectorAll("li");
-        if (answerListItems.length === wordList[indexPosition].split("").length) {
+        if (answerListItems.length === wordList[indexPosition].length) {
           const submitButton = document.getElementById("submit");
           submitButton.disabled = false;
         }
       });
     }
-
   }
 } else {
   console.log("error: unable to read date format.");
@@ -85,9 +82,7 @@ document.addEventListener("touchend", function (event) {
   lastTouch = now;
 });
 
-
-function displayStart() {
-  var htmlBlock = `<div class="game">
+var htmlBlock = `<div class="game">
   <div class="sub-header">
     <div class="score">
       <h3>
@@ -96,7 +91,7 @@ function displayStart() {
     </div>
     <div class="timer">
       <h3>
-        <span id="clock">5:00</span> <i class="fa-solid fa-clock"></i>
+        <span id="clock">0:00</span> <i class="fa-solid fa-clock"></i>
       </h3>
     </div>
     <div class="counter">
@@ -120,12 +115,38 @@ function displayStart() {
   </div>
   </div>`;
 
-  const startButton = document.querySelector(".start");
+function startClock() {
+  var countdownTime = 300;
+  const clock = document.getElementById("clock");
+
+  function updateTimer() {
+    var minutes = Math.floor(countdownTime / 60);
+    var seconds = countdownTime % 60;
+
+    clock.innerHTML =
+      minutes.toString().padStart(1, "0") +
+      ":" +
+      seconds.toString().padStart(2, "0");
+
+    countdownTime--;
+
+    if (countdownTime <= 0) {
+      clearInterval(timerInterval);
+      gameOver();
+    }
+  }
+
+  setInterval(updateTimer, 1000);
+}
+
+const startButton = document.querySelector(".start");
+if (startButton) {
   const container = document.querySelector(".container");
   startButton.addEventListener("click", () => {
     document.querySelector(".start-screen").remove();
     container.insertAdjacentHTML("afterbegin", htmlBlock);
     refresh();
+    startClock();
   });
 }
 
@@ -150,17 +171,16 @@ function gameOver() {
   document.querySelector(".container").innerHTML = gameOverHtml;
 }
 
-function shuffleLetters(letters) {
-  for (let i = letters.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const temp = letters[i];
-    letters[i] = letters[j];
-    letters[j] = temp;
-  }
-  return letters;
-}
-
 const anagram = () => {
+  function shuffleLetters(letters) {
+    for (let i = letters.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = letters[i];
+      letters[i] = letters[j];
+      letters[j] = temp;
+    }
+    return letters;
+  }
   const word = shuffleLetters(wordList[indexPosition].split(""));
   const anagram = document.getElementById("anagram");
   const answer = document.getElementById("answer");
@@ -175,7 +195,7 @@ const anagram = () => {
     placeholder.className = "placeholder";
     answer.insertAdjacentElement("beforeend", placeholder);
   });
-  setTimeout(hintPrompt, 30000);
+  hintPrompt();
 };
 
 function handleClick() {
@@ -199,11 +219,11 @@ function answerInput() {
 }
 
 function hintPrompt() {
-  const hint = document.querySelector(".hint");
   const define = definitions[indexPosition]["definition"];
   console.log(define);
   const speech = definitions[indexPosition]["partOfSpeech"];
   console.log(speech);
+  const hint = document.querySelector(".hint");
   hint.innerHTML = `<span>Hint: <i>(${speech})<i> ${define}</span>`;
 }
 
@@ -248,7 +268,7 @@ function refresh() {
   clear();
   submission();
   document.getElementById("score").innerText = scoreValue;
-  document.getElementById("counter").innerText = indexPosition;
+  document.getElementById("counter").innerText = indexPosition + 1;
 }
 
 function updateScore() {
