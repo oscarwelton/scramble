@@ -13,16 +13,12 @@ const __dirname = dirname(__filename);
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.get('/wordList', (req, res) => {
   res.json(wordList);
 });
-
-app.get('/definitions', (req, res) => {
-  res.json(definitions);
-})
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
