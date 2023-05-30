@@ -204,7 +204,7 @@ const anagram = () => {
     placeholder.className = "placeholder";
     answer.insertAdjacentElement("beforeend", placeholder);
   });
-  // hintPrompt();
+  hintPrompt();
 };
 
 function handleClick() {
@@ -290,6 +290,12 @@ function updateCounter() {
   const counter = document.getElementById("counter");
   const counterValue = parseInt(counter.innerHTML);
   counter.innerHTML = counterValue + 1;
+
+  counter.classList.add("animate");
+
+  setTimeout(() => {
+    counter.classList.remove("animate");
+  }, 1000);
 }
 
 function updateValues() {
@@ -305,26 +311,44 @@ function updateValues() {
 function submission() {
   const submitButton = document.getElementById("submit");
   if (submitButton) {
-    submitButton.addEventListener("click", () => {
-      const answer = document.getElementById("answer").childNodes;
-      const correct = new Audio('/resources/audio/correct.mp3')
-      const wrong = new Audio('/resources/audio/error.mp3')
-      const answerString = Array.from(answer)
-        .map((letter) => letter.innerHTML)
-        .join("");
-      if (answerString === wordList[indexPosition] && indexPosition === 4) {
-        updateValues();
-        correct.play();
-        gameOver();
-      } else if (answerString === wordList[indexPosition]) {
-        updateValues();
-        correct.play();
-        document.querySelector(".hint").innerText = "";
-        refresh();
-      } else ((answerString != wordList[indexPosition]))
-        wrong.play();
-        refresh();
-      }
-    );
+    submitButton.removeEventListener("click", submitButtonClick); // Remove previous event listener
+    submitButton.addEventListener("click", submitButtonClick); // Add new event listener
+  }
+}
+
+function submitButtonClick() {
+  const correctAnswer = wordList[indexPosition];
+  const answer = document.getElementById("answer");
+  const correct = new Audio('/resources/audio/correct.mp3');
+  const wrong = new Audio('/resources/audio/error.mp3');
+  const answerString = Array.from(answer.childNodes)
+    .map((letter) => letter.innerHTML)
+    .join("");
+
+  if (answerString != correctAnswer) {
+    wrong.play();
+    answer.classList.add("shake");
+    setTimeout(() => {
+      answer.classList.remove('shake');
+    }, 400);
+    refresh();
+  } else if (answerString == correctAnswer && indexPosition === 4) {
+    updateValues();
+    answer.classList.add("correct");
+    correct.play();
+
+    setTimeout(() => {
+      answer.classList.remove("correct");
+      gameOver();
+    }, 800);
+  } else {
+    updateValues();
+    answer.classList.add("correct");
+    correct.play();
+
+    setTimeout(() => {
+      answer.classList.remove("correct");
+      refresh();
+    }, 800);
   }
 }

@@ -209,6 +209,61 @@ h5 {
   width: 5rem;
 }
 
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-10px);
+  }
+  40% {
+    transform: translateX(10px);
+  }
+  60% {
+    transform: translateX(-10px);
+  }
+  80% {
+    transform: translateX(10px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+.shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes rollAnimation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    color: green;
+    font-weight: 700;
+    transform: scale(1.5);
+  }
+  100% {
+    color: inherit;
+    font-weight: inherit;
+    transform: scale(1);
+  }
+}
+.animate {
+  animation: rollAnimation 0.8s ease-in-out;
+}
+
+#clear:hover {
+  transform: rotate(180deg);
+  transform-origin: center;
+  transition: 0.5s ease-in-out;
+}
+
+.correct {
+  transition: ease-in-out 0.2s;
+  transform: scale(1.05);
+  color: green;
+}
+
 .start-button {
   text-align: center;
 }
@@ -280,6 +335,7 @@ h2 {
 .ready {
   text-align: center;
   font-size: 1.5rem;
+  margin-top: 2rem;
 }
 
 .game-over {
