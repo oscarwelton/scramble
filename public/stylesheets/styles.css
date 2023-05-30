@@ -205,7 +205,14 @@ h5 {
   margin: 1.5rem;
 }
 
-.start {
+.timer {
+  width: 5rem;
+}
+
+.start-button {
+  text-align: center;
+}
+.start-button button {
   font-size: 2rem;
   width: 60%;
   padding: 1rem 0rem 0.75rem 0rem;
@@ -218,7 +225,7 @@ h5 {
 
 .start-screen {
   max-width: 600px;
-  margin: 1rem auto;
+  margin: 0.5rem auto;
   width: 80%;
   padding: 1rem;
   border-radius: 10px;
@@ -232,6 +239,7 @@ p {
 
 h4 {
   margin: 0.25rem 0rem;
+  font-weight: 700;
 }
 
 h2 {
@@ -240,10 +248,11 @@ h2 {
 }
 
 .examples {
-  margin: 2rem 0rem;
-  min-width: 100%;
-  max-width: 80%;
-  margin: auto;
+  margin: 0.25rem auto;
+  max-width: 400px;
+  background: white;
+  padding: 1rem;
+  border-radius: 10px;
 }
 
 .example {
@@ -268,8 +277,9 @@ h2 {
   padding: 0.25rem 0rem 0rem 0rem;
 }
 
-.start-button {
+.ready {
   text-align: center;
+  font-size: 1.5rem;
 }
 
 .game-over {

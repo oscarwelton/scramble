@@ -5,12 +5,15 @@ let scoreValue;
 let now = new Date();
 let savedMidnight = new Date(localStorage.getItem("midnight"));
 let letterIndex = 0;
+let timeTaken = 0;
+let timeLeft;
 
 // localStorage.clear();
 
 fetch("/wordList")
   .then((response) => response.json())
   .then((data) => {
+    console.log(data);
     wordList = Object.keys(data);
     definitions = Object.values(data);
   })
@@ -46,36 +49,35 @@ if (savedMidnight instanceof Date) {
     if (counter) {
       counter.innerHTML = indexPosition;
     }
-
     const storedScore = JSON.parse(localStorage.getItem("currentScore"));
     scoreValue = storedScore;
-
     const storedIndex = JSON.parse(localStorage.getItem("currentIndex"));
     indexPosition = storedIndex;
+
     if (indexPosition === 5) {
       gameOver();
-    } else {
-      document.addEventListener("click", () => {
-        const answerListItems = document
-          .getElementById("answer")
-          .querySelectorAll("li");
-        if (answerListItems.length === wordList[indexPosition].length) {
-          const submitButton = document.getElementById("submit");
-          submitButton.disabled = false;
-        }
-      });
     }
   }
 } else {
   console.log("error: unable to read date format.");
 }
 
+document.addEventListener("click", () => {
+  const answerListItems = document
+    .getElementById("answer")
+    .querySelectorAll("li");
+  if (answerListItems.length === wordList[indexPosition].length) {
+    const submitButton = document.getElementById("submit");
+    submitButton.disabled = false;
+  }
+});
+
 document.addEventListener("touchend", function (event) {
   now.getTime();
   let lastTouch = event.timeStamp || now;
   let delta = now - lastTouch;
 
-  if (delta < 300 && delta > 0) {
+  if (delta < 250 && delta > 0) {
     event.preventDefault();
     event.stopPropagation();
   }
@@ -91,7 +93,7 @@ var htmlBlock = `<div class="game">
     </div>
     <div class="timer">
       <h3>
-        <span id="clock">0:00</span> <i class="fa-solid fa-clock"></i>
+        <span id="clock">5:00</span> <i class="fa-solid fa-hourglass-start"></i>
       </h3>
     </div>
     <div class="counter">
@@ -116,7 +118,7 @@ var htmlBlock = `<div class="game">
   </div>`;
 
 function startClock() {
-  var countdownTime = 300;
+  var countdownTime = 299;
   const clock = document.getElementById("clock");
 
   function updateTimer() {
@@ -129,6 +131,7 @@ function startClock() {
       seconds.toString().padStart(2, "0");
 
     countdownTime--;
+    timeTaken++;
 
     if (countdownTime <= 0) {
       clearInterval(timerInterval);
@@ -151,11 +154,17 @@ if (startButton) {
 }
 
 function gameOver() {
+  var minutes = Math.floor(timeTaken / 60);
+  var seconds = timeTaken % 60;
+  timeTaken =
+    minutes.toString().padStart(1, "0") +
+    ":" +
+    seconds.toString().padStart(2, "0");
   var gameOverHtml = `<div class="game-over">
   <h2>Stats: </h2>
-  <h3>Time taken: <span></span></h3>
-  <h3>Final Score: <span>${scoreValue}</span></h3>
+  <h3><i class="fa-solid fa-clock"></i> <span>${timeTaken}</span></h3>
   <h3>Completed: <span>${indexPosition}/5</span></h3>
+  <h3><i class="fa-solid fa-trophy"></i> <span>${scoreValue}</span></h3>
 
   <ul>
 
@@ -195,7 +204,7 @@ const anagram = () => {
     placeholder.className = "placeholder";
     answer.insertAdjacentElement("beforeend", placeholder);
   });
-  hintPrompt();
+  // hintPrompt();
 };
 
 function handleClick() {
@@ -298,19 +307,24 @@ function submission() {
   if (submitButton) {
     submitButton.addEventListener("click", () => {
       const answer = document.getElementById("answer").childNodes;
+      const correct = new Audio('/resources/audio/correct.mp3')
+      const wrong = new Audio('/resources/audio/error.mp3')
       const answerString = Array.from(answer)
         .map((letter) => letter.innerHTML)
         .join("");
       if (answerString === wordList[indexPosition] && indexPosition === 4) {
         updateValues();
+        correct.play();
         gameOver();
       } else if (answerString === wordList[indexPosition]) {
         updateValues();
+        correct.play();
         document.querySelector(".hint").innerText = "";
         refresh();
-      } else {
+      } else ((answerString != wordList[indexPosition]))
+        wrong.play();
         refresh();
       }
-    });
+    );
   }
 }
