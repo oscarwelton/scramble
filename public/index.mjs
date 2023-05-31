@@ -11,7 +11,6 @@ let letterIndex = 0;
 fetch("/wordList")
   .then((response) => response.json())
   .then((data) => {
-    console.log(data);
     wordList = Object.keys(data);
     definitions = Object.values(data);
   })
@@ -177,9 +176,6 @@ const anagram = () => {
     }
     return letters;
   }
-  console.log(indexPosition)
-  console.log("hello")
-  console.log(wordList)
   const word = shuffleLetters(wordList[indexPosition].split(""));
   const anagram = document.getElementById("anagram");
   const answer = document.getElementById("answer");
@@ -194,7 +190,7 @@ const anagram = () => {
     placeholder.className = "placeholder";
     answer.insertAdjacentElement("beforeend", placeholder);
   });
-  hintPrompt();
+  // hintPrompt();
 };
 
 function handleClick() {
@@ -218,12 +214,9 @@ function answerInput() {
 }
 
 function hintPrompt() {
-  const define = definitions[indexPosition]["definition"];
-  console.log(define);
-  const speech = definitions[indexPosition]["partOfSpeech"];
-  console.log(speech);
+  const define = definitions[indexPosition];
   const hint = document.querySelector(".hint");
-  hint.innerHTML = `<span>Hint: <i>(${speech})<i> ${define}</span>`;
+  hint.innerHTML = `<span>Hint: <i>${define}</span>`;
 }
 
 function clear() {
@@ -306,7 +299,6 @@ function submission() {
   }
 }
 
-console.log(indexPosition)
 function submitButtonClick() {
   const correctAnswer = wordList[indexPosition];
   const answer = document.getElementById("answer");

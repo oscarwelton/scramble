@@ -2,30 +2,6 @@ import fetch from "node-fetch";
 
 let wordList = {};
 
-async function fetchDefinitions(word) {
-  const url = `https://wordsapiv1.p.rapidapi.com/words/${word}/definitions`;
-  const options = {
-    method: "GET",
-    headers: {
-      "X-RapidAPI-Key": "9bb9f93489msh6ae53331cd38f0ep172884jsn56ba60a74f0c",
-      "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com",
-    },
-  };
-
-  try {
-    const response = await fetch(url, options);
-    const result = await response.json();
-
-    if (result.definitions && result.definitions.length > 0) {
-      return result.definitions[0];
-    } else {
-      return fetchDefinitions(word);
-    }
-  } catch (error) {
-    return fetchDefinitions(word);
-  }
-}
-
 async function generateWord(length) {
   const response = await fetch(
     `https://random-word-api.vercel.app/api?words=1&length=${length}`,
@@ -35,6 +11,24 @@ async function generateWord(length) {
   const word = data[0];
   const regex = /^[a-zA-Z]+$/;
   return regex.test(word) ? word : generateWord(length);
+}
+
+async function fetchDefinitions(word) {
+  const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
+  const options = {
+    method: "GET"
+  };
+
+  try {
+    const response = await fetch(url, options);
+    const result = await response.json();
+    const definition = result[0]['meanings'][0]['definitions'][0]['definition'];
+    const partOfSpeech = result[0]['meanings'][0]['partOfSpeech'];
+    const definitions = `(${partOfSpeech}) : ${definition}`
+    return definitions;
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 async function addToObject() {
@@ -60,11 +54,9 @@ async function runScheduledTask() {
 
 async function main() {
   await runScheduledTask();
-  await fetchDefinitions();
   console.log(wordList);
 }
 
 main();
 
-console.log(wordList)
 export { wordList };
