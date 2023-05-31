@@ -10,32 +10,24 @@ async function generateWord(length) {
   const data = await response.json();
   const word = data[0];
   const regex = /^[a-zA-Z]+$/;
-  // console.log(word)
   return regex.test(word) ? word : generateWord(length);
 }
 
 async function fetchDefinitions(word) {
-  const url = `https://wordsapiv1.p.rapidapi.com/words/${word}/definitions`;
+  const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
   const options = {
-    method: "GET",
-    headers: {
-      "X-RapidAPI-Key": "9bb9f93489msh6ae53331cd38f0ep172884jsn56ba60a74f0c",
-      "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com",
-    },
+    method: "GET"
   };
 
   try {
     const response = await fetch(url, options);
     const result = await response.json();
-
-    if (result.definitions && result.definitions.length > 0) {
-      console.log(result.definitions[0])
-      return result.definitions[0];
-    } else {
-      return fetchDefinitions(word);
-    }
+    const definition = result[0]['meanings'][0]['definitions'][0]['definition'];
+    const partOfSpeech = result[0]['meanings'][0]['partOfSpeech'];
+    const definitions = `(${partOfSpeech}) : ${definition}`
+    return definitions;
   } catch (error) {
-    return fetchDefinitions(word);
+    console.log(error)
   }
 }
 
@@ -57,20 +49,12 @@ async function runScheduledTask() {
   for (let i = 0; i < times; i++) {
     await addToObject();
   }
+  return wordList;
 }
 
 async function main() {
   await runScheduledTask();
-  await fetchDefinitions();
-  // console.log(wordList)
-  const words = Object.keys(wordList);
-  console.log(words)
-  const values = Object.values(wordList);
-  console.log(values)
-  if (words.length !== 5 && values.length !== 5) {
-    wordList = {};
-    await main();
-  }
+  console.log(wordList);
 }
 
 main();
