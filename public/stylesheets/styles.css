@@ -80,7 +80,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 3rem;
+  margin-top: 2rem;
 }
 
 .sub-header {
@@ -96,22 +96,13 @@ body {
   display: flex;
   justify-content: space-between;
   width: 80%;
-  margin: 2rem auto;
+  margin: 1rem auto;
 }
 .actions button {
   background-color: transparent;
   border: none;
   font-size: 2rem;
   color: var(--gunmetal);
-}
-.actions .hint-button {
-  font-size: 1.5rem;
-  font-weight: var(--light);
-  border: 1px solid var(--shadow);
-  font-family: var(--scope);
-  padding: 0.5rem 0.5rem 0.25rem 0.5rem;
-  border-radius: 10px;
-  background-color: yellow;
 }
 
 #anagram {
@@ -379,6 +370,7 @@ h2 {
   font-weight: 500;
   margin-top: 0.5rem;
   text-transform: capitalize;
+  margin-bottom: 0.2rem;
 }
 
 .definition {

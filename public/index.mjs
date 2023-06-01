@@ -1,17 +1,68 @@
+let htmlBlock = `<div class="game">
+<div class="sub-header">
+<div class="score">
+  <h3>
+    <span id="score"></span> <i class="fa-solid fa-trophy"></i>
+  </h3>
+</div>
+<div class="timer">
+  <h3>
+    <span id="clock">0:00</span> <i class="fa-solid fa-hourglass-start"></i>
+  </h3>
+</div>
+<div class="counter">
+  <h3><span id="counter"></span> / 5</h3>
+</div>
+</div>
+
+<div class="answer-string">
+<ul id="answer"></ul>
+</div>
+<h5 class="hint"></h5>
+<div class="actions">
+<button id="shuffle"><i class="fa-solid fa-shuffle"></i></button>
+<button class="hint-button"><i class="fa-solid fa-question"></i></button>
+<button id="clear"><i class="fa-solid fa-arrows-rotate"></i></button>
+</div>
+<ul id="anagram"></ul>
+<div id="submit-div">
+<button id="submit" disabled="disabled">Submit</button>
+</div>
+</div>`;
+
 let wordList;
 let definitions;
-let indexPosition;
-let scoreValue;
 let now = new Date();
-let savedMidnight = new Date(localStorage.getItem("midnight"));
-let letterIndex = 0;
-let countdownTime;
-let gamesPlayed = localStorage.getItem("games");
 
+let indexPosition = JSON.parse(localStorage.getItem("currentIndex"));
+if (!indexPosition) {
+  indexPosition = 0;
+}
+
+let scoreValue = JSON.parse(localStorage.getItem("currentScore"));
+if (!scoreValue) {
+  scoreValue = 0;
+}
+
+let countdownTime = localStorage.getItem("timer");
+if (!countdownTime) {
+  countdownTime = 300;
+}
+
+let gamesPlayed = localStorage.getItem("games");
 if (!gamesPlayed) {
   gamesPlayed = 1;
   localStorage.setItem("games", gamesPlayed);
 }
+
+let savedMidnight = new Date(localStorage.getItem("midnight"));
+if (isNaN(savedMidnight.getTime())) {
+  savedMidnight = new Date();
+  savedMidnight.setHours(0, 0, 0, 0);
+  localStorage.setItem("midnight", savedMidnight.toISOString());
+}
+
+let letterIndex = 0;
 
 // localStorage.clear();
 
@@ -22,18 +73,9 @@ fetch("/wordList")
     definitions = Object.values(data);
     console.log(wordList);
 
-    if (isNaN(savedMidnight.getTime())) {
-      savedMidnight = new Date();
-      savedMidnight.setHours(0, 0, 0, 0);
-      localStorage.setItem("midnight", savedMidnight.toISOString());
-    }
-
     if (savedMidnight instanceof Date) {
       if (savedMidnight.getTime() < now.getTime()) {
-        localStorage.removeItem("midnight");
-        localStorage.removeItem("currentIndex");
-        localStorage.removeItem("currentScore");
-        console.log("Time was updated and indexes reset.");
+        localStorage.removeItem("midnight", "currentIndex", "currentScore");
         savedMidnight = new Date(
           now.getFullYear(),
           now.getMonth(),
@@ -58,67 +100,27 @@ fetch("/wordList")
     if (counter) {
       counter.innerHTML = indexPosition;
     }
-    scoreValue = JSON.parse(localStorage.getItem("currentScore"));
-    indexPosition = JSON.parse(localStorage.getItem("currentIndex"));
 
-    if (indexPosition === 5) {
+    if (indexPosition === 5 || countdownTime <= 0) {
       gameOver(wordList);
     }
 
     document.addEventListener("click", () => {
-      let answerListItems = document.getElementById("answer");
+      let answerListItems = document
+        .getElementById("answer")
+        .querySelectorAll("li");
       if (answerListItems) {
-        answerListItems = answerListItems.querySelectorAll("li");
         if (answerListItems.length === wordList[indexPosition].length) {
           const submitButton = document.getElementById("submit");
           submitButton.disabled = false;
+
+          const clearButton = document.getElementById("clear");
+          clearButton.addEventListener("click", () => {
+            refresh();
+          });
         }
       }
     });
-
-    document.addEventListener("touchend", function (event) {
-      now.getTime();
-      let lastTouch = event.timeStamp || now;
-      let delta = now - lastTouch;
-
-      if (delta < 250 && delta > 0) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      lastTouch = now;
-    });
-
-    var htmlBlock = `<div class="game">
-  <div class="sub-header">
-    <div class="score">
-      <h3>
-        <span id="score"></span> <i class="fa-solid fa-trophy"></i>
-      </h3>
-    </div>
-    <div class="timer">
-      <h3>
-        <span id="clock">0:00</span> <i class="fa-solid fa-hourglass-start"></i>
-      </h3>
-    </div>
-    <div class="counter">
-      <h3><span id="counter"></span> / 5</h3>
-    </div>
-  </div>
-
-  <div class="answer-string">
-    <ul id="answer"></ul>
-  </div>
-    <h5 class="hint"></h5>
-  <div class="actions">
-    <button id="shuffle"><i class="fa-solid fa-shuffle"></i></button>
-    <button class="hint-button">Hint</button>
-    <button id="clear"><i class="fa-solid fa-arrows-rotate"></i></button>
-  </div>
-  <ul id="anagram"></ul>
-  <div id="submit-div">
-    <button id="submit" disabled="disabled">Submit</button>
-  </div>
-  </div>`;
 
     function startClock() {
       const time = localStorage.getItem("timer");
@@ -236,35 +238,30 @@ fetch("/wordList")
                                 <i class="fa-brands fa-instagram"></i>
                                 <i class="fa-brands fa-square-facebook"></i>
                                 </button>
-                                </div>
-                                <a href="https://anagrams.herokuapp.com/" target="_blank">open</a>
+        </div>
       </div>`;
 
-      const start = document.querySelector(".start-screen");
-      if (start) start.remove();
-      const game = document.querySelector(".game");
-      if (game) game.remove();
+      document.querySelector(".start-screen")?.remove();
+      document.querySelector(".game")?.remove();
       document.querySelector(".container").innerHTML = gameOverHtml;
 
       const marks = Array.from(document.querySelectorAll("span.mark"));
-      for (let i = 0; i < indexPosition; i++) {
-        const mark = marks[i];
-        mark.innerHTML = "";
+      marks.slice(0, indexPosition).forEach((mark) => {
         mark.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
         mark.style.color = "green";
-      }
+      });
 
-      const shareButton = document.getElementById('share');
-      shareButton.addEventListener('click', function() {
-          const urlToCopy = 'https://anagrams.herokuapp.com';
-          const tempInput = document.createElement('input');
-          tempInput.value = urlToCopy;
-          document.body.appendChild(tempInput);
-          tempInput.select();
-          tempInput.setSelectionRange(0, 99999);
-          document.execCommand('copy');
-          document.body.removeChild(tempInput);
-          alert('URL copied to clipboard!');
+      const shareButton = document.getElementById("share");
+      shareButton.addEventListener("click", function () {
+        const urlToCopy = "https://anagrams.herokuapp.com";
+        const tempInput = document.createElement("input");
+        tempInput.value = urlToCopy;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        tempInput.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        alert("URL copied to clipboard!");
       });
     }
 
@@ -320,18 +317,6 @@ fetch("/wordList")
       hint.innerHTML = `<span>Hint: <i>${define}</span>`;
     }
 
-    function clear() {
-      const clearButton = document.getElementById("clear");
-      // const answer = document.getElementById("")
-      if (clearButton) {
-        clearButton.addEventListener("click", () => {
-          refresh();
-        });
-      } else {
-        console.log("not found");
-      }
-    }
-
     function shuffle() {
       const shuffle = document.getElementById("shuffle");
       if (shuffle) {
@@ -359,7 +344,6 @@ fetch("/wordList")
       const submitButton = document.getElementById("submit");
       submitButton.disabled = true;
       shuffle();
-      clear();
       submission();
       document.getElementById("score").innerText = scoreValue;
       document.getElementById("counter").innerText = indexPosition + 1;
@@ -396,7 +380,6 @@ fetch("/wordList")
       updateScore();
       console.log(scoreValue);
       // document.querySelector(".hint").innerText = "";
-
       localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
       localStorage.setItem("currentScore", JSON.stringify(scoreValue));
     }
@@ -443,6 +426,7 @@ fetch("/wordList")
       }
     }
   })
+
   .catch((error) => {
     console.log("Error:", error);
   });
