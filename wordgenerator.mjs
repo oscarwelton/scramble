@@ -27,7 +27,8 @@ async function fetchDefinitions(word) {
     const definitions = `(${partOfSpeech}) : ${definition}`
     return definitions;
   } catch (error) {
-    console.log(error)
+    console.log(`Failed to fetch definitions for ${word}: ${error}`);
+    return undefined;
   }
 }
 
@@ -53,13 +54,12 @@ async function runScheduledTask() {
 }
 
 async function main() {
-  const list = await runScheduledTask();
-  if (Object.keys(list).length != 5) {
-    await runScheduledTask();
-  } else {
-    console.log(list)
-    return list
+  let list = {};
+  while (Object.keys(list).length !== 5) {
+    list = await runScheduledTask();
   }
+  console.log(list);
+  return list;
 }
 
 main();

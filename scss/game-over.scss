@@ -30,6 +30,10 @@
   box-shadow: -2px -2px var(--shadow);
 }
 
+.d-none {
+  display: none;
+}
+
 .mark {
   color: red;
 }
@@ -56,4 +60,8 @@
   #share {
     margin: auto;
   }
+}
+
+.disabled {
+  opacity: 0.4;
 }

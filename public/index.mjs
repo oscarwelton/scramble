@@ -21,7 +21,7 @@ let htmlBlock = `<div class="game">
 <h5 class="hint"></h5>
 <div class="actions">
 <button id="shuffle"><i class="fa-solid fa-shuffle"></i></button>
-<button class="hint-button"><i class="fa-solid fa-question"></i></button>
+<button class="hint-button" disabled="disabled"><i class="fa-solid fa-question"></i></button>
 <button id="clear"><i class="fa-solid fa-arrows-rotate"></i></button>
 </div>
 <ul id="anagram"></ul>
@@ -109,13 +109,14 @@ fetch("/wordList")
     });
 
     function startClock() {
-      let countdownTime = parseInt(localStorage.getItem("timer")) || 300;
       const clock = document.getElementById("clock");
 
       function updateTimer() {
         const minutes = Math.floor(countdownTime / 60);
         const seconds = countdownTime % 60;
-        clock.innerHTML = `${minutes.toString().padStart(1, "0")}:${seconds.toString().padStart(2, "0")}`;
+        clock.innerHTML = `${minutes.toString().padStart(1, "0")}:${seconds
+          .toString()
+          .padStart(2, "0")}`;
         countdownTime--;
         localStorage.setItem("timer", countdownTime);
 
@@ -131,7 +132,6 @@ fetch("/wordList")
           gameOver(wordList);
         }
       }
-
       const intervalId = setInterval(updateTimer, 1000);
     }
 
@@ -140,13 +140,13 @@ fetch("/wordList")
       const container = document.querySelector(".container");
       startButton.addEventListener("click", () => {
         if (indexPosition === 5) {
-          console.log(indexPosition);
           gameOver(wordList);
         } else {
           document.querySelector(".start-screen").remove();
           container.insertAdjacentHTML("afterbegin", htmlBlock);
           refresh();
           startClock();
+          hintPrompt();
         }
       });
     }
@@ -204,7 +204,7 @@ fetch("/wordList")
         </ul>
         </div>
 
-      <h3 class="center">Come back tomorrow for another challenge!</h3>
+      <h5 class="center">Come back tomorrow for another challenge!</h4>
       <div class="share">
       <button id="share">Invite <i class="fa-brands fa-whatsapp"></i>
                                 <i class="fa-brands fa-twitter"></i>
@@ -224,18 +224,18 @@ fetch("/wordList")
         mark.style.color = "green";
       });
 
-      const shareButton = document.getElementById("share");
-      shareButton.addEventListener("click", function () {
-        const urlToCopy = "https://anagrams.herokuapp.com";
-        const tempInput = document.createElement("input");
-        tempInput.value = urlToCopy;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        tempInput.setSelectionRange(0, 99999);
-        document.execCommand("copy");
-        document.body.removeChild(tempInput);
-        alert("URL copied to clipboard!");
-      });
+      // const shareButton = document.getElementById("share");
+      // shareButton.addEventListener("click", function () {
+      //   const urlToCopy = "https://anagrams.herokuapp.com";
+      //   const tempInput = document.createElement("input");
+      //   tempInput.value = urlToCopy;
+      //   document.body.appendChild(tempInput);
+      //   tempInput.select();
+      //   tempInput.setSelectionRange(0, 99999);
+      //   document.execCommand("copy");
+      //   document.body.removeChild(tempInput);
+      //   alert("URL copied to clipboard!");
+      // });
     }
 
     const anagram = () => {
@@ -285,17 +285,37 @@ fetch("/wordList")
     }
 
     function hintPrompt() {
-      const define = definitions[indexPosition];
+      const hintButton = document.querySelector(".hint-button");
+      hintButton.disabled = true;
+      hintButton.classList.add("disabled");
       const hint = document.querySelector(".hint");
-      hint.innerHTML = `<span>Hint: <i>${define}</span>`;
+      hint.innerHTML = "";
+
+      hintButton.addEventListener("click", () => {
+        hint.innerHTML = `<span><i>${definitions[indexPosition]}</i></span>`;
+      });
+
+      if (countdownTime < 30) {
+        hintButton.disabled = false;
+        hintButton.classList.remove("disabled");
+      } else {
+        setInterval(() => {}, 30000);
+      }
     }
 
     function shuffle() {
-      const shuffle = document.getElementById("shuffle");
-      if (shuffle) {
-        shuffle.addEventListener("click", () => {
+      const shuffleButton = document.getElementById("shuffle");
+      if (shuffleButton) {
+        shuffleButton.addEventListener("click", () => {
           const ul = document.getElementById("anagram");
           const lettersArray = Array.from(ul.children);
+          const hiddenLetters = ul.querySelectorAll(".hide");
+
+          hiddenLetters.forEach((element) => {
+            element.classList.add("d-none");
+            element.classList.remove("hide");
+          });
+
           for (let i = lettersArray.length - 1; i >= 0; i--) {
             ul.appendChild(ul.children[Math.floor(Math.random() * (i + 1))]);
           }
@@ -338,21 +358,17 @@ fetch("/wordList")
       }, 1000);
     }
 
-    // const hint = document.querySelector(".hint-button");
-    // hint.addEventListener(("click") => {
-    //   console.log("hello")
-    // });
-    // hint.disabled = true
-
     function updateValues() {
       indexPosition += 1;
-      scoreValue += 100;
-      scoreValue += countdownTime;
-      console.log(scoreValue);
+      if (document.querySelector(".hint").innerText === "") {
+        scoreValue += countdownTime;
+        scoreValue += 100;
+      } else {
+        scoreValue += 100;
+      }
       updateCounter();
       updateScore();
-      console.log(scoreValue);
-      // document.querySelector(".hint").innerText = "";
+      hintPrompt();
       localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
       localStorage.setItem("currentScore", JSON.stringify(scoreValue));
     }
