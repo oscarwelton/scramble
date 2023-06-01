@@ -5,6 +5,7 @@ let scoreValue;
 let now = new Date();
 let savedMidnight = new Date(localStorage.getItem("midnight"));
 let letterIndex = 0;
+let countdownTime;
 
 // localStorage.clear();
 
@@ -102,9 +103,8 @@ var htmlBlock = `<div class="game">
     <h5 class="hint"></h5>
   <div class="actions">
     <button id="shuffle"><i class="fa-solid fa-shuffle"></i></button>
-    <button id="clear">
-      <i class="fa-solid fa-arrows-rotate"></i>
-    </button>
+    <button class="hint-button">Hint</button>
+    <button id="clear"><i class="fa-solid fa-arrows-rotate"></i></button>
   </div>
   <ul id="anagram"></ul>
   <div id="submit-div">
@@ -113,7 +113,7 @@ var htmlBlock = `<div class="game">
   </div>`;
 
 function startClock() {
-  var countdownTime = 299;
+  countdownTime = 20;
   const clock = document.getElementById("clock");
 
   function updateTimer() {
@@ -126,12 +126,21 @@ function startClock() {
       seconds.toString().padStart(2, "0");
 
     countdownTime--;
+    localStorage.setItem("timeRemaining", countdownTime);
+
+    if (countdownTime <= 30) {
+      clock.classList.add("red");
+      setTimeout(() => {
+        clock.classList.remove("red");
+      }, 400);
+    }
 
     if (countdownTime <= 0) {
-      clearInterval(timerInterval);
+      clearInterval();
       gameOver();
     }
   }
+
   setInterval(updateTimer, 1000);
 }
 
@@ -190,8 +199,7 @@ const anagram = () => {
     placeholder.className = "placeholder";
     answer.insertAdjacentElement("beforeend", placeholder);
   });
-  // hintPrompt();
-};
+}
 
 function handleClick() {
   const answer = document.getElementById("answer");
@@ -261,12 +269,13 @@ function refresh() {
   submission();
   document.getElementById("score").innerText = scoreValue;
   document.getElementById("counter").innerText = indexPosition + 1;
-}
+};
+
 
 function updateScore() {
   const score = document.getElementById("score");
   const scoreValue = parseInt(score.innerHTML);
-  score.innerHTML = scoreValue + 1;
+  score.innerHTML = scoreValue;
 }
 
 function updateCounter() {
@@ -281,12 +290,20 @@ function updateCounter() {
   }, 1000);
 }
 
+// const hint = document.querySelector(".hint-button");
+// hint.addEventListener(("click") => {
+//   console.log("hello")
+// });
+// hint.disabled = true
+
 function updateValues() {
   indexPosition += 1;
-  scoreValue += 1;
+  scoreValue += 100;
   updateCounter();
   updateScore();
+  console.log(scoreValue)
   // document.querySelector(".hint").innerText = "";
+
   localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
   localStorage.setItem("currentScore", JSON.stringify(scoreValue));
 }

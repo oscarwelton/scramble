@@ -55,6 +55,16 @@ body {
     font-size: 2rem;
     color: var(--gunmetal)
   }
+
+  .hint-button {
+    font-size: 1.5rem;
+    font-weight: var(--light);
+    border: 1px solid var(--shadow);
+    font-family: var(--scope);
+    padding: 0.5rem 0.5rem 0.25rem 0.5rem;
+    border-radius: 10px;
+    background-color: yellow;
+  }
 }
 
 #anagram {
@@ -138,6 +148,7 @@ body {
   border-bottom: 1px solid var(--gunmetal);
   letter-spacing: 5px;
 }
+
 .hide {
   visibility: hidden;
 }
@@ -162,12 +173,30 @@ h5 {
 }
 
 @keyframes shake {
-  0% { transform: translateX(0); }
-  20% { transform: translateX(-10px) }
-  40% { transform: translateX(10px); color: red}
-  60% { transform: translateX(-10px) }
-  80% { transform: translateX(10px) }
-  100% { transform: translateX(0) }
+  0% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-10px)
+  }
+
+  40% {
+    transform: translateX(10px);
+    color: red
+  }
+
+  60% {
+    transform: translateX(-10px)
+  }
+
+  80% {
+    transform: translateX(10px)
+  }
+
+  100% {
+    transform: translateX(0)
+  }
 }
 
 .shake {
@@ -185,6 +214,7 @@ h5 {
     font-weight: 700;
     transform: scale(1.5);
   }
+
   100% {
     color: inherit;
     font-weight: inherit;
@@ -200,10 +230,9 @@ h5 {
   &:hover {
     transform: rotate(180deg);
     transform-origin: center;
-    transition: 0.5s ease-in-out ;
+    transition: 0.5s ease-in-out;
   }
 }
-
 
 .correct {
   transition: ease-in-out 0.2s;

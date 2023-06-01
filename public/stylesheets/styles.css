@@ -104,6 +104,15 @@ body {
   font-size: 2rem;
   color: var(--gunmetal);
 }
+.actions .hint-button {
+  font-size: 1.5rem;
+  font-weight: var(--light);
+  border: 1px solid var(--shadow);
+  font-family: var(--scope);
+  padding: 0.5rem 0.5rem 0.25rem 0.5rem;
+  border-radius: 10px;
+  background-color: yellow;
+}
 
 #anagram {
   margin: auto;
@@ -218,6 +227,7 @@ h5 {
   }
   40% {
     transform: translateX(10px);
+    color: red;
   }
   60% {
     transform: translateX(-10px);
@@ -290,11 +300,12 @@ h5 {
 
 p {
   margin: 1rem 0px;
+  text-align: justify;
 }
 
 h4 {
-  margin: 0.25rem 0rem;
-  font-weight: 700;
+  margin: 0.25rem 0.25rem 0.25rem 0rem;
+  font-family: var(--scope);
 }
 
 h2 {
@@ -306,8 +317,13 @@ h2 {
   margin: 0.25rem auto;
   max-width: 400px;
   background: white;
-  padding: 1rem;
+  padding: 0.75rem;
   border-radius: 10px;
+  box-shadow: -2px -2px var(--shadow);
+}
+
+.center {
+  text-align: center;
 }
 
 .example {
@@ -319,7 +335,7 @@ h2 {
   text-transform: uppercase;
   font-size: 1rem;
   font-family: var(--scope);
-  margin: 0.25rem 0.35rem;
+  margin: 0.25rem 0rem;
   border: 1px solid var(--shadow);
   background-color: white;
   border-radius: 5px;
@@ -331,11 +347,22 @@ h2 {
   width: 1.75rem;
   padding: 0.25rem 0rem 0rem 0rem;
 }
+.example span:hover {
+  transform: scale(1.02);
+  cursor: default;
+}
+.example p {
+  margin: 0;
+}
 
 .ready {
   text-align: center;
   font-size: 1.5rem;
   margin-top: 2rem;
+}
+
+.red {
+  color: red;
 }
 
 .game-over {
