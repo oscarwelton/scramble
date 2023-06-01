@@ -204,7 +204,7 @@ h5 {
 }
 
 
-@keyframes rollAnimation {
+@keyframes scoreAnimation {
   0% {
     transform: scale(1);
   }
@@ -222,8 +222,8 @@ h5 {
   }
 }
 
-.animate {
-  animation: rollAnimation 0.8s ease-in-out;
+.score-animation {
+  animation: scoreAnimation 0.8s ease-in-out;
 }
 
 #clear {
@@ -238,4 +238,10 @@ h5 {
   transition: ease-in-out 0.2s;
   transform: scale(1.05);
   color: green;
+}
+
+
+
+.red {
+  color: red;
 }
