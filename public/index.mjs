@@ -30,38 +30,18 @@ let htmlBlock = `<div class="game">
 </div>
 </div>`;
 
-let wordList;
-let definitions;
-let now = new Date();
-
-let indexPosition = JSON.parse(localStorage.getItem("currentIndex"));
-if (!indexPosition) {
-  indexPosition = 0;
-}
-
-let scoreValue = JSON.parse(localStorage.getItem("currentScore"));
-if (!scoreValue) {
-  scoreValue = 0;
-}
-
-let countdownTime = localStorage.getItem("timer");
-if (!countdownTime) {
-  countdownTime = 300;
-}
-
-let gamesPlayed = localStorage.getItem("games");
-if (!gamesPlayed) {
-  gamesPlayed = 1;
-  localStorage.setItem("games", gamesPlayed);
-}
-
+let indexPosition = JSON.parse(localStorage.getItem("currentIndex")) || 0;
+let scoreValue = JSON.parse(localStorage.getItem("currentScore")) || 0;
+let countdownTime = localStorage.getItem("timer") || 300;
+let gamesPlayed = localStorage.getItem("games") || 1;
 let savedMidnight = new Date(localStorage.getItem("midnight"));
 if (isNaN(savedMidnight.getTime())) {
   savedMidnight = new Date();
   savedMidnight.setHours(0, 0, 0, 0);
   localStorage.setItem("midnight", savedMidnight.toISOString());
 }
-
+let wordList, definitions;
+let now = new Date();
 let letterIndex = 0;
 
 // localStorage.clear();
@@ -73,27 +53,30 @@ fetch("/wordList")
     definitions = Object.values(data);
     console.log(wordList);
 
-    if (savedMidnight instanceof Date) {
-      if (savedMidnight.getTime() < now.getTime()) {
-        localStorage.removeItem("midnight", "currentIndex", "currentScore");
-        savedMidnight = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          now.getDate() + 1,
-          0,
-          0,
-          0
-        );
-        localStorage.setItem("midnight", savedMidnight);
-        indexPosition = 0;
-        localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
-        scoreValue = 0;
-        localStorage.setItem("currentScore", JSON.stringify(scoreValue));
-        gamesPlayed += 1;
-        localStorage.setItem("games", gamesPlayed);
-      }
+    if (
+      savedMidnight instanceof Date &&
+      savedMidnight.getTime() < now.getTime()
+    ) {
+      localStorage.removeItem("midnight", "currentIndex", "currentScore");
+      savedMidnight = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1,
+        0,
+        0,
+        0
+      );
+      localStorage.setItem("midnight", savedMidnight);
+      indexPosition = 0;
+      localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
+      scoreValue = 0;
+      localStorage.setItem("currentScore", JSON.stringify(scoreValue));
+      gamesPlayed += 1;
+      localStorage.setItem("games", gamesPlayed);
+    } else if (!(savedMidnight instanceof Date)) {
+      console.log("Error: Invalid date format.");
     } else {
-      console.log("error: unable to read date format.");
+      console.log("No action needed.");
     }
 
     const counter = document.getElementById("counter");
@@ -113,37 +96,26 @@ fetch("/wordList")
         if (answerListItems.length === wordList[indexPosition].length) {
           const submitButton = document.getElementById("submit");
           submitButton.disabled = false;
-
-          const clearButton = document.getElementById("clear");
-          clearButton.addEventListener("click", () => {
-            refresh();
-          });
         }
+        const clearButton = document.getElementById("clear");
+
+        const clickHandler = () => {
+          refresh();
+        };
+
+        clearButton.removeEventListener("click", clickHandler);
+        clearButton.addEventListener("click", clickHandler);
       }
     });
 
     function startClock() {
-      const time = localStorage.getItem("timer");
-      let intervalId;
-
-      if (time) {
-        countdownTime = time;
-        console.log(countdownTime);
-      } else {
-        countdownTime = 300;
-      }
-
+      let countdownTime = parseInt(localStorage.getItem("timer")) || 300;
       const clock = document.getElementById("clock");
 
       function updateTimer() {
-        var minutes = Math.floor(countdownTime / 60);
-        var seconds = countdownTime % 60;
-
-        clock.innerHTML =
-          minutes.toString().padStart(1, "0") +
-          ":" +
-          seconds.toString().padStart(2, "0");
-
+        const minutes = Math.floor(countdownTime / 60);
+        const seconds = countdownTime % 60;
+        clock.innerHTML = `${minutes.toString().padStart(1, "0")}:${seconds.toString().padStart(2, "0")}`;
         countdownTime--;
         localStorage.setItem("timer", countdownTime);
 
@@ -159,7 +131,8 @@ fetch("/wordList")
           gameOver(wordList);
         }
       }
-      intervalId = setInterval(updateTimer, 1000);
+
+      const intervalId = setInterval(updateTimer, 1000);
     }
 
     const startButton = document.querySelector(".start");
