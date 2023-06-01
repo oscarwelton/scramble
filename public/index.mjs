@@ -14,6 +14,7 @@ fetch("/wordList")
   .then((data) => {
     wordList = Object.keys(data);
     definitions = Object.values(data);
+    console.log(wordList)
 
     if (isNaN(savedMidnight.getTime())) {
       savedMidnight = new Date();
@@ -215,10 +216,8 @@ fetch("/wordList")
         </div>
 
       <p class="center">Come back tomorrow for another challenge!</p>
-      <div class="actions">
       <button>Invite <i class="fa-solid fa-comment"></i></button>
       <button>Share <i class="fa-solid fa-share"></i></button>
-      </div>
       </div>`;
 
       const start = document.querySelector(".start-screen");
@@ -290,6 +289,7 @@ fetch("/wordList")
 
     function clear() {
       const clearButton = document.getElementById("clear");
+      // const answer = document.getElementById("")
       if (clearButton) {
         clearButton.addEventListener("click", () => {
           refresh();
