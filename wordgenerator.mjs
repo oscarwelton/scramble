@@ -53,8 +53,13 @@ async function runScheduledTask() {
 }
 
 async function main() {
-  await runScheduledTask();
-  console.log(wordList);
+  const list = await runScheduledTask();
+  if (Object.keys(list).length != 5) {
+    await runScheduledTask();
+  } else {
+    console.log(list)
+    return list
+  }
 }
 
 main();

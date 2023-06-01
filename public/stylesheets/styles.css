@@ -412,3 +412,11 @@ h2 {
   text-align: center;
   width: 30%;
 }
+
+.share {
+  display: flex;
+  justify-self: center;
+}
+.share #share {
+  margin: auto;
+}

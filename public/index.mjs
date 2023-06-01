@@ -6,6 +6,12 @@ let now = new Date();
 let savedMidnight = new Date(localStorage.getItem("midnight"));
 let letterIndex = 0;
 let countdownTime;
+let gamesPlayed = localStorage.getItem("games");
+
+if (!gamesPlayed) {
+  gamesPlayed = 1;
+  localStorage.setItem("games", gamesPlayed);
+}
 
 // localStorage.clear();
 
@@ -14,7 +20,7 @@ fetch("/wordList")
   .then((data) => {
     wordList = Object.keys(data);
     definitions = Object.values(data);
-    console.log(wordList)
+    console.log(wordList);
 
     if (isNaN(savedMidnight.getTime())) {
       savedMidnight = new Date();
@@ -24,7 +30,9 @@ fetch("/wordList")
 
     if (savedMidnight instanceof Date) {
       if (savedMidnight.getTime() < now.getTime()) {
-        localStorage.clear();
+        localStorage.removeItem("midnight");
+        localStorage.removeItem("currentIndex");
+        localStorage.removeItem("currentScore");
         console.log("Time was updated and indexes reset.");
         savedMidnight = new Date(
           now.getFullYear(),
@@ -39,6 +47,8 @@ fetch("/wordList")
         localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
         scoreValue = 0;
         localStorage.setItem("currentScore", JSON.stringify(scoreValue));
+        gamesPlayed += 1;
+        localStorage.setItem("games", gamesPlayed);
       }
     } else {
       console.log("error: unable to read date format.");
@@ -110,54 +120,59 @@ fetch("/wordList")
   </div>
   </div>`;
 
-  function startClock() {
-    const time = localStorage.getItem("timer");
-    let intervalId;
+    function startClock() {
+      const time = localStorage.getItem("timer");
+      let intervalId;
 
-    if (time) {
-      countdownTime = time;
-      console.log(countdownTime);
-    } else {
-      countdownTime = 300;
-    }
-
-    const clock = document.getElementById("clock");
-
-    function updateTimer() {
-      var minutes = Math.floor(countdownTime / 60);
-      var seconds = countdownTime % 60;
-
-      clock.innerHTML =
-        minutes.toString().padStart(1, "0") +
-        ":" +
-        seconds.toString().padStart(2, "0");
-
-      countdownTime--;
-      localStorage.setItem("timer", countdownTime);
-
-      if (countdownTime <= 30) {
-        clock.classList.add("red");
-        setTimeout(() => {
-          clock.classList.remove("red");
-        }, 400);
+      if (time) {
+        countdownTime = time;
+        console.log(countdownTime);
+      } else {
+        countdownTime = 300;
       }
 
-      if (countdownTime <= 0) {
-        clearInterval(intervalId);
-        gameOver(wordList);
+      const clock = document.getElementById("clock");
+
+      function updateTimer() {
+        var minutes = Math.floor(countdownTime / 60);
+        var seconds = countdownTime % 60;
+
+        clock.innerHTML =
+          minutes.toString().padStart(1, "0") +
+          ":" +
+          seconds.toString().padStart(2, "0");
+
+        countdownTime--;
+        localStorage.setItem("timer", countdownTime);
+
+        if (countdownTime <= 30) {
+          clock.classList.add("red");
+          setTimeout(() => {
+            clock.classList.remove("red");
+          }, 400);
+        }
+
+        if (countdownTime <= 0) {
+          clearInterval(intervalId);
+          gameOver(wordList);
+        }
       }
+      intervalId = setInterval(updateTimer, 1000);
     }
-    intervalId = setInterval(updateTimer, 1000);
-  }
 
     const startButton = document.querySelector(".start");
     if (startButton) {
       const container = document.querySelector(".container");
       startButton.addEventListener("click", () => {
-        document.querySelector(".start-screen").remove();
-        container.insertAdjacentHTML("afterbegin", htmlBlock);
-        refresh();
-        startClock();
+        if (indexPosition === 5) {
+          console.log(indexPosition);
+          gameOver(wordList);
+        } else {
+          document.querySelector(".start-screen").remove();
+          container.insertAdjacentHTML("afterbegin", htmlBlock);
+          refresh();
+          startClock();
+        }
       });
     }
 
@@ -165,7 +180,7 @@ fetch("/wordList")
       let times = localStorage.getItem("timer");
       times = 300 - times;
       if (times > 300) {
-        times = 300
+        times = 300;
       }
       var minutes = Math.floor(times / 60);
       var seconds = times % 60;
@@ -173,8 +188,7 @@ fetch("/wordList")
         minutes.toString().padStart(1, "0") +
         ":" +
         seconds.toString().padStart(2, "0");
-      var gameOverHtml =
-      `<div class="game-over">
+      var gameOverHtml = `<div class="game-over">
       <h2 class="center">Congratulations!</h2>
       <div class="statistics">
         <div class="stat">
@@ -187,7 +201,7 @@ fetch("/wordList")
       </div>
       <div class="stat">
       <h3><i class="fa-solid fa-fire"></i></h3>
-      <h3 id="time-taken">5 days</h3>
+      <h3 id="time-taken">${gamesPlayed} days</h3>
       </div>
       </div>
       <div class="word-list">
@@ -215,9 +229,15 @@ fetch("/wordList")
         </ul>
         </div>
 
-      <p class="center">Come back tomorrow for another challenge!</p>
-      <button>Invite <i class="fa-solid fa-comment"></i></button>
-      <button>Share <i class="fa-solid fa-share"></i></button>
+      <h3 class="center">Come back tomorrow for another challenge!</h3>
+      <div class="share">
+      <button id="share">Invite <i class="fa-brands fa-whatsapp"></i>
+                                <i class="fa-brands fa-twitter"></i>
+                                <i class="fa-brands fa-instagram"></i>
+                                <i class="fa-brands fa-square-facebook"></i>
+                                </button>
+                                </div>
+                                <a href="https://anagrams.herokuapp.com/" target="_blank">open</a>
       </div>`;
 
       const start = document.querySelector(".start-screen");
@@ -226,13 +246,26 @@ fetch("/wordList")
       if (game) game.remove();
       document.querySelector(".container").innerHTML = gameOverHtml;
 
-      const marks = Array.from(document.querySelectorAll('span.mark'));
+      const marks = Array.from(document.querySelectorAll("span.mark"));
       for (let i = 0; i < indexPosition; i++) {
         const mark = marks[i];
-        mark.innerHTML = ""
+        mark.innerHTML = "";
         mark.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
         mark.style.color = "green";
       }
+
+      const shareButton = document.getElementById('share');
+      shareButton.addEventListener('click', function() {
+          const urlToCopy = 'https://anagrams.herokuapp.com';
+          const tempInput = document.createElement('input');
+          tempInput.value = urlToCopy;
+          document.body.appendChild(tempInput);
+          tempInput.select();
+          tempInput.setSelectionRange(0, 99999);
+          document.execCommand('copy');
+          document.body.removeChild(tempInput);
+          alert('URL copied to clipboard!');
+      });
     }
 
     const anagram = () => {
@@ -358,7 +391,7 @@ fetch("/wordList")
       indexPosition += 1;
       scoreValue += 100;
       scoreValue += countdownTime;
-      console.log(scoreValue)
+      console.log(scoreValue);
       updateCounter();
       updateScore();
       console.log(scoreValue);
