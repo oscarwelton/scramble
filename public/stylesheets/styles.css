@@ -420,3 +420,7 @@ h2 {
 .disabled {
   opacity: 0.4;
 }
+
+.used {
+  visibility: hidden;
+}

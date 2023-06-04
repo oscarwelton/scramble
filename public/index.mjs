@@ -26,7 +26,7 @@ let htmlBlock = `<div class="game">
 </div>
 <ul id="anagram"></ul>
 <div id="submit-div">
-<button id="submit" disabled="disabled">Submit</button>
+<button id="submit" disabled="">Submit</button>
 </div>
 </div>`;
 
@@ -35,11 +35,6 @@ let scoreValue = JSON.parse(localStorage.getItem("currentScore")) || 0;
 let countdownTime = localStorage.getItem("timer") || 300;
 let gamesPlayed = localStorage.getItem("games") || 1;
 let savedMidnight = new Date(localStorage.getItem("midnight"));
-if (isNaN(savedMidnight.getTime())) {
-  savedMidnight = new Date();
-  savedMidnight.setHours(0, 0, 0, 0);
-  localStorage.setItem("midnight", savedMidnight.toISOString());
-}
 let wordList, definitions;
 let now = new Date();
 let letterIndex = 0;
@@ -51,13 +46,33 @@ fetch("/wordList")
   .then((data) => {
     wordList = Object.keys(data);
     definitions = Object.values(data);
-    console.log(wordList);
-
-    if (
+    if (isNaN(savedMidnight.getTime())) {
+      localStorage.removeItem(
+        "midnight",
+        "currentIndex",
+        "currentScore",
+        "countdownTime"
+      );
+      savedMidnight = new Date();
+      savedMidnight.setHours(0, 0, 0, 0);
+      localStorage.setItem("midnight", savedMidnight.toISOString());
+      localStorage.setItem("midnight", savedMidnight);
+      indexPosition = 0;
+      localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
+      scoreValue = 0;
+      localStorage.setItem("currentScore", JSON.stringify(scoreValue));
+      gamesPlayed += 1;
+      localStorage.setItem("games", gamesPlayed);
+    } else if (
       savedMidnight instanceof Date &&
       savedMidnight.getTime() < now.getTime()
     ) {
-      localStorage.removeItem("midnight", "currentIndex", "currentScore");
+      localStorage.removeItem(
+        "midnight",
+        "currentIndex",
+        "currentScore",
+        "countdownTime"
+      );
       savedMidnight = new Date(
         now.getFullYear(),
         now.getMonth(),
@@ -73,10 +88,8 @@ fetch("/wordList")
       localStorage.setItem("currentScore", JSON.stringify(scoreValue));
       gamesPlayed += 1;
       localStorage.setItem("games", gamesPlayed);
-    } else if (!(savedMidnight instanceof Date)) {
-      console.log("Error: Invalid date format.");
     } else {
-      console.log("No action needed.");
+      console.log("It's go time!");
     }
 
     const counter = document.getElementById("counter");
@@ -223,19 +236,6 @@ fetch("/wordList")
         mark.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
         mark.style.color = "green";
       });
-
-      // const shareButton = document.getElementById("share");
-      // shareButton.addEventListener("click", function () {
-      //   const urlToCopy = "https://anagrams.herokuapp.com";
-      //   const tempInput = document.createElement("input");
-      //   tempInput.value = urlToCopy;
-      //   document.body.appendChild(tempInput);
-      //   tempInput.select();
-      //   tempInput.setSelectionRange(0, 99999);
-      //   document.execCommand("copy");
-      //   document.body.removeChild(tempInput);
-      //   alert("URL copied to clipboard!");
-      // });
     }
 
     const anagram = () => {
@@ -285,22 +285,22 @@ fetch("/wordList")
     }
 
     function hintPrompt() {
+      const hintSound = new Audio("./resources/audio/hint.mp3")
       const hintButton = document.querySelector(".hint-button");
-      hintButton.disabled = true;
-      hintButton.classList.add("disabled");
       const hint = document.querySelector(".hint");
-      hint.innerHTML = "";
+      hint.innerHTML = ""
+      hintButton.classList.add("disabled");
+      hintButton.classList.remove("used");
 
-      hintButton.addEventListener("click", () => {
-        hint.innerHTML = `<span><i>${definitions[indexPosition]}</i></span>`;
-      });
-
-      if (countdownTime < 30) {
+      setInterval(() => {
         hintButton.disabled = false;
         hintButton.classList.remove("disabled");
-      } else {
-        setInterval(() => {}, 30000);
-      }
+        hintButton.addEventListener("click", () => {
+          hint.innerHTML = `<span><i>${definitions[indexPosition]}</i></span>`;
+          hintButton.classList.add("used");
+          hintSound.play();
+        });
+      }, 5000);
     }
 
     function shuffle() {
