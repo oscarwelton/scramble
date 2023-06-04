@@ -28,7 +28,8 @@ async function fetchDefinitions(word) {
     return definitions;
   } catch (error) {
     console.log(`Failed to fetch definitions for ${word}: ${error}`);
-    return undefined;
+    const newWord = await generateWord(word.length);
+    return await fetchDefinitions(newWord);
   }
 }
 

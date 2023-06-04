@@ -292,6 +292,15 @@ fetch("/wordList")
       hintButton.classList.add("disabled");
       hintButton.classList.remove("used");
 
+      if (countdownTime <= 30) {
+        hintButton.disabled = false;
+        hintButton.classList.remove("disabled");
+        hintButton.addEventListener("click", () => {
+          hint.innerHTML = `<span><i>${definitions[indexPosition]}</i></span>`;
+          hintButton.classList.add("used");
+          hintSound.play();
+        });
+      } else {
       setInterval(() => {
         hintButton.disabled = false;
         hintButton.classList.remove("disabled");
@@ -300,7 +309,8 @@ fetch("/wordList")
           hintButton.classList.add("used");
           hintSound.play();
         });
-      }, 5000);
+      }, 31000);
+    }
     }
 
     function shuffle() {
