@@ -38,38 +38,52 @@ let wordList, definitions;
 let now = new Date();
 let letterIndex = 0;
 
-console.log(savedMidnight)
-console.log(now)
+console.log(now);
+console.log(savedMidnight);
 
 // localStorage.clear();
 
 if (isNaN(savedMidnight.getTime())) {
-  localStorage.removeItem("midnight", "currentIndex", "currentScore", "countdownTime");
-
-  savedMidnight = new Date();
-  savedMidnight.setHours(0, 0, 0, 0);
-  localStorage.setItem("midnight", savedMidnight.toISOString());
-
-  indexPosition = 0;
-  localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
-
-  scoreValue = 0;
-  localStorage.setItem("currentScore", JSON.stringify(scoreValue));
-  console.log("incorrect format, data reset.")
-
-  countdownTime = 300;
-  localStorage.setItem("timer", JSON.stringify(countdownTime));
-
-
-} else if (savedMidnight instanceof Date && savedMidnight.getTime() < now.getTime()) {
   localStorage.removeItem(
     "midnight",
     "currentIndex",
     "currentScore",
     "countdownTime"
   );
-  savedMidnight = new Date();
-  savedMidnight.setHours(0, 0, 0, 0);
+
+  savedMidnight = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1,0,0,0
+  );
+
+  localStorage.setItem("midnight", savedMidnight.toISOString());
+
+  indexPosition = 0;
+  localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
+
+  scoreValue = 0;
+  localStorage.setItem("currentScore", JSON.stringify(scoreValue));
+  console.log("incorrect format, data reset.");
+
+  countdownTime = 300;
+  localStorage.setItem("timer", JSON.stringify(countdownTime));
+} else if (
+  savedMidnight instanceof Date &&
+  savedMidnight.getTime() < now.getTime()
+) {
+  localStorage.removeItem(
+    "midnight",
+    "currentIndex",
+    "currentScore",
+    "countdownTime"
+  );
+  savedMidnight = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1,0,0,0
+  );
+  localStorage.setItem("midnight", savedMidnight.toISOString());
   localStorage.setItem("midnight", savedMidnight.toISOString());
 
   indexPosition = 0;
@@ -81,7 +95,7 @@ if (isNaN(savedMidnight.getTime())) {
   countdownTime = 300;
   localStorage.setItem("timer", JSON.stringify(countdownTime));
 
-  console.log("correct format but date in the past. Values reset. ")
+  console.log("correct format but date in the past. Values reset. ");
 } else {
   console.log("Saved Midnight is greater than now. No reset needed.");
 }
@@ -91,7 +105,6 @@ fetch("/wordList")
   .then((data) => {
     wordList = Object.keys(data);
     definitions = Object.values(data);
-
 
     const counter = document.getElementById("counter");
     if (counter) {
@@ -178,7 +191,7 @@ fetch("/wordList")
         ":" +
         seconds.toString().padStart(2, "0");
       var gameOverHtml = `<div class="game-over">
-      <h2 class="center">Congratulations!</h2>
+      <h2 class="center" id="message"></h2>
       <div class="statistics">
         <div class="stat">
       <h3><i class="fa-solid fa-clock"></i></h3>
@@ -192,9 +205,9 @@ fetch("/wordList")
       <div class="word-list">
       <ul>
       <li class="word">1. ${wordList[0]} <span class="mark"></li>
-      <ul>
-      <li class="definition">${definitions[0]}</li>
-      </ul>
+        <ul>
+          <li class="definition">${definitions[0]}</li>
+        </ul>
       <li class="word">2. ${wordList[1]} <span class="mark"><i class="fa-solid fa-circle-xmark"></i></span></li>
         <ul>
           <li class="definition">${definitions[1]}</li>
@@ -227,6 +240,13 @@ fetch("/wordList")
       document.querySelector(".start-screen")?.remove();
       document.querySelector(".game")?.remove();
       document.querySelector(".container").innerHTML = gameOverHtml;
+
+      const message = document.getElementById("message");
+      if (indexPosition >= 4) {
+        message.innerText = "Wahoo!";
+      } else {
+        message.innerText = "Oops! Time's up";
+      }
 
       const marks = Array.from(document.querySelectorAll("span.mark"));
       marks.slice(0, indexPosition).forEach((mark) => {
@@ -282,10 +302,10 @@ fetch("/wordList")
     }
 
     function hintPrompt() {
-      const hintSound = new Audio("./resources/audio/hint.mp3")
+      const hintSound = new Audio("./resources/audio/hint.mp3");
       const hintButton = document.querySelector(".hint-button");
       const hint = document.querySelector(".hint");
-      hint.innerHTML = ""
+      hint.innerHTML = "";
       hintButton.classList.add("disabled");
       hintButton.classList.remove("used");
 
@@ -298,16 +318,16 @@ fetch("/wordList")
           hintSound.play();
         });
       } else {
-      setInterval(() => {
-        hintButton.disabled = false;
-        hintButton.classList.remove("disabled");
-        hintButton.addEventListener("click", () => {
-          hint.innerHTML = `<span><i>${definitions[indexPosition]}</i></span>`;
-          hintButton.classList.add("used");
-          hintSound.play();
-        });
-      }, 31000);
-    }
+        setInterval(() => {
+          hintButton.disabled = false;
+          hintButton.classList.remove("disabled");
+          hintButton.addEventListener("click", () => {
+            hint.innerHTML = `<span><i>${definitions[indexPosition]}</i></span>`;
+            hintButton.classList.add("used");
+            hintSound.play();
+          });
+        }, 31000);
+      }
     }
 
     function shuffle() {
@@ -421,8 +441,4 @@ fetch("/wordList")
         }, 800);
       }
     }
-  })
-
-  .catch((error) => {
-    console.log("Error:", error);
   });
