@@ -33,64 +33,65 @@ let htmlBlock = `<div class="game">
 let indexPosition = JSON.parse(localStorage.getItem("currentIndex")) || 0;
 let scoreValue = JSON.parse(localStorage.getItem("currentScore")) || 0;
 let countdownTime = localStorage.getItem("timer") || 300;
-let gamesPlayed = localStorage.getItem("games") || 1;
 let savedMidnight = new Date(localStorage.getItem("midnight"));
 let wordList, definitions;
 let now = new Date();
 let letterIndex = 0;
 
+console.log(savedMidnight)
+console.log(now)
+
 // localStorage.clear();
+
+if (isNaN(savedMidnight.getTime())) {
+  localStorage.removeItem("midnight", "currentIndex", "currentScore", "countdownTime");
+
+  savedMidnight = new Date();
+  savedMidnight.setHours(0, 0, 0, 0);
+  localStorage.setItem("midnight", savedMidnight.toISOString());
+
+  indexPosition = 0;
+  localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
+
+  scoreValue = 0;
+  localStorage.setItem("currentScore", JSON.stringify(scoreValue));
+  console.log("incorrect format, data reset.")
+
+  countdownTime = 300;
+  localStorage.setItem("timer", JSON.stringify(countdownTime));
+
+
+} else if (savedMidnight instanceof Date && savedMidnight.getTime() < now.getTime()) {
+  localStorage.removeItem(
+    "midnight",
+    "currentIndex",
+    "currentScore",
+    "countdownTime"
+  );
+  savedMidnight = new Date();
+  savedMidnight.setHours(0, 0, 0, 0);
+  localStorage.setItem("midnight", savedMidnight.toISOString());
+
+  indexPosition = 0;
+  localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
+
+  scoreValue = 0;
+  localStorage.setItem("currentScore", JSON.stringify(scoreValue));
+
+  countdownTime = 300;
+  localStorage.setItem("timer", JSON.stringify(countdownTime));
+
+  console.log("correct format but date in the past. Values reset. ")
+} else {
+  console.log("Saved Midnight is greater than now. No reset needed.");
+}
 
 fetch("/wordList")
   .then((response) => response.json())
   .then((data) => {
     wordList = Object.keys(data);
     definitions = Object.values(data);
-    if (isNaN(savedMidnight.getTime())) {
-      localStorage.removeItem(
-        "midnight",
-        "currentIndex",
-        "currentScore",
-        "countdownTime"
-      );
-      savedMidnight = new Date();
-      savedMidnight.setHours(0, 0, 0, 0);
-      localStorage.setItem("midnight", savedMidnight.toISOString());
-      localStorage.setItem("midnight", savedMidnight);
-      indexPosition = 0;
-      localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
-      scoreValue = 0;
-      localStorage.setItem("currentScore", JSON.stringify(scoreValue));
-      gamesPlayed += 1;
-      localStorage.setItem("games", gamesPlayed);
-    } else if (
-      savedMidnight instanceof Date &&
-      savedMidnight.getTime() < now.getTime()
-    ) {
-      localStorage.removeItem(
-        "midnight",
-        "currentIndex",
-        "currentScore",
-        "countdownTime"
-      );
-      savedMidnight = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() + 1,
-        0,
-        0,
-        0
-      );
-      localStorage.setItem("midnight", savedMidnight);
-      indexPosition = 0;
-      localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
-      scoreValue = 0;
-      localStorage.setItem("currentScore", JSON.stringify(scoreValue));
-      gamesPlayed += 1;
-      localStorage.setItem("games", gamesPlayed);
-    } else {
-      console.log("It's go time!");
-    }
+
 
     const counter = document.getElementById("counter");
     if (counter) {
@@ -186,10 +187,6 @@ fetch("/wordList")
       <div class="stat">
       <h3><i class="fa-solid fa-trophy"></i></h3>
       <h3>${scoreValue}</h3>
-      </div>
-      <div class="stat">
-      <h3><i class="fa-solid fa-fire"></i></h3>
-      <h3 id="time-taken">${gamesPlayed} days</h3>
       </div>
       </div>
       <div class="word-list">
