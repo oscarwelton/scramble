@@ -399,6 +399,7 @@ h2 {
 .statistics {
   display: flex;
   justify-content: space-evenly;
+  align-items: baseline;
   padding: 1rem 0rem;
 }
 .statistics .stat {
