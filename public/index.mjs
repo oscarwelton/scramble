@@ -38,13 +38,18 @@ let wordList, definitions;
 let now = new Date();
 let letterIndex = 0;
 
-console.log(savedMidnight)
-console.log(now)
+console.log(savedMidnight);
+console.log(now);
 
 // localStorage.clear();
 
 if (isNaN(savedMidnight.getTime())) {
-  localStorage.removeItem("midnight", "currentIndex", "currentScore", "countdownTime");
+  localStorage.removeItem(
+    "midnight",
+    "currentIndex",
+    "currentScore",
+    "countdownTime"
+  );
 
   savedMidnight = new Date(
     now.getFullYear(),
@@ -61,13 +66,14 @@ if (isNaN(savedMidnight.getTime())) {
 
   scoreValue = 0;
   localStorage.setItem("currentScore", JSON.stringify(scoreValue));
-  console.log("incorrect format, data reset.")
+  console.log("incorrect format, data reset.");
 
   countdownTime = 300;
   localStorage.setItem("timer", JSON.stringify(countdownTime));
-
-
-} else if (savedMidnight instanceof Date && savedMidnight.getTime() < now.getTime()) {
+} else if (
+  savedMidnight instanceof Date &&
+  savedMidnight.getTime() < now.getTime()
+) {
   localStorage.removeItem(
     "midnight",
     "currentIndex",
@@ -93,7 +99,7 @@ if (isNaN(savedMidnight.getTime())) {
   countdownTime = 300;
   localStorage.setItem("timer", JSON.stringify(countdownTime));
 
-  console.log("correct format but date in the past. Values reset. ")
+  console.log("correct format but date in the past. Values reset. ");
 } else {
   console.log("Saved Midnight is greater than now. No reset needed.");
 }
@@ -103,7 +109,6 @@ fetch("/wordList")
   .then((data) => {
     wordList = Object.keys(data);
     definitions = Object.values(data);
-
 
     const counter = document.getElementById("counter");
     if (counter) {
@@ -186,50 +191,47 @@ fetch("/wordList")
           },
           body: JSON.stringify({ score: scoreValue }),
         })
-        .then((response) => response.json())
+          .then((response) => response.json())
           .then((result) => {
-            const percentage = result['result'];
+            const percentage = result["result"];
             resolve(percentage);
           });
-        });
-      }
+      });
+    }
 
-
-      function gameOver(wordList) {
-        percentile().then((percentage) => {
-          let times = localStorage.getItem("timer");
-          times = 300 - times;
-          if (times > 300) {
-            times = 300;
-          }
-          var minutes = Math.floor(times / 60);
-          var seconds = times % 60;
-          const timeTaken =
-            minutes.toString().padStart(1, "0") +
-            ":" +
-            seconds.toString().padStart(2, "0");
-          var gameOverHtml = `<div class="game-over">
-        <h2 class="center" id="message"></h2>
-        <h3 id="ranking"></h3>
-        <div class="statistics">
-          <div class="stat">
-            <h3><i class="fa-solid fa-clock"></i></h3>
-            <h3 id="time-taken">${timeTaken} </h3>
-            <h6 class="center">time taken</h6>
-
+    function gameOver(wordList) {
+      percentile().then((percentage) => {
+        let times = localStorage.getItem("timer");
+        times = 300 - times;
+        if (times > 300) {
+          times = 300;
+        }
+        var minutes = Math.floor(times / 60);
+        var seconds = times % 60;
+        const timeTaken =
+          minutes.toString().padStart(1, "0") +
+          ":" +
+          seconds.toString().padStart(2, "0");
+        var gameOverHtml = `
+          <div class="game-over">
+            <h2 class="center"> results</h2>
+            <div class="statistics">
+            <div class="grading">
+              <h3 id="grade"></h3>
+              <p id="grade-message"></p>
+            </div>
+            <div class="stats">
+            <div class="stat">
+              <h4><i class="fa-solid fa-trophy"></i> ${scoreValue}</h4>
+            </div>
+            <div class="stat">
+              <h4><i class="fa-solid fa-clock"></i> ${timeTaken}</h4>
+            </div>
+            <div class="stat">
+              <h4><i class="fa-solid fa-ranking-star"></i> ${percentage} (percentile)</h4>
+            </div>
+            </div>
           </div>
-          <div class="stat">
-            <h3><i class="fa-solid fa-trophy"></i></h3>
-            <h3>${scoreValue}</h3>
-            <h6 class="center">points</h6>
-
-          </div>
-          <div class="stat">
-            <h3><i class="fa-solid fa-ranking-star"></i></h3>
-            <h3>${percentage}</h3>
-            <h6 class="center">percentile</h6>
-          </div>
-        </div>
         <div class="word-list">
           <ul>
           <li class="word">1. ${wordList[0]} <span class="mark"></li>
@@ -257,83 +259,94 @@ fetch("/wordList")
           <h5 class="center">Come back tomorrow for another challenge!</h4>
         </div>`;
 
-          document.querySelector(".start-screen")?.remove();
-          document.querySelector(".game")?.remove();
-          document.querySelector(".container").innerHTML = gameOverHtml;
+        document.querySelector(".start-screen")?.remove();
+        document.querySelector(".game")?.remove();
+        document.querySelector(".container").innerHTML = gameOverHtml;
 
-          const message = document.getElementById("message");
-          if (indexPosition >= 4) {
-            message.innerText = "Well done!";
-          } else {
-            message.innerText = "Oops! Time's up";
-          }
+        const grade = document.getElementById("grade");
+        const gradeMessage = document.getElementById("grade-message");
 
-          const ranking = document.getElementById("ranking");
+        switch (true) {
+          case scoreValue >= 1875:
+            grade.innerText = "A++";
+            gradeMessage.innerText = "remarkable!";
+            break;
+          case scoreValue >= 1800 && scoreValue <= 1875:
+            grade.innerText = "A";
+            gradeMessage.innerText = "outstanding!";
+            break;
+          case scoreValue >= 1700 && scoreValue <= 1799:
+            grade.innerText = "A-";
+            gradeMessage.innerText = "marvelous!";
+            break;
+          case scoreValue >= 1600 && scoreValue <= 1699:
+            grade.innerText = "B+";
+            gradeMessage.innerText = "brilliant!";
+            break;
+          case scoreValue >= 1500 && scoreValue <= 1599:
+            grade.innerText = "B";
+            gradeMessage.innerText = "impressive!";
+            break;
+          case scoreValue >= 1400 && scoreValue <= 1499:
+            grade.innerText = "B-";
+            gradeMessage.innerText = "encouraging!";
+            break;
+          case scoreValue >= 1300 && scoreValue <= 1399:
+            grade.innerText = "C+";
+            gradeMessage.innerText = "promising!";
+            break;
+          case scoreValue >= 1200 && scoreValue <= 1299:
+            grade.innerText = "C";
+            gradeMessage.innerText = "satisfactory";
+            break;
+          case scoreValue >= 1100 && scoreValue <= 1199:
+            grade.innerText = "C-";
+            gradeMessage.innerText = "solid";
+            break;
+          case scoreValue >= 900 && scoreValue <= 999:
+            grade.innerText = "D+";
+            gradeMessage.innerText = "so-so";
+            break;
+          case scoreValue >= 800 && scoreValue <= 899:
+            grade.innerText = "D";
+            gradeMessage.innerText = "substandard"
+            break;
+          case scoreValue >= 700 && scoreValue <= 799:
+            grade.innerText = "D-";
+            gradeMessage.innerText = "poor"
+            break;
+          case scoreValue >= 600 && scoreValue <= 699:
+            grade.innerText = "E+";
+            gradeMessage.innerText = "not good"
 
-          switch (true) {
-            case scoreValue >= 1875:
-              ranking.innerText = "A++";
-              break;
-            case scoreValue >= 1800 && scoreValue <= 1875:
-              ranking.innerText = "A";
-              break;
-            case scoreValue >= 1700 && scoreValue <= 1799:
-              ranking.innerText = "A-";
-              break;
-            case scoreValue >= 1600 && scoreValue <= 1699:
-              ranking.innerText = "B+";
-              break;
-            case scoreValue >= 1500 && scoreValue <= 1599:
-              ranking.innerText = "B";
-              break;
-            case scoreValue >= 1400 && scoreValue <= 1499:
-              ranking.innerText = "B-";
-              break;
-            case scoreValue >= 1300 && scoreValue <= 1399:
-              ranking.innerText = "C+";
-              break;
-            case scoreValue >= 1200 && scoreValue <= 1299:
-              ranking.innerText = "C";
-              break;
-            case scoreValue >= 1100 && scoreValue <= 1199:
-              ranking.innerText = "C-";
-              break;
-            case scoreValue >= 900 && scoreValue <= 999:
-              ranking.innerText = "D+";
-              break;
-            case scoreValue >= 800 && scoreValue <= 899:
-              ranking.innerText = "D";
-              break;
-            case scoreValue >= 700 && scoreValue <= 799:
-              ranking.innerText = "D-";
-              break;
-            case scoreValue >= 600 && scoreValue <= 699:
-              ranking.innerText = "E+";
-              break;
-            case scoreValue >= 500 && scoreValue <= 599:
-              ranking.innerText = "E";
-              break;
-            case scoreValue >= 300 && scoreValue <= 399:
-              ranking.innerText = "E-";
-              break;
-            case scoreValue >= 0 && scoreValue <= 299:
-              ranking.innerText = "F";
-              break;
-            default:
-              ranking.innerText = "Invalid score value";
-              break;
-          }
+            break;
+          case scoreValue >= 500 && scoreValue <= 599:
+            grade.innerText = "E";
+            gradeMessage.innerText = "just bad"
 
-          const marks = Array.from(document.querySelectorAll("span.mark"));
-          marks.slice(0, indexPosition).forEach((mark) => {
-            mark.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-            mark.style.color = "green";
-          });
+            break;
+          case scoreValue >= 300 && scoreValue <= 399:
+            grade.innerText = "E-";
+            gradeMessage.innerText = "really?";
+            break;
+          case scoreValue >= 0 && scoreValue <= 299:
+            grade.innerText = "F";
+            gradeMessage.innerText = "fail!";
+            break;
+          default:
+            grade.innerText = "Invalid score value";
+            break;
+        }
+
+        const marks = Array.from(document.querySelectorAll("span.mark"));
+        marks.slice(0, indexPosition).forEach((mark) => {
+          mark.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+          mark.style.color = "green";
         });
-      }
+      });
+    }
 
-
-    function anagram () {
+    function anagram() {
       function shuffleLetters(letters) {
         for (let i = letters.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
@@ -357,7 +370,7 @@ fetch("/wordList")
         placeholder.className = "placeholder";
         answer.insertAdjacentElement("beforeend", placeholder);
       });
-    };
+    }
 
     function handleClick() {
       const answer = document.getElementById("answer");
@@ -380,10 +393,10 @@ fetch("/wordList")
     }
 
     function hintPrompt() {
-      const hintSound = new Audio("./resources/audio/hint.mp3")
+      const hintSound = new Audio("./resources/audio/hint.mp3");
       const hintButton = document.querySelector(".hint-button");
       const hint = document.querySelector(".hint");
-      hint.innerHTML = ""
+      hint.innerHTML = "";
       hintButton.classList.add("disabled");
       hintButton.classList.remove("used");
 
@@ -396,16 +409,16 @@ fetch("/wordList")
           hintSound.play();
         });
       } else {
-      setInterval(() => {
-        hintButton.disabled = false;
-        hintButton.classList.remove("disabled");
-        hintButton.addEventListener("click", () => {
-          hint.innerHTML = `<span><i>${definitions[indexPosition]}</i></span>`;
-          hintButton.classList.add("used");
-          hintSound.play();
-        });
-      }, 31000);
-    }
+        setInterval(() => {
+          hintButton.disabled = false;
+          hintButton.classList.remove("disabled");
+          hintButton.addEventListener("click", () => {
+            hint.innerHTML = `<span><i>${definitions[indexPosition]}</i></span>`;
+            hintButton.classList.add("used");
+            hintSound.play();
+          });
+        }, 31000);
+      }
     }
 
     function shuffle() {

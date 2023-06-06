@@ -54,6 +54,7 @@ table {
   --antique-white: rgb(255, 246, 235);
   --scope: "Scope One", serif;
   --mukta: "Mukta", sans-serif;
+  --cursive: "Shadows Into Light", cursive;
   --light: 200;
   --regular: 400;
   --bold: 700;
@@ -398,16 +399,16 @@ h2 {
 
 .statistics {
   display: flex;
-  justify-content: space-evenly;
-  align-items: baseline;
-  padding: 1rem 0rem;
+  justify-content: center;
 }
-.statistics .stat {
+.statistics .stats {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  text-align: center;
-  width: 30%;
+  padding: 1rem;
+}
+.statistics .stat {
+  display: flex;
 }
 
 .share {
@@ -424,4 +425,27 @@ h2 {
 
 .used {
   visibility: hidden;
+}
+
+.grading {
+  font-family: var(--cursive);
+  padding: 1rem;
+  text-align: center;
+  background-image: url(/resources/images/circle.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 16vh;
+  min-width: 16vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  transform: rotate(-8deg);
+}
+.grading #grade {
+  font-size: 4rem;
+}
+.grading p {
+  margin: 0;
+  font-size: 1.5rem;
+  text-align: center;
 }
