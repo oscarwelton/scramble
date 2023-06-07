@@ -382,7 +382,7 @@ fetch("/wordList")
             return tickString;
           }
 
-          var clipboard = `Scrambled. (1)\n${createTickString(indexPosition)}\n🏆 ${scoreValue} \n⌛ ${timeTaken} \n${emoji} ${grade.innerText}`;
+          var clipboard = `⠀Scrambled. (1)\n⠀${createTickString(indexPosition)}\n⠀🏆⠀${scoreValue}⠀🏆\n⠀⌛⠀${timeTaken}⠀⌛\n⠀${emoji}⠀${grade.innerText}⠀${emoji}`;
 
           var popupHTML = `<div id="popup"><i class="fa-solid fa-clipboard-check"></i><br>Copied to clipboard!</div>`;
 
