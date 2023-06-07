@@ -217,25 +217,27 @@ fetch("/wordList")
 
         var gameOverHtml = `
           <div class="game-over">
-          <div class="statistics">
-          <div class="stats">
-          <h2 class="">Results</h2>
-                <div class="stat">
-                  <h4><i class="fa-solid fa-trophy"></i> ${scoreValue}</h4>
-                </div>
-                <div class="stat">
-                  <h4><i class="fa-solid fa-clock"></i> ${timeTaken}</h4>
-                </div>
-                <div class="stat">
-                  <h4><i class="fa-solid fa-ranking-star"></i> ${percentage} percentile</h4>
-                </div>
-                </div>
-                <div class="grading">
-                  <h3 id="grade"></h3>
-                  <p id="grade-message"></p>
-                </div>
-          </div>
-          <button id="share">Share <i class="fa-solid fa-share-from-square"></i></button>
+            <div class="results">
+              <h2 class="">Results</h2>
+                <div class="statistics">
+                  <div class="stats">
+                    <div class="stat">
+                      <h4><span class="icon"><i class="fa-solid fa-trophy"></i></span> ${scoreValue}</h4>
+                    </div>
+                    <div class="stat">
+                      <h4><span class="icon"><i class="fa-solid fa-hourglass-end"></i></span> ${timeTaken}</h4>
+                    </div>
+                    <div class="stat">
+                      <h4><span class="icon"><i class="fa-solid fa-ranking-star"></i></span> ${percentage} (percentile)</h4>
+                    </div>
+                    </div>
+                    </div>
+                    <button id="share">Share <i class="fa-solid fa-share-from-square"></i></button>
+            </div>
+          <div class="grading">
+          <h3 id="grade"></h3>
+          <p id="grade-message"></p>
+        </div>
         <div class="word-list">
           <ul>
           <li class="word">1. ${wordList[0]} <span class="mark"></li>
@@ -259,7 +261,9 @@ fetch("/wordList")
               <li class="definition">${definitions[4]}</li>
             </ul>
           </div>
-          <h5 class="center">Come back tomorrow for another challenge!</h4>
+          <div>
+          <h4>Time until reset</h4>
+          <p id="time"><p>
         </div>`;
 
         document.querySelector(".start-screen")?.remove();
@@ -364,21 +368,62 @@ fetch("/wordList")
             return tickString;
           }
 
-          var clipboard = `Scrambled.
-          Day: 100 📅
-          Words: ${createTickString(indexPosition)}
-          Score: ${scoreValue} 🏆
-          Time: ${timeTaken} ⌛
-          Grade: ${grade.innerText} ${emoji}`;
+          var clipboard = `Scrambled. (1)\n${createTickString(
+            indexPosition
+          )}\n🏆 ${scoreValue} \n⌛ ${timeTaken} \n${emoji} ${grade.innerText}`;
 
+          var popupHTML = `<div id="popup">Copied to clipboard!</div>`;
           const share = document.getElementById("share");
           share.addEventListener("click", () => {
-            console.log(clipboard);
             navigator.clipboard.writeText(clipboard);
+            share.insertAdjacentHTML("afterend", popupHTML);
+            share.disabled = true;
+
+            setTimeout(() => {
+              const popup = document.getElementById("popup");
+              share.disabled = false;
+              if (popup) {
+                popup.parentNode.removeChild(popup);
+              }
+            }, 1500);
           });
         }
 
         share();
+
+        const time = document.getElementById("time");
+
+        function timeUntilMidnight() {
+          now = new Date();
+          const timeUntil = savedMidnight - now;
+          const hours = Math.floor(timeUntil / 3600000);
+          const minutes = Math.floor((timeUntil % 3600000) / 60000);
+          const seconds = Math.floor((timeUntil % 60000) / 1000);
+          time.innerHTML = `
+          ${hours
+            .toString()
+            .padStart(2, "0")
+            .split("")
+            .map((digit) => `<span class="digit">${digit}</span>`)
+            .join("")}:
+          ${minutes
+            .toString()
+            .padStart(2, "0")
+            .split("")
+            .map((digit) => `<span class="digit">${digit}</span>`)
+            .join("")}:
+          ${seconds
+            .toString()
+            .padStart(2, "0")
+            .split("")
+            .map((digit) => `<span class="digit">${digit}</span>`)
+            .join("")}`;
+        }
+
+        setInterval(() => {
+          timeUntilMidnight();
+          console.log("test");
+        }, 1000);
 
         const marks = Array.from(document.querySelectorAll("span.mark"));
         marks.slice(0, indexPosition).forEach((mark) => {
