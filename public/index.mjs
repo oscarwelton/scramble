@@ -382,29 +382,29 @@ fetch("/wordList")
             return tickString;
           }
 
-          var clipboard = `Scrambled. (1)\n${createTickString(
-            indexPosition
-          )}\n🏆 ${scoreValue} \n⌛ ${timeTaken} \n${emoji} ${grade.innerText}`;
+          var clipboard = `Scrambled. (1)\n${createTickString(indexPosition)}\n🏆 ${scoreValue} \n⌛ ${timeTaken} \n${emoji} ${grade.innerText}`;
 
-          var popupHTML = `<div id="popup">Copied to clipboard!</div>`;
+          var popupHTML = `<div id="popup"><i class="fa-solid fa-clipboard-check"></i><br>Copied to clipboard!</div>`;
 
           const share = document.getElementById("share");
-          share.addEventListener("click", () => {
-            navigator.clipboard.writeText(clipboard);
-            document
-              .querySelector("body")
-              .insertAdjacentHTML("beforeend", popupHTML);
-            share.disabled = true;
-            document.querySelector(".game-over").style.opacity = 0.8;
+          share.addEventListener("click", async () => {
+            try {
+              await navigator.clipboard.writeText(clipboard);
+              document.querySelector("body").insertAdjacentHTML("beforeend", popupHTML);
+              share.disabled = true;
+              document.querySelector(".game-over").style.opacity = 0.8;
 
-            setTimeout(() => {
-              const popup = document.getElementById("popup");
-              document.querySelector(".game-over").style.opacity = 1;
-              share.disabled = false;
-              if (popup) {
-                popup.parentNode.removeChild(popup);
-              }
-            }, 1000);
+              setTimeout(() => {
+                const popup = document.getElementById("popup");
+                document.querySelector(".game-over").style.opacity = 1;
+                share.disabled = false;
+                if (popup) {
+                  popup.parentNode.removeChild(popup);
+                }
+              }, 1000);
+            } catch (error) {
+              console.error("Failed to write to clipboard:", error);
+            }
           });
         }
 
@@ -415,9 +415,9 @@ fetch("/wordList")
         function timeUntilMidnight() {
           now = new Date();
           const timeUntil = savedMidnight - now;
-          const hours = Math.floor(timeUntil / 3600000);
-          const minutes = Math.floor((timeUntil % 3600000) / 60000);
           const seconds = Math.floor((timeUntil % 60000) / 1000);
+          const minutes = Math.floor((timeUntil % 3600000) / 60000);
+          const hours = Math.floor(timeUntil / 3600000);
           time.innerHTML = `
           ${hours
             .toString()
