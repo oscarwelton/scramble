@@ -42,13 +42,15 @@ console.log(savedMidnight);
 console.log(now);
 
 // localStorage.clear();
+// localStorage.removeItem("percentile");
 
 if (isNaN(savedMidnight.getTime())) {
   localStorage.removeItem(
     "midnight",
     "currentIndex",
     "currentScore",
-    "countdownTime"
+    "countdownTime",
+    "percentile"
   );
 
   savedMidnight = new Date(
@@ -78,7 +80,8 @@ if (isNaN(savedMidnight.getTime())) {
     "midnight",
     "currentIndex",
     "currentScore",
-    "countdownTime"
+    "countdownTime",
+    "percentile"
   );
   savedMidnight = new Date(
     now.getFullYear(),
@@ -194,13 +197,24 @@ fetch("/wordList")
           .then((response) => response.json())
           .then((result) => {
             const percentage = result["result"];
+            localStorage.setItem("percentile", percentage)
+            console.log(percentage)
             resolve(percentage);
           });
       });
     }
 
     function gameOver(wordList) {
-      percentile().then((percentage) => {
+      function calc() {
+        let percentage = localStorage.getItem("percentile");
+        console.log(percentage)
+        if (!percentage) {
+          return percentile();
+        } else {
+          return Promise.resolve(percentage);
+        }
+      }
+      calc().then((percentage) => {
         let emoji;
         let times = localStorage.getItem("timer");
         times = 300 - times;
@@ -232,7 +246,8 @@ fetch("/wordList")
                   </div>
                 </div>
             </div>
-          <button id="share">Share <i class="fa-solid fa-share-from-square"></i></button>
+              <button id="share">Share <i class="fa-solid fa-share-from-square"></i></button>
+
           <div class="grading">
             <h3 id="grade"></h3>
             <p id="grade-message"></p>
@@ -376,13 +391,15 @@ fetch("/wordList")
           const share = document.getElementById("share");
           share.addEventListener("click", () => {
             navigator.clipboard.writeText(clipboard);
-            document.querySelector("body").insertAdjacentHTML("beforeend", popupHTML);
+            document
+              .querySelector("body")
+              .insertAdjacentHTML("beforeend", popupHTML);
             share.disabled = true;
-            document.querySelector(".game-over").style.opacity = 0.8
+            document.querySelector(".game-over").style.opacity = 0.8;
 
             setTimeout(() => {
               const popup = document.getElementById("popup");
-              document.querySelector(".game-over").style.opacity = 1
+              document.querySelector(".game-over").style.opacity = 1;
               share.disabled = false;
               if (popup) {
                 popup.parentNode.removeChild(popup);
