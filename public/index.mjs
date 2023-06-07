@@ -38,11 +38,7 @@ let wordList, definitions;
 let now = new Date();
 let letterIndex = 0;
 
-console.log(savedMidnight);
-console.log(now);
-
 // localStorage.clear();
-// localStorage.removeItem("percentile");
 
 if (isNaN(savedMidnight.getTime())) {
   localStorage.removeItem(
@@ -198,7 +194,6 @@ fetch("/wordList")
           .then((result) => {
             const percentage = result["result"];
             localStorage.setItem("percentile", percentage)
-            console.log(percentage)
             resolve(percentage);
           });
       });
@@ -235,18 +230,23 @@ fetch("/wordList")
                 <div class="statistics">
                   <div class="stats">
                     <div class="stat">
-                      <h4><span class="icon"><i class="fa-solid fa-trophy"></i></span> ${scoreValue}</h4>
+                      <h4><span class="icon"><i class="fa-solid fa-square-check"></i></span> ${indexPosition} / 5 </h4>
                     </div>
-                    <div class="stat">
-                      <h4><span class="icon"><i class="fa-solid fa-hourglass-end"></i></span> ${timeTaken}</h4>
-                    </div>
-                    <div class="stat">
-                      <h4><span class="icon"><i class="fa-solid fa-ranking-star"></i></span> ${percentage} <span id="percentile">(percentile)</span></h4>
-                    </div>
+                      <div class="stat">
+                        <h4><span class="icon"><i class="fa-solid fa-trophy"></i></span> ${scoreValue}</h4>
+                      </div>
+                      <div class="stat">
+                        <h4><span class="icon"><i class="fa-solid fa-hourglass-end"></i></span> ${timeTaken}</h4>
+                      </div>
+                      <div class="stat">
+                        <h4><span class="icon"><i class="fa-solid fa-ranking-star"></i></span> ${percentage} <span id="percentile">(percentile)</span></h4>
+                      </div>
+                  </div>
+                  <div class="end">
+                    <button id="share">Share <i class="fa-solid fa-share-from-square"></i></button>
+                  </div>
                   </div>
                 </div>
-            </div>
-              <button id="share">Share <i class="fa-solid fa-share-from-square"></i></button>
 
           <div class="grading">
             <h3 id="grade"></h3>
@@ -276,7 +276,7 @@ fetch("/wordList")
             </ul>
           </div>
           <div>
-            <h4 class="midnight-countdown">Reset in: &nbsp <span id="time"></span></h4>
+            <h4 class="midnight-countdown">Resets in: &nbsp <span id="time"></span></h4>
           </div>
         </div>`;
 
