@@ -9,6 +9,11 @@
   position: relative;
 }
 
+.game-over-header {
+  font-family: var(--scope);
+  letter-spacing: 5px;
+}
+
 .word {
   font-weight: 500;
   margin-top: 0.5rem;
@@ -61,6 +66,11 @@
     display: inline-block;
     margin-right: 0.2rem;
   }
+
+  #percentile {
+    font-size: smaller;
+    font-weight: 100;
+  }
 }
 
 .disabled {
@@ -80,8 +90,8 @@
   background-size: cover;
   background-repeat: no-repeat;
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 0.5rem;
+  right: 0.5rem;
 
   min-height: 15vh;
   min-width: 15vh;
@@ -99,17 +109,36 @@
     font-size: 1.5rem;
     text-align: center;
   }
+
+  #grade-message {
+    opacity: 0.8;
+  }
 }
 
 
 #share {
-  width: fit-content;
+  position: relative;
+  letter-spacing: 2px;
+  right: 0;
+  margin: 1rem 0rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  background-color: var(--gunmetal);
+  color: var(--antique-white);
+  font-family: 'Scope One';
+  font-weight: 700;
+
+  &:hover {
+    cursor: pointer;
+    box-shadow: 3px 3px 1px white;
+  }
 }
 
 #popup {
   position: absolute;
   width: fit-content;
-  top: 70%;
+  top: 25%;
   left: 50%;
   font-size: 1.5rem;
   font-weight: 100;
@@ -121,6 +150,16 @@
   padding: 1rem;
   box-shadow: 3px 3px var(--shadow);
   border-radius: 10px;
+  opacity: 1;
+}
+
+
+.midnight-countdown {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  font-size: 1.2rem;
+  padding-top: 1rem;
 }
 
 

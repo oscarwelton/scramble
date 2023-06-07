@@ -218,7 +218,7 @@ fetch("/wordList")
         var gameOverHtml = `
           <div class="game-over">
             <div class="results">
-              <h2 class="">Results</h2>
+              <h2 class="game-over-header">Results</h2>
                 <div class="statistics">
                   <div class="stats">
                     <div class="stat">
@@ -228,16 +228,16 @@ fetch("/wordList")
                       <h4><span class="icon"><i class="fa-solid fa-hourglass-end"></i></span> ${timeTaken}</h4>
                     </div>
                     <div class="stat">
-                      <h4><span class="icon"><i class="fa-solid fa-ranking-star"></i></span> ${percentage} (percentile)</h4>
+                      <h4><span class="icon"><i class="fa-solid fa-ranking-star"></i></span> ${percentage} <span id="percentile">(percentile)</span></h4>
                     </div>
-                    </div>
-                    </div>
-                    <button id="share">Share <i class="fa-solid fa-share-from-square"></i></button>
+                  </div>
+                </div>
             </div>
+          <button id="share">Share <i class="fa-solid fa-share-from-square"></i></button>
           <div class="grading">
-          <h3 id="grade"></h3>
-          <p id="grade-message"></p>
-        </div>
+            <h3 id="grade"></h3>
+            <p id="grade-message"></p>
+          </div>
         <div class="word-list">
           <ul>
           <li class="word">1. ${wordList[0]} <span class="mark"></li>
@@ -262,8 +262,8 @@ fetch("/wordList")
             </ul>
           </div>
           <div>
-          <h4>Time until reset</h4>
-          <p id="time"><p>
+            <h4 class="midnight-countdown">Reset in: &nbsp <span id="time"></span></h4>
+          </div>
         </div>`;
 
         document.querySelector(".start-screen")?.remove();
@@ -373,19 +373,22 @@ fetch("/wordList")
           )}\n🏆 ${scoreValue} \n⌛ ${timeTaken} \n${emoji} ${grade.innerText}`;
 
           var popupHTML = `<div id="popup">Copied to clipboard!</div>`;
+
           const share = document.getElementById("share");
           share.addEventListener("click", () => {
             navigator.clipboard.writeText(clipboard);
-            share.insertAdjacentHTML("afterend", popupHTML);
+            document.querySelector("body").insertAdjacentHTML("beforeend", popupHTML);
             share.disabled = true;
+            document.querySelector(".game-over").style.opacity = 0.8
 
             setTimeout(() => {
               const popup = document.getElementById("popup");
+              document.querySelector(".game-over").style.opacity = 1
               share.disabled = false;
               if (popup) {
                 popup.parentNode.removeChild(popup);
               }
-            }, 1500);
+            }, 1000);
           });
         }
 
@@ -422,7 +425,6 @@ fetch("/wordList")
 
         setInterval(() => {
           timeUntilMidnight();
-          console.log("test");
         }, 1000);
 
         const marks = Array.from(document.querySelectorAll("span.mark"));
