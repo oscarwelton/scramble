@@ -23,6 +23,7 @@ let htmlBlock = `<div class="game">
 <button id="shuffle"><i class="fa-solid fa-shuffle"></i></button>
 <button class="hint-button" disabled="disabled"><i class="fa-solid fa-question"></i></button>
 <button id="clear"><i class="fa-solid fa-arrows-rotate"></i></button>
+<button id="skip">skip</button>
 </div>
 <ul id="anagram"></ul>
 <div id="submit-div">
@@ -201,6 +202,7 @@ fetch("/wordList")
 
     function gameOver(wordList) {
       percentile().then((percentage) => {
+        let emoji;
         let times = localStorage.getItem("timer");
         times = 300 - times;
         if (times > 300) {
@@ -212,26 +214,28 @@ fetch("/wordList")
           minutes.toString().padStart(1, "0") +
           ":" +
           seconds.toString().padStart(2, "0");
+
         var gameOverHtml = `
           <div class="game-over">
-            <h2 class="center"> results</h2>
-            <div class="statistics">
-            <div class="grading">
-              <h3 id="grade"></h3>
-              <p id="grade-message"></p>
-            </div>
-            <div class="stats">
-            <div class="stat">
-              <h4><i class="fa-solid fa-trophy"></i> ${scoreValue}</h4>
-            </div>
-            <div class="stat">
-              <h4><i class="fa-solid fa-clock"></i> ${timeTaken}</h4>
-            </div>
-            <div class="stat">
-              <h4><i class="fa-solid fa-ranking-star"></i> ${percentage} (percentile)</h4>
-            </div>
-            </div>
+          <div class="statistics">
+          <div class="stats">
+          <h2 class="">Results</h2>
+                <div class="stat">
+                  <h4><i class="fa-solid fa-trophy"></i> ${scoreValue}</h4>
+                </div>
+                <div class="stat">
+                  <h4><i class="fa-solid fa-clock"></i> ${timeTaken}</h4>
+                </div>
+                <div class="stat">
+                  <h4><i class="fa-solid fa-ranking-star"></i> ${percentage} percentile</h4>
+                </div>
+                </div>
+                <div class="grading">
+                  <h3 id="grade"></h3>
+                  <p id="grade-message"></p>
+                </div>
           </div>
+          <button id="share">Share <i class="fa-solid fa-share-from-square"></i></button>
         <div class="word-list">
           <ul>
           <li class="word">1. ${wordList[0]} <span class="mark"></li>
@@ -255,7 +259,6 @@ fetch("/wordList")
               <li class="definition">${definitions[4]}</li>
             </ul>
           </div>
-
           <h5 class="center">Come back tomorrow for another challenge!</h4>
         </div>`;
 
@@ -270,73 +273,111 @@ fetch("/wordList")
           case scoreValue >= 1875:
             grade.innerText = "A++";
             gradeMessage.innerText = "remarkable!";
+            emoji = "🥸";
             break;
           case scoreValue >= 1800 && scoreValue <= 1875:
             grade.innerText = "A";
             gradeMessage.innerText = "outstanding!";
+            emoji = "🤓";
             break;
           case scoreValue >= 1700 && scoreValue <= 1799:
             grade.innerText = "A-";
             gradeMessage.innerText = "marvelous!";
+            emoji = "😎";
             break;
           case scoreValue >= 1600 && scoreValue <= 1699:
             grade.innerText = "B+";
             gradeMessage.innerText = "brilliant!";
+            emoji = "😇";
             break;
           case scoreValue >= 1500 && scoreValue <= 1599:
             grade.innerText = "B";
             gradeMessage.innerText = "impressive!";
+            emoji = "😆";
             break;
           case scoreValue >= 1400 && scoreValue <= 1499:
             grade.innerText = "B-";
             gradeMessage.innerText = "encouraging!";
+            emoji = "😃";
             break;
           case scoreValue >= 1300 && scoreValue <= 1399:
             grade.innerText = "C+";
             gradeMessage.innerText = "promising!";
+            emoji = "😊";
             break;
           case scoreValue >= 1200 && scoreValue <= 1299:
             grade.innerText = "C";
             gradeMessage.innerText = "satisfactory";
+            emoji = "🙂";
             break;
           case scoreValue >= 1100 && scoreValue <= 1199:
             grade.innerText = "C-";
-            gradeMessage.innerText = "solid";
+            gradeMessage.innerText = "so-so";
+            emoji = "🤔";
             break;
           case scoreValue >= 900 && scoreValue <= 999:
             grade.innerText = "D+";
-            gradeMessage.innerText = "so-so";
+            gradeMessage.innerText = "hmm...";
+            emoji = "😐";
             break;
           case scoreValue >= 800 && scoreValue <= 899:
             grade.innerText = "D";
-            gradeMessage.innerText = "substandard"
+            gradeMessage.innerText = "substandard";
+            emoji = "🫢";
             break;
           case scoreValue >= 700 && scoreValue <= 799:
             grade.innerText = "D-";
-            gradeMessage.innerText = "poor"
+            gradeMessage.innerText = "poor";
+            emoji = "🥲";
             break;
           case scoreValue >= 600 && scoreValue <= 699:
             grade.innerText = "E+";
-            gradeMessage.innerText = "not good"
-
+            gradeMessage.innerText = "not good";
+            emoji = "☹️";
             break;
           case scoreValue >= 500 && scoreValue <= 599:
             grade.innerText = "E";
-            gradeMessage.innerText = "just bad"
-
+            gradeMessage.innerText = "just bad";
+            emoji = "😰";
             break;
           case scoreValue >= 300 && scoreValue <= 399:
             grade.innerText = "E-";
             gradeMessage.innerText = "really?";
+            emoji = "😵";
             break;
           case scoreValue >= 0 && scoreValue <= 299:
             grade.innerText = "F";
             gradeMessage.innerText = "fail!";
+            emoji = "🤬";
             break;
           default:
             grade.innerText = "Invalid score value";
             break;
         }
+
+        function share() {
+          function createTickString(indexPosition) {
+            let tickString = "";
+            for (let i = 0; i < indexPosition; i++) {
+              tickString += "✅";
+            }
+            return tickString;
+          }
+
+          var clipboard = `Scrambled.
+          Day: 100 📅
+          Words: ${createTickString(indexPosition)}
+          Score: ${scoreValue} 🏆
+          Time: ${timeTaken} ⌛
+          Grade: ${grade.innerText} ${emoji}`;
+
+          const share = document.getElementById("share");
+          share.addEventListener("click", () => {
+            console.log(clipboard);
+          });
+        }
+
+        share();
 
         const marks = Array.from(document.querySelectorAll("span.mark"));
         marks.slice(0, indexPosition).forEach((mark) => {
