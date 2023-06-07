@@ -23,7 +23,6 @@ let htmlBlock = `<div class="game">
 <button id="shuffle"><i class="fa-solid fa-shuffle"></i></button>
 <button class="hint-button" disabled="disabled"><i class="fa-solid fa-question"></i></button>
 <button id="clear"><i class="fa-solid fa-arrows-rotate"></i></button>
-<button id="skip">skip</button>
 </div>
 <ul id="anagram"></ul>
 <div id="submit-div">
