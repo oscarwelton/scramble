@@ -30,6 +30,8 @@ let htmlBlock = `<div class="game">
 </div>
 </div>`;
 
+console.log("test")
+
 let indexPosition = JSON.parse(localStorage.getItem("currentIndex")) || 0;
 let scoreValue = JSON.parse(localStorage.getItem("currentScore")) || 0;
 let countdownTime = localStorage.getItem("timer") || 300;
