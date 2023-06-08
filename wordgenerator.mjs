@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 
 let wordList = {};
+let day = 0;
 
 async function generateWord(length) {
   const response = await fetch(
@@ -65,7 +66,6 @@ async function main() {
 
 main();
 
-let day = 0;
 
 function dayCount() {
   day += 1
@@ -74,4 +74,4 @@ function dayCount() {
 
 dayCount();
 
-export { wordList, dayCount };
+export { wordList, day };

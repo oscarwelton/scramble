@@ -4,7 +4,7 @@ import cron from "node-cron";
 import { dirname } from "path";
 import { exec } from 'child_process';
 import { fileURLToPath } from "url";
-import { wordList, dayCount } from './wordgenerator.mjs';
+import { wordList, day } from './wordgenerator.mjs';
 import { calculatePercentiles, recalculatePercentiles } from "./percentile-calculator.mjs";
 
 
@@ -23,7 +23,7 @@ app.get('/wordList', (req, res) => {
 });
 
 app.get('/day', (req, res) => {
-  const day = dayCount();
+  console.log("hello")
   res.send({ day });
 });
 

@@ -43,12 +43,12 @@ let day;
 fetch('/day')
   .then(response => response.json())
   .then(data => {
-    day = data.day;
-
+    day = data.day
   })
   .catch(error => {
     console.log('Error:', error);
   });
+
 
 // localStorage.clear();
 
