@@ -65,4 +65,13 @@ async function main() {
 
 main();
 
-export { wordList };
+let day = 0;
+
+function dayCount() {
+  day += 1
+  return day
+}
+
+dayCount();
+
+export { wordList, dayCount };

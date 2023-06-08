@@ -38,6 +38,17 @@ let storedPercentile = localStorage.getItem("percentile");
 let wordList, definitions;
 let now = new Date();
 let letterIndex = 0;
+let day;
+
+fetch('/day')
+  .then(response => response.json())
+  .then(data => {
+    day = data.day;
+
+  })
+  .catch(error => {
+    console.log('Error:', error);
+  });
 
 // localStorage.clear();
 
@@ -433,7 +444,7 @@ fetch("/wordList")
             return tickString;
           }
 
-          var clipboard = `⠀Scrambled. (1)\n⠀${createTickString(
+          var clipboard = `⠀Scrambled. (${day})\n⠀${createTickString(
             indexPosition
           )}\n⠀🏆⠀${scoreValue}⠀⠀🏆\n⠀⌛⠀${timeTaken}⠀⠀⌛\n⠀${emoji}⠀${
             grade.innerText
