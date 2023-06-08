@@ -35,12 +35,11 @@ let scoreValue = JSON.parse(localStorage.getItem("currentScore")) || 0;
 let countdownTime = localStorage.getItem("timer") || 300;
 let savedMidnight = new Date(localStorage.getItem("midnight"));
 let storedPercentile = localStorage.getItem("percentile");
-console.log(storedPercentile)
 let wordList, definitions;
 let now = new Date();
 let letterIndex = 0;
-let day;
 let percentageShow;
+let day;
 
 // localStorage.clear();
 
@@ -101,10 +100,6 @@ if (isNaN(savedMidnight.getTime())) {
 
   countdownTime = 300;
   localStorage.setItem("timer", JSON.stringify(countdownTime));
-
-  console.log("correct format but date in the past. Values reset. ");
-} else {
-  console.log("Saved Midnight is greater than now. No reset needed.");
 }
 
 fetch("/wordList")
@@ -234,12 +229,10 @@ fetch("/wordList")
 
     function calc() {
       return new Promise((resolve, reject) => {
-        console.log(storedPercentile)
         if (storedPercentile === null) {
           percentile()
             .then((percentage) => {
-              localStorage.setItem("percentile", percentage)
-              console.log("new");
+              localStorage.setItem("percentile", percentage);
               percentageShow = toOrdinalSuffix(percentage);
               resolve(percentage);
             })
@@ -249,7 +242,7 @@ fetch("/wordList")
         } else if (storedPercentile >= 0) {
           recalculatePercentile()
             .then((percentage) => {
-              localStorage.setItem("percentile", percentage)
+              localStorage.setItem("percentile", percentage);
               percentageShow = toOrdinalSuffix(percentage);
               resolve(percentage);
             })
@@ -259,7 +252,7 @@ fetch("/wordList")
         } else {
           percentile()
             .then((percentage) => {
-              localStorage.setItem("percentile", percentage)
+              localStorage.setItem("percentile", percentage);
               percentageShow = toOrdinalSuffix(percentage);
               resolve(percentage);
             })
@@ -272,15 +265,6 @@ fetch("/wordList")
 
     function gameOver(wordList) {
       calc().then((percentage) => {
-        fetch("/day")
-          .then((response) => response.json())
-          .then((data) => {
-            day = data.day;
-          })
-          .catch((error) => {
-            console.log("Error:", error);
-          });
-
         let emoji;
         let times = localStorage.getItem("timer");
         times = 300 - times;
@@ -453,58 +437,65 @@ fetch("/wordList")
             return tickString;
           }
 
-          var clipboard = `⠀Scrambled. (${day})\n⠀${createTickString(
-            indexPosition
-          )}\n⠀🏆⠀${scoreValue}⠀⠀🏆\n⠀⌛⠀${timeTaken}⠀⠀⌛\n⠀${emoji}⠀${
-            grade.innerText
-          }⠀⠀${emoji}`;
+          fetch("/day")
+            .then((response) => response.json())
+            .then((data) => {
+              day = parseInt(data.day);
 
-          var popupHTML = `<div id="popup"><i class="fa-solid fa-clipboard-check"></i><br>Copied to clipboard!</div>`;
+              var clipboard = `⠀Scrambled. (${day})\n⠀${createTickString(
+                indexPosition
+              )}\n⠀🏆⠀${scoreValue}⠀⠀🏆\n⠀⌛⠀${timeTaken}⠀⠀⌛\n⠀${emoji}⠀${
+                grade.innerText
+              }⠀⠀${emoji}`;
 
-          const share = document.getElementById("share");
-          share.addEventListener("click", async () => {
-            try {
-              await navigator.clipboard.writeText(clipboard);
-              document
-                .querySelector("body")
-                .insertAdjacentHTML("beforeend", popupHTML);
-              share.disabled = true;
-              document.querySelector(".game-over").style.opacity = 0.8;
+              const popupHTML = `<div id="popup"><i class="fa-solid fa-clipboard-check"></i><br>Copied to clipboard!</div>`;
 
-              setTimeout(() => {
-                const popup = document.getElementById("popup");
-                document.querySelector(".game-over").style.opacity = 1;
-                share.disabled = false;
-                if (popup) {
-                  popup.parentNode.removeChild(popup);
+              const share = document.getElementById("share");
+
+              share.addEventListener("click", async () => {
+                try {
+                  await navigator.clipboard.writeText(clipboard);
+                  document
+                    .querySelector("body")
+                    .insertAdjacentHTML("beforeend", popupHTML);
+                  share.disabled = true;
+                  document.querySelector(".game-over").style.opacity = 0.8;
+
+                  setTimeout(() => {
+                    const popup = document.getElementById("popup");
+                    document.querySelector(".game-over").style.opacity = 1;
+                    share.disabled = false;
+                    if (popup) {
+                      popup.parentNode.removeChild(popup);
+                    }
+                  }, 1000);
+                } catch (error) {
+                  console.error("Failed to write to clipboard:", error);
                 }
-              }, 1000);
-            } catch (error) {
-              console.error("Failed to write to clipboard:", error);
-            }
-          });
+              });
 
-          share.addEventListener("touchend", async () => {
-            try {
-              await navigator.clipboard.writeText(clipboard);
-              document
-                .querySelector("body")
-                .insertAdjacentHTML("beforeend", popupHTML);
-              share.disabled = true;
-              document.querySelector(".game-over").style.opacity = 0.8;
+              share.addEventListener("touchend", async () => {
+                try {
+                  await navigator.clipboard.writeText(clipboard);
+                  document
+                    .querySelector("body")
+                    .insertAdjacentHTML("beforeend", popupHTML);
+                  share.disabled = true;
+                  document.querySelector(".game-over").style.opacity = 0.8;
 
-              setTimeout(() => {
-                const popup = document.getElementById("popup");
-                document.querySelector(".game-over").style.opacity = 1;
-                share.disabled = false;
-                if (popup) {
-                  popup.parentNode.removeChild(popup);
+                  setTimeout(() => {
+                    const popup = document.getElementById("popup");
+                    document.querySelector(".game-over").style.opacity = 1;
+                    share.disabled = false;
+                    if (popup) {
+                      popup.parentNode.removeChild(popup);
+                    }
+                  }, 1000);
+                } catch (error) {
+                  console.error("Failed to write to clipboard:", error);
                 }
-              }, 1000);
-            } catch (error) {
-              console.error("Failed to write to clipboard:", error);
-            }
-          });
+              });
+            });
         }
 
         share();
