@@ -5,7 +5,6 @@ function calculatePercentiles(score) {
   scores.push(score);
   scores.sort();
 
-
   const scoreIndex = scores.indexOf(score);
   const numberOfScores = scores.length;
 

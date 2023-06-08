@@ -35,10 +35,12 @@ let scoreValue = JSON.parse(localStorage.getItem("currentScore")) || 0;
 let countdownTime = localStorage.getItem("timer") || 300;
 let savedMidnight = new Date(localStorage.getItem("midnight"));
 let storedPercentile = localStorage.getItem("percentile");
+console.log(storedPercentile)
 let wordList, definitions;
 let now = new Date();
 let letterIndex = 0;
 let day;
+let percentageShow;
 
 // localStorage.clear();
 
@@ -121,11 +123,13 @@ fetch("/wordList")
     }
 
     document.addEventListener("click", () => {
-      let answerListItems = document
-        .getElementById("answer")
-        .querySelectorAll("li");
+      let answerListItems = document.getElementById("answer");
       if (answerListItems) {
-        if (answerListItems.length === wordList[indexPosition].length) {
+        answerListItems = answerListItems.querySelectorAll("li");
+        if (
+          indexPosition < 5 &&
+          answerListItems.length === wordList[indexPosition].length
+        ) {
           const submitButton = document.getElementById("submit");
           submitButton.disabled = false;
         }
@@ -217,12 +221,36 @@ fetch("/wordList")
       });
     }
 
+    function toOrdinalSuffix(percentage) {
+      const int = parseInt(percentage),
+        digits = [int % 10, int % 100],
+        ordinals = ["st", "nd", "rd", "th"],
+        oPattern = [1, 2, 3, 4],
+        tPattern = [11, 12, 13, 14, 15, 16, 17, 18, 19];
+      return oPattern.includes(digits[0]) && !tPattern.includes(digits[1])
+        ? int + ordinals[digits[0] - 1]
+        : int + ordinals[3];
+    }
+
     function calc() {
       return new Promise((resolve, reject) => {
-        if (storedPercentile) {
+        console.log(storedPercentile)
+        if (storedPercentile === null) {
+          percentile()
+            .then((percentage) => {
+              localStorage.setItem("percentile", percentage)
+              console.log("new");
+              percentageShow = toOrdinalSuffix(percentage);
+              resolve(percentage);
+            })
+            .catch((error) => {
+              reject(error);
+            });
+        } else if (storedPercentile >= 0) {
           recalculatePercentile()
             .then((percentage) => {
-              localStorage.setItem("percentile", percentage);
+              localStorage.setItem("percentile", percentage)
+              percentageShow = toOrdinalSuffix(percentage);
               resolve(percentage);
             })
             .catch((error) => {
@@ -231,7 +259,8 @@ fetch("/wordList")
         } else {
           percentile()
             .then((percentage) => {
-              localStorage.setItem("percentile", percentage);
+              localStorage.setItem("percentile", percentage)
+              percentageShow = toOrdinalSuffix(percentage);
               resolve(percentage);
             })
             .catch((error) => {
@@ -243,19 +272,6 @@ fetch("/wordList")
 
     function gameOver(wordList) {
       calc().then((percentage) => {
-        function toOrdinalSuffix(percentage) {
-          const int = parseInt(percentage),
-            digits = [int % 10, int % 100],
-            ordinals = ["st", "nd", "rd", "th"],
-            oPattern = [1, 2, 3, 4],
-            tPattern = [11, 12, 13, 14, 15, 16, 17, 18, 19];
-          return oPattern.includes(digits[0]) && !tPattern.includes(digits[1])
-            ? int + ordinals[digits[0] - 1]
-            : int + ordinals[3];
-        }
-
-        percentage = toOrdinalSuffix(percentage);
-
         fetch("/day")
           .then((response) => response.json())
           .then((data) => {
@@ -294,7 +310,7 @@ fetch("/wordList")
                         <h4><span class="icon"><i class="fa-solid fa-hourglass-end"></i></span> ${timeTaken}</h4>
                       </div>
                       <div class="stat">
-                        <h4><span class="icon"><i class="fa-solid fa-ranking-star"></i></span> ${percentage} <span id="percentile">(percentile)</span></h4>
+                        <h4><span class="icon"><i class="fa-solid fa-ranking-star"></i></span> ${percentageShow} <span id="percentile">(percentile)</span></h4>
                       </div>
                   </div>
                   <div class="end">
@@ -468,7 +484,7 @@ fetch("/wordList")
             }
           });
 
-          share.addEventListener("touchstart", async () => {
+          share.addEventListener("touchend", async () => {
             try {
               await navigator.clipboard.writeText(clipboard);
               document
