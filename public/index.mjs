@@ -40,16 +40,6 @@ let now = new Date();
 let letterIndex = 0;
 let day;
 
-fetch('/day')
-  .then(response => response.json())
-  .then(data => {
-    day = data.day
-  })
-  .catch(error => {
-    console.log('Error:', error);
-  });
-
-
 // localStorage.clear();
 
 if (isNaN(savedMidnight.getTime())) {
@@ -229,23 +219,21 @@ fetch("/wordList")
 
     function calc() {
       return new Promise((resolve, reject) => {
-
         if (storedPercentile) {
           recalculatePercentile()
             .then((percentage) => {
-              console.log("recalculating")
+              console.log("recalculating");
               localStorage.setItem("percentile", percentage);
               resolve(percentage);
             })
             .catch((error) => {
               reject(error);
             });
-
-          } else {
-            percentile()
+        } else {
+          percentile()
             .then((percentage) => {
-              console.log(percentage)
-              console.log("new calculation!")
+              console.log(percentage);
+              console.log("new calculation!");
               localStorage.setItem("percentile", percentage);
               resolve(percentage);
             })
@@ -258,7 +246,6 @@ fetch("/wordList")
 
     function gameOver(wordList) {
       calc().then((percentage) => {
-
         function toOrdinalSuffix(percentage) {
           const int = parseInt(percentage),
             digits = [int % 10, int % 100],
@@ -271,6 +258,15 @@ fetch("/wordList")
         }
 
         percentage = toOrdinalSuffix(percentage);
+
+        fetch("/day")
+          .then((response) => response.json())
+          .then((data) => {
+            day = data.day;
+          })
+          .catch((error) => {
+            console.log("Error:", error);
+          });
 
         let emoji;
         let times = localStorage.getItem("timer");
@@ -454,6 +450,28 @@ fetch("/wordList")
 
           const share = document.getElementById("share");
           share.addEventListener("click", async () => {
+            try {
+              await navigator.clipboard.writeText(clipboard);
+              document
+                .querySelector("body")
+                .insertAdjacentHTML("beforeend", popupHTML);
+              share.disabled = true;
+              document.querySelector(".game-over").style.opacity = 0.8;
+
+              setTimeout(() => {
+                const popup = document.getElementById("popup");
+                document.querySelector(".game-over").style.opacity = 1;
+                share.disabled = false;
+                if (popup) {
+                  popup.parentNode.removeChild(popup);
+                }
+              }, 1000);
+            } catch (error) {
+              console.error("Failed to write to clipboard:", error);
+            }
+          });
+
+          share.addEventListener("touchstart", async () => {
             try {
               await navigator.clipboard.writeText(clipboard);
               document

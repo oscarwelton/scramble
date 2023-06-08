@@ -23,7 +23,6 @@ app.get('/wordList', (req, res) => {
 });
 
 app.get('/day', (req, res) => {
-  console.log("hello")
   res.send({ day });
 });
 
