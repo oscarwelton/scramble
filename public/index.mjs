@@ -34,6 +34,7 @@ let indexPosition = JSON.parse(localStorage.getItem("currentIndex")) || 0;
 let scoreValue = JSON.parse(localStorage.getItem("currentScore")) || 0;
 let countdownTime = localStorage.getItem("timer") || 300;
 let savedMidnight = new Date(localStorage.getItem("midnight"));
+let storedPercentile = localStorage.getItem("percentile");
 let wordList, definitions;
 let now = new Date();
 let letterIndex = 0;
@@ -193,23 +194,73 @@ fetch("/wordList")
           .then((response) => response.json())
           .then((result) => {
             const percentage = result["result"];
-            localStorage.setItem("percentile", percentage)
             resolve(percentage);
           });
       });
     }
 
-    function gameOver(wordList) {
-      function calc() {
-        let percentage = localStorage.getItem("percentile");
-        console.log(percentage)
-        if (!percentage) {
-          return percentile();
-        } else {
-          return Promise.resolve(percentage);
+    function recalculatePercentile() {
+      return new Promise((resolve, reject) => {
+        fetch("/recalculate-percentiles", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ score: scoreValue }),
+        })
+          .then((response) => response.json())
+          .then((result) => {
+            const percentage = result["result"];
+            resolve(percentage);
+          });
+      });
+    }
+
+    function calc() {
+      return new Promise((resolve, reject) => {
+
+        if (storedPercentile) {
+          recalculatePercentile()
+            .then((percentage) => {
+              console.log("recalculating")
+              localStorage.setItem("percentile", percentage);
+              resolve(percentage);
+            })
+            .catch((error) => {
+              reject(error);
+            });
+
+          } else {
+            percentile()
+            .then((percentage) => {
+              console.log(percentage)
+              console.log("new calculation!")
+              localStorage.setItem("percentile", percentage);
+              resolve(percentage);
+            })
+            .catch((error) => {
+              reject(error);
+            });
         }
-      }
+      });
+    }
+
+    function gameOver(wordList) {
       calc().then((percentage) => {
+
+        function toOrdinalSuffix(percentage) {
+          const int = parseInt(percentage),
+            digits = [int % 10, int % 100],
+            ordinals = ["st", "nd", "rd", "th"],
+            oPattern = [1, 2, 3, 4],
+            tPattern = [11, 12, 13, 14, 15, 16, 17, 18, 19];
+          return oPattern.includes(digits[0]) && !tPattern.includes(digits[1])
+            ? int + ordinals[digits[0] - 1]
+            : int + ordinals[3];
+        }
+
+        percentage = toOrdinalSuffix(percentage);
+
         let emoji;
         let times = localStorage.getItem("timer");
         times = 300 - times;
@@ -382,7 +433,11 @@ fetch("/wordList")
             return tickString;
           }
 
-          var clipboard = `⠀Scrambled. (1)\n⠀${createTickString(indexPosition)}\n⠀🏆⠀${scoreValue}⠀🏆\n⠀⌛⠀${timeTaken}⠀⌛\n⠀${emoji}⠀${grade.innerText}⠀${emoji}`;
+          var clipboard = `⠀Scrambled. (1)\n⠀${createTickString(
+            indexPosition
+          )}\n⠀🏆⠀${scoreValue}⠀🏆\n⠀⌛⠀${timeTaken}⠀⌛\n⠀${emoji}⠀${
+            grade.innerText
+          }⠀${emoji}`;
 
           var popupHTML = `<div id="popup"><i class="fa-solid fa-clipboard-check"></i><br>Copied to clipboard!</div>`;
 
@@ -390,7 +445,9 @@ fetch("/wordList")
           share.addEventListener("click", async () => {
             try {
               await navigator.clipboard.writeText(clipboard);
-              document.querySelector("body").insertAdjacentHTML("beforeend", popupHTML);
+              document
+                .querySelector("body")
+                .insertAdjacentHTML("beforeend", popupHTML);
               share.disabled = true;
               document.querySelector(".game-over").style.opacity = 0.8;
 

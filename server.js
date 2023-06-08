@@ -5,7 +5,8 @@ import { dirname } from "path";
 import { exec } from 'child_process';
 import { fileURLToPath } from "url";
 import { wordList } from './wordgenerator.mjs';
-import { calculatePercentiles } from "./percentile-calculator.mjs";
+import { calculatePercentiles, recalculatePercentiles } from "./percentile-calculator.mjs";
+
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -26,6 +27,13 @@ app.use(express.json());
 app.post('/calculate-percentiles', (req, res) => {
   const score = req.body.score;
   const result = calculatePercentiles(score);
+
+  res.json({ result });
+});
+
+app.post('/recalculate-percentiles', (req, res) => {
+  const score = req.body.score;
+  const result = recalculatePercentiles(score);
 
   res.json({ result });
 });
