@@ -222,7 +222,6 @@ fetch("/wordList")
         if (storedPercentile) {
           recalculatePercentile()
             .then((percentage) => {
-              console.log("recalculating");
               localStorage.setItem("percentile", percentage);
               resolve(percentage);
             })
@@ -232,8 +231,6 @@ fetch("/wordList")
         } else {
           percentile()
             .then((percentage) => {
-              console.log(percentage);
-              console.log("new calculation!");
               localStorage.setItem("percentile", percentage);
               resolve(percentage);
             })

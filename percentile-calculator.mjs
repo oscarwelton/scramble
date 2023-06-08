@@ -2,10 +2,9 @@ let scores = [];
 scores.sort();
 
 function calculatePercentiles(score) {
-  console.log(score, "score pushed")
   scores.push(score);
   scores.sort();
-  console.log(scores)
+
 
   const scoreIndex = scores.indexOf(score);
   const numberOfScores = scores.length;
@@ -18,9 +17,7 @@ function calculatePercentiles(score) {
 
 
 function recalculatePercentiles(score) {
-  console.log(score)
   scores.sort();
-  console.log("recalc from", scores)
 
   const scoreIndex = scores.indexOf(score);
   const numberOfScores = scores.length;

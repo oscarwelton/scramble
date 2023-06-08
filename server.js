@@ -55,5 +55,4 @@ app.listen(PORT, () => {
       console.log(`Script output: ${stdout}`);
     });
   });
-  console.log("Press Ctrl+C to quit.");
 });
