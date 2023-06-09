@@ -30,7 +30,6 @@ let htmlBlock = `<div class="game">
 </div>
 </div>`;
 
-console.log("test")
 
 let indexPosition = JSON.parse(localStorage.getItem("currentIndex")) || 0;
 let scoreValue = JSON.parse(localStorage.getItem("currentScore")) || 0;
@@ -476,6 +475,7 @@ fetch("/wordList")
               });
 
               share.addEventListener("touchend", async () => {
+                alert("hello world")
                 try {
                   await navigator.clipboard.writeText(clipboard);
                   document

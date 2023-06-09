@@ -1,7 +1,9 @@
 .game-over {
   padding: 1rem;
-  background-color: var(--antique-white);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 
 .game-over-header {
@@ -30,7 +32,8 @@
   background: white;
   padding: 0.75rem;
   border-radius: 10px;
-  box-shadow: -2px -2px var(--shadow);
+  border: 1px solid var(--shadow);
+  box-shadow: 3px 3px var(--shadow);
 }
 
 .d-none {
@@ -90,11 +93,11 @@
   background-size: cover;
   background-repeat: no-repeat;
   position: absolute;
-  top: 0.2rem;
+  top: 0.3rem;
   right: 0.5rem;
 
-  min-height: 16vh;
-  min-width: 16vh;
+  height: 16vh;
+  width: 16vh;
   display: flex;
   flex-direction: column;
   transform: rotate(8deg);
