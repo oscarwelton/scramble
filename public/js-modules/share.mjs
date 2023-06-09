@@ -17,6 +17,8 @@ function share(day, indexPosition, scoreValue, timeTaken, gradeEmoji, gradeValue
       \n⠀${gradeEmoji}⠀${gradeValue}⠀⠀${gradeEmoji}`;
 
   share.addEventListener("click", (event) => {
+    console.log(event)
+    console.log(clipboard)
     navigator.clipboard.writeText(clipboard);
     document.querySelector("body").insertAdjacentHTML("beforeend", popupHTML);
     document.querySelector(".game-over").style.opacity = 0.8;
