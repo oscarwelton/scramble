@@ -6,7 +6,7 @@ function createTickString(indexPosition) {
   return tickString;
 }
 
-function share(day, indexPosition, scoreValue, timeTaken, emoji) {
+function share(day, indexPosition, scoreValue, timeTaken, gradeEmoji, gradeValue) {
   const popupHTML = `<div id="popup"><i class="fa-solid fa-clipboard-check"></i><br>Copied to clipboard!</div>`;
   const share = document.getElementById("share");
 
@@ -14,7 +14,7 @@ function share(day, indexPosition, scoreValue, timeTaken, emoji) {
       \n⠀${createTickString(indexPosition)}
       \n⠀🏆⠀${scoreValue}🏆
       \n⠀⌛⠀${timeTaken}⠀⠀⌛
-      \n⠀${emoji}⠀${grade.innerText}⠀⠀${emoji}`;
+      \n⠀${gradeEmoji}⠀${gradeValue}⠀⠀${gradeEmoji}`;
 
   share.addEventListener("click", (event) => {
     navigator.clipboard.writeText(clipboard);

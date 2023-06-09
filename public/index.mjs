@@ -264,7 +264,9 @@ function gameOver() {
     );
 
     const grade = grades(scoreValue);
-    share(day, indexPosition, scoreValue, timeTaken, grade['emoji']);
+    const gradeValue = grade['grade']
+    const gradeEmoji = grade['emoji']
+    share(day, indexPosition, scoreValue, timeTaken, gradeEmoji, gradeValue);
 
     const time = document.getElementById("time");
     function timeUntilMidnight() {
