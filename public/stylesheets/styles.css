@@ -286,10 +286,8 @@ h5 {
 
 .start-screen {
   max-width: 600px;
-  margin: 0.5rem auto;
-  width: 87%;
+  height: 100vh;
   padding: 1rem;
-  border-radius: 10px;
   background-color: var(--antique-white);
   box-shadow: 5px 5px var(--shadow);
 }
@@ -358,13 +356,8 @@ h2 {
 }
 
 .game-over {
-  max-width: 600px;
-  margin: 0.5rem auto;
-  width: 87%;
   padding: 1rem;
-  border-radius: 10px;
   background-color: var(--antique-white);
-  box-shadow: 5px 5px var(--shadow);
   position: relative;
 }
 

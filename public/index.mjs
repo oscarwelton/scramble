@@ -74,8 +74,7 @@ if (isNaN(savedMidnight.getTime())) {
   countdownTime = 300;
   localStorage.setItem("timer", JSON.stringify(countdownTime));
 } else if (
-  savedMidnight instanceof Date &&
-  savedMidnight.getTime() < now.getTime()
+  savedMidnight instanceof Date & savedMidnight.getTime() < now.getTime()
 ) {
   localStorage.removeItem(
     "midnight",
