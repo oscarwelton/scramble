@@ -1,4 +1,3 @@
-
 function hintPrompt(definitions, countdownTime, indexPosition) {
   const hintSound = new Audio("./resources/audio/hint.mp3");
   const hintButton = document.querySelector(".hint-button");

@@ -2,7 +2,9 @@ import { htmlBlock } from "./js-modules/game.mjs";
 import { endHtml } from "./js-modules/end.mjs";
 import { toOrdinalSuffix } from "./js-modules/ordinal.mjs";
 import { hintPrompt } from "./js-modules/hint.mjs";
-import { share } from "./js-modules/share.mjs"
+import { share } from "./js-modules/share.mjs";
+import { shuffle } from "./js-modules/shuffle.mjs"
+import { grades } from "./js-modules/grade.mjs"
 
 let indexPosition = JSON.parse(localStorage.getItem("currentIndex")) || 0;
 let countdownTime = localStorage.getItem("timer") || 300;
@@ -13,7 +15,7 @@ let wordList, definitions;
 let now = new Date();
 let letterIndex = 0;
 let percentageShow;
-let day = 1;
+let day = 0;
 
 // localStorage.clear();
 
@@ -26,8 +28,17 @@ fetch("/wordList")
       gameOver(wordList);
     }
   })
-  .catch((e) => {
-    console.log(e);
+  .catch((error) => {
+    console.error(error);
+  });
+
+  fetch("/day")
+  .then((response) => response.json())
+  .then((data) => {
+    day = parseInt(data.day)
+  })
+  .catch ((error) => {
+    console.error(error);
   });
 
 
@@ -94,12 +105,13 @@ document.addEventListener("click", () => {
   if (answerListItems) {
     answerListItems = answerListItems.querySelectorAll("li");
 
-    if (
-      indexPosition < 5 &&
-      answerListItems.length === wordList[indexPosition].length
-    ) {
+    if (indexPosition < 5 && answerListItems.length === wordList[indexPosition].length) {
       const submitButton = document.getElementById("submit");
       submitButton.disabled = false;
+      if (submitButton) {
+        submitButton.removeEventListener("click", submitButtonClick);
+        submitButton.addEventListener("click", submitButtonClick);
+      }
     }
 
     const clickHandler = () => {
@@ -131,7 +143,7 @@ function startClock() {
       }, 400);
     }
 
-    if (countdownTime <= 0) {
+    if (countdownTime <= 0 || indexPosition === 5) {
       clearInterval(intervalId);
       gameOver(wordList);
     }
@@ -164,11 +176,11 @@ function percentile() {
       },
       body: JSON.stringify({ score: scoreValue }),
     })
-    .then((response) => response.json())
-    .then((result) => {
-      const percentage = result["result"];
-      resolve(percentage);
-    });
+      .then((response) => response.json())
+      .then((result) => {
+        const percentage = result["result"];
+        resolve(percentage);
+      });
   });
 }
 
@@ -181,11 +193,11 @@ function recalculatePercentile() {
       },
       body: JSON.stringify({ score: scoreValue }),
     })
-    .then((response) => response.json())
-    .then((result) => {
-      const percentage = result["result"];
-      resolve(percentage);
-    });
+      .then((response) => response.json())
+      .then((result) => {
+        const percentage = result["result"];
+        resolve(percentage);
+      });
   });
 }
 
@@ -227,7 +239,6 @@ function calc() {
 
 function gameOver() {
   calc().then((percentage) => {
-    let emoji;
     let times = localStorage.getItem("timer");
 
     times = 300 - times;
@@ -252,99 +263,10 @@ function gameOver() {
       percentageShow
     );
 
-    const grade = document.getElementById("grade");
-    const gradeMessage = document.getElementById("grade-message");
-
-    switch (true) {
-      case scoreValue >= 1875:
-        grade.innerText = "A++";
-        gradeMessage.innerText = "remarkable!";
-        emoji = "🥸";
-        break;
-      case scoreValue >= 1800 && scoreValue <= 1875:
-        grade.innerText = "A";
-        gradeMessage.innerText = "outstanding!";
-        emoji = "🤓";
-        break;
-      case scoreValue >= 1700 && scoreValue <= 1799:
-        grade.innerText = "A-";
-        gradeMessage.innerText = "marvelous!";
-        emoji = "😎";
-        break;
-      case scoreValue >= 1600 && scoreValue <= 1699:
-        grade.innerText = "B+";
-        gradeMessage.innerText = "brilliant!";
-        emoji = "😇";
-        break;
-      case scoreValue >= 1500 && scoreValue <= 1599:
-        grade.innerText = "B";
-        gradeMessage.innerText = "impressive!";
-        emoji = "😆";
-        break;
-      case scoreValue >= 1400 && scoreValue <= 1499:
-        grade.innerText = "B-";
-        gradeMessage.innerText = "encouraging!";
-        emoji = "😃";
-        break;
-      case scoreValue >= 1300 && scoreValue <= 1399:
-        grade.innerText = "C+";
-        gradeMessage.innerText = "promising!";
-        emoji = "😊";
-        break;
-      case scoreValue >= 1200 && scoreValue <= 1299:
-        grade.innerText = "C";
-        gradeMessage.innerText = "satisfactory";
-        emoji = "🙂";
-        break;
-      case scoreValue >= 1100 && scoreValue <= 1199:
-        grade.innerText = "C-";
-        gradeMessage.innerText = "so-so";
-        emoji = "🤔";
-        break;
-      case scoreValue >= 900 && scoreValue <= 999:
-        grade.innerText = "D+";
-        gradeMessage.innerText = "hmm...";
-        emoji = "😐";
-        break;
-      case scoreValue >= 800 && scoreValue <= 899:
-        grade.innerText = "D";
-        gradeMessage.innerText = "substandard";
-        emoji = "🫢";
-        break;
-      case scoreValue >= 700 && scoreValue <= 799:
-        grade.innerText = "D-";
-        gradeMessage.innerText = "poor";
-        emoji = "🥲";
-        break;
-      case scoreValue >= 600 && scoreValue <= 699:
-        grade.innerText = "E+";
-        gradeMessage.innerText = "not good";
-        emoji = "☹️";
-        break;
-      case scoreValue >= 500 && scoreValue <= 599:
-        grade.innerText = "E";
-        gradeMessage.innerText = "just bad";
-        emoji = "😰";
-        break;
-      case scoreValue >= 300 && scoreValue <= 399:
-        grade.innerText = "E-";
-        gradeMessage.innerText = "really?";
-        emoji = "😵";
-        break;
-      case scoreValue >= 0 && scoreValue <= 299:
-        grade.innerText = "F";
-        gradeMessage.innerText = "fail!";
-        emoji = "🤬";
-        break;
-      default:
-        grade.innerText = "Invalid score value";
-        break;
-    }
-
-    share(day, indexPosition, scoreValue, timeTaken, emoji);
+    const grade = grades(scoreValue);
+    share(day, indexPosition, scoreValue, timeTaken, grade['emoji']);
 
     const time = document.getElementById("time");
-
     function timeUntilMidnight() {
       now = new Date();
       const timeUntil = savedMidnight - now;
@@ -430,30 +352,15 @@ function answerInput() {
   });
 }
 
-function shuffle() {
-  const shuffleButton = document.getElementById("shuffle");
-  if (shuffleButton) {
-    shuffleButton.addEventListener("click", () => {
-      const ul = document.getElementById("anagram");
-      const lettersArray = Array.from(ul.children);
-      const hiddenLetters = ul.querySelectorAll(".hide");
-
-      hiddenLetters.forEach((element) => {
-        element.classList.add("d-none");
-        element.classList.remove("hide");
-      });
-
-      for (let i = lettersArray.length - 1; i >= 0; i--) {
-        ul.appendChild(ul.children[Math.floor(Math.random() * (i + 1))]);
-      }
-    });
-  }
-}
-
 function refresh() {
+  const submitButton = document.getElementById("submit");
+  submitButton.disabled = true;
+
   document.getElementById("answer").innerHTML = "";
   document.getElementById("anagram").innerHTML = "";
+
   letterIndex = 0;
+
   const hidden = document.querySelectorAll("#anagram .hide");
   hidden.forEach((element) => {
     element.classList.remove("hide");
@@ -461,11 +368,7 @@ function refresh() {
   });
   anagram();
   answerInput();
-  const submitButton = document.getElementById("submit");
-  submitButton.disabled = true;
   shuffle();
-  submission();
-  document.getElementById("score").innerText = scoreValue;
 }
 
 function updateValues() {
@@ -474,18 +377,20 @@ function updateValues() {
   const counterValue = parseInt(counter.innerHTML);
 
   indexPosition += 1;
+
   if (document.querySelector(".hint").innerText === "") {
-    scoreValue += countdownTime;
-    scoreValue += 100;
+    scoreValue += (countdownTime + 100);
   } else {
     scoreValue += 100;
   }
+
   counter.innerHTML = counterValue + 1;
   counter.classList.add("score-animation");
   setTimeout(() => {
     counter.classList.remove("score-animation");
   }, 1000);
 
+  console.log(scoreValue)
   score.innerHTML = scoreValue;
 
   hintPrompt(definitions, countdownTime, indexPosition);
@@ -493,28 +398,19 @@ function updateValues() {
   localStorage.setItem("currentScore", JSON.stringify(scoreValue));
 }
 
-function submission() {
-  const submitButton = document.getElementById("submit");
-  if (submitButton) {
-    submitButton.removeEventListener("click", submitButtonClick);
-    submitButton.addEventListener("click", submitButtonClick);
-  }
-}
-
 function submitButtonClick() {
   const correctAnswer = wordList[indexPosition];
   const answer = document.getElementById("answer");
   const correct = new Audio("/resources/audio/correct.mp3");
   const wrong = new Audio("/resources/audio/error.mp3");
-  const answerString = Array.from(answer.childNodes)
-    .map((letter) => letter.innerHTML)
-    .join("");
+  const answerString = Array.from(answer.childNodes).map((letter) => letter.innerHTML).join("");
+
   if (answerString != correctAnswer) {
     wrong.play();
     answer.classList.add("shake");
-      setTimeout(() => {
-        answer.classList.remove("shake");
-      }, 400);
+    setTimeout(() => {
+      answer.classList.remove("shake");
+    }, 400);
     refresh();
   } else if (answerString == correctAnswer && indexPosition === 4) {
     updateValues();
