@@ -12,8 +12,8 @@ function share(day, indexPosition, scoreValue, timeTaken, gradeEmoji, gradeValue
 
   var clipboard = `⠀Scrambled. (${day})
       \n${createTickString(indexPosition)}
-      \n🏆 ${scoreValue}🏆
-      \n⏱️ ${timeTaken}⠀⠀⏱️
+      \n🏆 ${scoreValue} 🏆
+      \n⏱️ ${timeTaken} ⏱️
       \n${gradeEmoji} ${gradeValue} ${gradeEmoji}`;
 
   share.addEventListener("click", (event) => {
