@@ -288,7 +288,7 @@ h5 {
   max-width: 600px;
   height: 100vh;
   padding: 1rem;
-  box-shadow: 5px 5px var(--shadow);
+  background-color: var(--antique-white);
 }
 
 p {
@@ -414,7 +414,7 @@ h2 {
 }
 .statistics .stat {
   display: flex;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 700;
   margin-left: 0.5rem;
   line-height: 2.2rem;
@@ -448,8 +448,8 @@ h2 {
   position: absolute;
   top: 0.3rem;
   right: 0.5rem;
-  height: 16vh;
-  width: 16vh;
+  height: 8.5rem;
+  width: 8.5rem;
   display: flex;
   flex-direction: column;
   transform: rotate(8deg);
@@ -537,4 +537,18 @@ h2 {
 
 hr {
   margin: 0.25rem 0rem;
+}
+
+#list {
+  position: relative;
+  letter-spacing: 2px;
+  right: 0;
+  margin: 0.25rem 1.5rem 0.25rem 0rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border-radius: 10px px;
+  background-color: var(--gunmetal);
+  color: var(--antique-white);
+  font-family: "Scope One";
+  font-weight: 700;
 }

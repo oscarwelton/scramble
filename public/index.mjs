@@ -1,10 +1,11 @@
 import { htmlBlock } from "./js-modules/game.mjs";
 import { endHtml } from "./js-modules/end.mjs";
-import { toOrdinalSuffix } from "./js-modules/ordinal.mjs";
 import { hintPrompt } from "./js-modules/hint.mjs";
 import { share } from "./js-modules/share.mjs";
-import { shuffle } from "./js-modules/shuffle.mjs"
-import { grades } from "./js-modules/grade.mjs"
+import { shuffle } from "./js-modules/shuffle.mjs";
+import { grades } from "./js-modules/grade.mjs";
+import { timeUntilMidnight } from "./js-modules/midnight-timer.mjs";
+import { calculatePercentiles } from "./js-modules/percentiles.mjs";
 
 let indexPosition = JSON.parse(localStorage.getItem("currentIndex")) || 0;
 let countdownTime = localStorage.getItem("timer") || 300;
@@ -14,7 +15,6 @@ let storedPercentile = localStorage.getItem("percentile");
 let wordList, definitions;
 let now = new Date();
 let letterIndex = 0;
-let percentageShow;
 let day = 0;
 
 // localStorage.clear();
@@ -32,15 +32,14 @@ fetch("/wordList")
     console.error(error);
   });
 
-  fetch("/day")
+fetch("/day")
   .then((response) => response.json())
   .then((data) => {
-    day = parseInt(data.day)
+    day = parseInt(data.day);
   })
-  .catch ((error) => {
+  .catch((error) => {
     console.error(error);
   });
-
 
 if (isNaN(savedMidnight.getTime())) {
   localStorage.removeItem(
@@ -105,7 +104,10 @@ document.addEventListener("click", () => {
   if (answerListItems) {
     answerListItems = answerListItems.querySelectorAll("li");
 
-    if (indexPosition < 5 && answerListItems.length === wordList[indexPosition].length) {
+    if (
+      indexPosition < 5 &&
+      answerListItems.length === wordList[indexPosition].length
+    ) {
       const submitButton = document.getElementById("submit");
       submitButton.disabled = false;
       if (submitButton) {
@@ -125,16 +127,9 @@ document.addEventListener("click", () => {
 });
 
 function startClock() {
-  const clock = document.getElementById("clock");
-
   function updateTimer() {
     const minutes = Math.floor(countdownTime / 60);
     const seconds = countdownTime % 60;
-    clock.innerHTML = `
-      ${minutes.toString().padStart(1, "0")}:
-      ${seconds.toString().padStart(2, "0")}`;
-    countdownTime--;
-    localStorage.setItem("timer", countdownTime);
 
     if (countdownTime <= 30) {
       clock.classList.add("red");
@@ -143,12 +138,23 @@ function startClock() {
       }, 400);
     }
 
-    if (countdownTime <= 0 || indexPosition === 5) {
-      clearInterval(intervalId);
+    if (countdownTime <= 0) {
+      clearInterval(intervalClock);
       gameOver(wordList);
     }
+
+    const clockInnerHTML = `${minutes.toString().padStart(1, "0")}:
+    ${seconds.toString().padStart(2, "0")}`;
+    return clockInnerHTML;
   }
-  const intervalId = setInterval(updateTimer, 1000);
+  const clock = document.getElementById("clock");
+  clock.innerHTML = updateTimer(countdownTime);
+
+  setInterval(() => {
+    countdownTime--;
+    localStorage.setItem("timer", countdownTime);
+    clock.innerHTML = updateTimer();
+  }, 1000);
 }
 
 const startButton = document.querySelector(".start");
@@ -167,144 +173,51 @@ if (startButton) {
   });
 }
 
-function percentile() {
-  return new Promise((resolve, reject) => {
-    fetch("/calculate-percentiles", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ score: scoreValue }),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        const percentage = result["result"];
-        resolve(percentage);
-      });
-  });
+async function percentiles() {
+  const percentileValue = await calculatePercentiles(scoreValue, storedPercentile)
+  return percentileValue
 }
 
-function recalculatePercentile() {
-  return new Promise((resolve, reject) => {
-    fetch("/recalculate-percentiles", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ score: scoreValue }),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        const percentage = result["result"];
-        resolve(percentage);
-      });
-  });
-}
+async function gameOver() {
+  let percentileValue = await percentiles();
+  let times = localStorage.getItem("timer");
 
-function calc() {
-  return new Promise((resolve, reject) => {
-    if (storedPercentile === null) {
-      percentile()
-        .then((percentage) => {
-          localStorage.setItem("percentile", percentage);
-          percentageShow = toOrdinalSuffix(percentage);
-          resolve(percentage);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    } else if (storedPercentile >= 0) {
-      recalculatePercentile()
-        .then((percentage) => {
-          localStorage.setItem("percentile", percentage);
-          percentageShow = toOrdinalSuffix(percentage);
-          resolve(percentage);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    } else {
-      percentile()
-        .then((percentage) => {
-          localStorage.setItem("percentile", percentage);
-          percentageShow = toOrdinalSuffix(percentage);
-          resolve(percentage);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    }
-  });
-}
+  times = 300 - times;
+  if (times > 300) {
+    times = 300;
+  }
+  var minutes = Math.floor(times / 60);
+  var seconds = times % 60;
+  const timeTaken =
+    minutes.toString().padStart(1, "0") +
+    ":" +
+    seconds.toString().padStart(2, "0");
 
-function gameOver() {
-  calc().then((percentage) => {
-    let times = localStorage.getItem("timer");
+  document.querySelector(".start-screen")?.remove();
+  document.querySelector(".game")?.remove();
+  document.querySelector(".container").innerHTML = endHtml(
+    wordList,
+    definitions,
+    indexPosition,
+    scoreValue,
+    timeTaken,
+    percentileValue,
+  );
 
-    times = 300 - times;
-    if (times > 300) {
-      times = 300;
-    }
-    var minutes = Math.floor(times / 60);
-    var seconds = times % 60;
-    const timeTaken =
-      minutes.toString().padStart(1, "0") +
-      ":" +
-      seconds.toString().padStart(2, "0");
+  const grade = grades(scoreValue);
+  const gradeValue = grade["grade"];
+  const gradeEmoji = grade["emoji"];
+  share(day, indexPosition, scoreValue, timeTaken, gradeEmoji, gradeValue);
 
-    document.querySelector(".start-screen")?.remove();
-    document.querySelector(".game")?.remove();
-    document.querySelector(".container").innerHTML = endHtml(
-      wordList,
-      definitions,
-      indexPosition,
-      scoreValue,
-      timeTaken,
-      percentageShow
-    );
+  const time = document.getElementById("time");
+  setInterval(() => {
+    time.innerHTML = timeUntilMidnight(savedMidnight, time);
+  }, 1000);
 
-    const grade = grades(scoreValue);
-    const gradeValue = grade['grade']
-    const gradeEmoji = grade['emoji']
-    share(day, indexPosition, scoreValue, timeTaken, gradeEmoji, gradeValue);
-
-    const time = document.getElementById("time");
-    function timeUntilMidnight() {
-      now = new Date();
-      const timeUntil = savedMidnight - now;
-      const seconds = Math.floor((timeUntil % 60000) / 1000);
-      const minutes = Math.floor((timeUntil % 3600000) / 60000);
-      const hours = Math.floor(timeUntil / 3600000);
-      time.innerHTML = `
-          ${hours
-            .toString()
-            .padStart(2, "0")
-            .split("")
-            .map((digit) => `<span class="digit">${digit}</span>`)
-            .join("")}:
-          ${minutes
-            .toString()
-            .padStart(2, "0")
-            .split("")
-            .map((digit) => `<span class="digit">${digit}</span>`)
-            .join("")}:
-          ${seconds
-            .toString()
-            .padStart(2, "0")
-            .split("")
-            .map((digit) => `<span class="digit">${digit}</span>`)
-            .join("")}`;
-    }
-
-    setInterval(() => {
-      timeUntilMidnight();
-    }, 1000);
-
-    const marks = Array.from(document.querySelectorAll("span.mark"));
-    marks.slice(0, indexPosition).forEach((mark) => {
-      mark.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-      mark.style.color = "green";
-    });
+  const marks = Array.from(document.querySelectorAll("span.mark"));
+  marks.slice(0, indexPosition).forEach((mark) => {
+    mark.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+    mark.style.color = "green";
   });
 }
 
@@ -381,7 +294,7 @@ function updateValues() {
   indexPosition += 1;
 
   if (document.querySelector(".hint").innerText === "") {
-    scoreValue += (countdownTime + 100);
+    scoreValue += countdownTime + 100;
   } else {
     scoreValue += 100;
   }
@@ -392,7 +305,7 @@ function updateValues() {
     counter.classList.remove("score-animation");
   }, 1000);
 
-  console.log(scoreValue)
+  console.log(scoreValue);
   score.innerHTML = scoreValue;
 
   hintPrompt(definitions, countdownTime, indexPosition);
@@ -405,7 +318,9 @@ function submitButtonClick() {
   const answer = document.getElementById("answer");
   const correct = new Audio("/resources/audio/correct.mp3");
   const wrong = new Audio("/resources/audio/error.mp3");
-  const answerString = Array.from(answer.childNodes).map((letter) => letter.innerHTML).join("");
+  const answerString = Array.from(answer.childNodes)
+    .map((letter) => letter.innerHTML)
+    .join("");
 
   if (answerString != correctAnswer) {
     wrong.play();

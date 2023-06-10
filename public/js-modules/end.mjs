@@ -21,6 +21,7 @@ function endHtml(wordList, definitions, indexPosition, scoreValue, timeTaken, pe
               <div class="end">
                 <button id="share">Share <i class="fa-solid fa-share-from-square"></i></button>
               </div>
+
               </div>
             </div>
 
@@ -28,6 +29,8 @@ function endHtml(wordList, definitions, indexPosition, scoreValue, timeTaken, pe
         <h3 id="grade"></h3>
         <p id="grade-message"></p>
       </div>
+      <button id="list">View Words</i></button>
+
     <div class="word-list">
       <ul>
       <li class="word">1. ${wordList[0]} <span class="mark"></li>
