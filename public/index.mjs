@@ -7,17 +7,21 @@ import { grades } from "./js-modules/grade.mjs";
 import { timeUntilMidnight } from "./js-modules/midnight-timer.mjs";
 import { calculatePercentiles } from "./js-modules/percentiles.mjs";
 
+// localStorage.clear();
+
 let indexPosition = JSON.parse(localStorage.getItem("currentIndex")) || 0;
 let countdownTime = localStorage.getItem("timer") || 300;
 let scoreValue = JSON.parse(localStorage.getItem("currentScore")) || 0;
 let savedMidnight = new Date(localStorage.getItem("midnight"));
-let storedPercentile = localStorage.getItem("percentile");
+let storedPercentile = parseInt(localStorage.getItem("percentile")) || null;
 let wordList, definitions;
 let now = new Date();
 let letterIndex = 0;
 let day = 0;
 
-// localStorage.clear();
+
+
+console.log(scoreValue, storedPercentile, indexPosition)
 
 fetch("/wordList")
   .then((response) => response.json())
@@ -174,12 +178,14 @@ if (startButton) {
 }
 
 async function percentiles() {
+  console.log(storedPercentile, scoreValue)
   const percentileValue = await calculatePercentiles(scoreValue, storedPercentile)
   return percentileValue
 }
 
 async function gameOver() {
   let percentileValue = await percentiles();
+  localStorage.setItem(Math.abs(percentileValue), "percentile")
   let times = localStorage.getItem("timer");
 
   times = 300 - times;
@@ -268,11 +274,11 @@ function answerInput() {
 }
 
 function refresh() {
-  const submitButton = document.getElementById("submit");
-  submitButton.disabled = true;
-
   document.getElementById("answer").innerHTML = "";
   document.getElementById("anagram").innerHTML = "";
+
+  const submitButton = document.getElementById("submit");
+  submitButton.disabled = true;
 
   letterIndex = 0;
 
@@ -305,12 +311,10 @@ function updateValues() {
     counter.classList.remove("score-animation");
   }, 1000);
 
-  console.log(scoreValue);
   score.innerHTML = scoreValue;
-
-  hintPrompt(definitions, countdownTime, indexPosition);
   localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
   localStorage.setItem("currentScore", JSON.stringify(scoreValue));
+  hintPrompt(definitions, countdownTime, indexPosition);
 }
 
 function submitButtonClick() {

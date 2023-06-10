@@ -40,21 +40,18 @@ function toOrdinalSuffix(percentage) {
 }
 
 async function calculatePercentiles(scoreValue, storedPercentile) {
-  if (storedPercentile === null) {
+  if (storedPercentile == null) {
     percentage = await percentile(scoreValue);
-    localStorage.setItem("percentile", percentage);
-    console.log("new percentile")
-    return (toOrdinalSuffix(percentage));
-  } else if (storedPercentile >= 0) {
+    localStorage.setItem("percentile", Math.abs(percentage));
+    return toOrdinalSuffix(percentage);
+  } else if (storedPercentile >= 0 && scoreValue !== null) {
     percentage = await recalculatePercentile(scoreValue);
-    localStorage.setItem("percentile", percentage);
-    console.log("old percentile")
-    return (toOrdinalSuffix(percentage));
+    localStorage.setItem("percentile", Math.abs(percentage));
+    return toOrdinalSuffix(percentage);
   } else {
     percentage = await percentile(scoreValue);
-    localStorage.setItem("percentile", percentage);
-    console.log("new percentile")
-    return (toOrdinalSuffix(percentage));
+    localStorage.setItem("percentile", Math.abs(percentage));
+    return toOrdinalSuffix(percentage);
   }
 }
 
