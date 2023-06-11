@@ -36,10 +36,11 @@
   border: 1px solid var(--shadow);
   box-shadow: 3px 3px var(--shadow);
   position: absolute;
-  top: 55%;
+  top: 1rem;
   left: 50%;
-  transform: translate(-50%, -51%);
-  width: 65vw;
+  transform: translate(-50%, 0%);
+  width: 85vw;
+  min-width: 250px;
 
   ul {
     li {
@@ -143,14 +144,14 @@
   padding: 0.75rem 1rem;
   font-size: 1rem;
   border-radius: 10px;
-  background-color: var(--gunmetal);
-  color: var(--antique-white);
+  color: var(--gunmetal);
+  background-color: white;
+  box-shadow: 3px 3px var(--shadow);
   font-family: 'Scope One';
   font-weight: 700;
 
   &:hover {
     cursor: pointer;
-    box-shadow: 3px 3px 1px white;
   }
 }
 
@@ -177,12 +178,11 @@
 .midnight-countdown {
   display: flex;
   align-items: center;
-  justify-content: right;
+  justify-content: center;
+  margin-top: 0.5rem;
   font-size: 1.2rem;
   padding-top: 1rem;
 }
-
-
 
 #time {
   text-align: center;
@@ -213,18 +213,30 @@ hr {
   padding: 0.75rem 1rem;
   font-size: 1rem;
   border-radius: 10px;
-  background-color: var(--gunmetal);
-  color: var(--antique-white);
-  font-family: "Scope One";
+  color: var(--gunmetal);
+  background-color: white;
+  box-shadow: 3px 3px var(--shadow);
+  font-family: 'Scope One';
   font-weight: 700;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 #close-list {
   float: right;
-  background-color: transparent;
-  border: none;
-  padding: 0;
-  font-size: 1rem;
-  margin-top: 0.75rem;
-  color: var(--gunmetal)
+  padding: 0.5rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 10px;
+  color: var(--gunmetal);
+  background-color: var(--antique-white);
+  box-shadow: 3px 3px var(--shadow);
+  font-family: 'Scope One';
+  font-weight: 700;
+  margin-top: 1rem;
+
+  &:hover {
+    cursor: pointer;
+  }
 }

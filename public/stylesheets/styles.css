@@ -48,35 +48,6 @@ table {
   border-spacing: 0;
 }
 
-:root {
-  --gunmetal: rgba(0, 39, 43, 1);
-  --shadow: rgba(0, 39, 43, 0.5);
-  --antique-white: rgb(255, 246, 235);
-  --scope: "Scope One", serif;
-  --mukta: "Mukta", sans-serif;
-  --cursive: "Shadows Into Light", cursive;
-  --light: 200;
-  --regular: 400;
-  --bold: 700;
-}
-
-body {
-  height: fit-content;
-  width: 100vw;
-  background-color: white;
-  color: var(--gunmetal);
-  font-family: "Mukta", sans-serif;
-  position: absolute;
-  overflow: hidden;
-  -webkit-overflow-scrolling: touch;
-  min-width: 250px;
-}
-
-.container {
-  max-width: 400px;
-  margin: auto;
-}
-
 #answer {
   height: 4rem;
   display: flex;
@@ -112,7 +83,7 @@ body {
   min-height: 11rem;
   display: flex;
   align-items: center;
-  align-content: flex-start;
+  align-content: center;
   justify-content: center;
   flex-wrap: wrap;
   width: 75%;
@@ -124,7 +95,7 @@ body {
   font-family: var(--scope);
   margin: 0.25rem 0.35rem;
   border: 1px solid var(--shadow);
-  background-color: var(--antique-white);
+  background-color: white;
   border-radius: 10px;
   box-shadow: 2px 3px rgba(0, 39, 43, 0.5);
   display: flex;
@@ -170,7 +141,7 @@ body {
   font-family: var(--scope);
   border-radius: 10px;
   box-shadow: 5px 5px var(--shadow);
-  background-color: var(--antique-white);
+  background-color: white;
 }
 
 .placeholder {
@@ -178,15 +149,6 @@ body {
   width: 2rem;
   height: 2rem;
   margin: 0rem 0.25rem;
-}
-
-.title {
-  font-size: 2rem;
-  text-align: center;
-  padding: 1rem 0rem 0.5rem 0rem;
-  font-family: var(--scope);
-  border-bottom: 1px solid var(--gunmetal);
-  letter-spacing: 5px;
 }
 
 .hide {
@@ -363,7 +325,6 @@ h2 {
   margin-top: 1rem;
 }
 .rules li {
-  text-align: justify;
   font-size: 1.2rem;
   margin-bottom: 1rem;
   font-family: var(--mukta);
@@ -408,10 +369,11 @@ h2 {
   border: 1px solid var(--shadow);
   box-shadow: 3px 3px var(--shadow);
   position: absolute;
-  top: 55%;
+  top: 1rem;
   left: 50%;
-  transform: translate(-50%, -51%);
-  width: 65vw;
+  transform: translate(-50%, 0%);
+  width: 85vw;
+  min-width: 250px;
 }
 .word-list ul li {
   font-size: 1rem;
@@ -503,14 +465,14 @@ h2 {
   padding: 0.75rem 1rem;
   font-size: 1rem;
   border-radius: 10px;
-  background-color: var(--gunmetal);
-  color: var(--antique-white);
+  color: var(--gunmetal);
+  background-color: white;
+  box-shadow: 3px 3px var(--shadow);
   font-family: "Scope One";
   font-weight: 700;
 }
 #share:hover {
   cursor: pointer;
-  box-shadow: 3px 3px 1px white;
 }
 
 #popup {
@@ -535,7 +497,8 @@ h2 {
 .midnight-countdown {
   display: flex;
   align-items: center;
-  justify-content: right;
+  justify-content: center;
+  margin-top: 0.5rem;
   font-size: 1.2rem;
   padding-top: 1rem;
 }
@@ -568,18 +531,67 @@ hr {
   padding: 0.75rem 1rem;
   font-size: 1rem;
   border-radius: 10px;
-  background-color: var(--gunmetal);
-  color: var(--antique-white);
+  color: var(--gunmetal);
+  background-color: white;
+  box-shadow: 3px 3px var(--shadow);
   font-family: "Scope One";
   font-weight: 700;
+}
+#show-list:hover {
+  cursor: pointer;
 }
 
 #close-list {
   float: right;
-  background-color: transparent;
-  border: none;
-  padding: 0;
-  font-size: 1rem;
-  margin-top: 0.75rem;
+  padding: 0.5rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 10px;
   color: var(--gunmetal);
+  background-color: var(--antique-white);
+  box-shadow: 3px 3px var(--shadow);
+  font-family: "Scope One";
+  font-weight: 700;
+  margin-top: 1rem;
+}
+#close-list:hover {
+  cursor: pointer;
+}
+
+:root {
+  --gunmetal: rgba(0, 39, 43, 1);
+  --shadow: rgba(0, 39, 43, 0.5);
+  --antique-white:rgba(238, 249, 255, 1);
+  --scope: "Scope One", serif;
+  --mukta: "Mukta", sans-serif;
+  --cursive: "Shadows Into Light", cursive;
+  --light: 200;
+  --regular: 400;
+  --bold: 700;
+}
+
+body {
+  height: fit-content;
+  width: 100vw;
+  background-color: var(--antique-white);
+  color: var(--gunmetal);
+  font-family: "Mukta", sans-serif;
+  position: absolute;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
+  min-width: 250px;
+}
+
+.title {
+  font-size: 2rem;
+  text-align: center;
+  padding: 1rem 0rem 0.5rem 0rem;
+  font-family: var(--scope);
+  background-color: white;
+  border-bottom: 1px solid var(--gunmetal);
+  letter-spacing: 5px;
+}
+
+.container {
+  max-width: 400px;
+  margin: auto;
 }

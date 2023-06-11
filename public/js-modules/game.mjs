@@ -3,7 +3,7 @@ function htmlBlock(indexPosition) {
 <div class="sub-header">
 <div class="score">
 <h3>
-<span id="score"></span> <i class="fa-solid fa-trophy"></i>
+<span id="score">0</span> <i class="fa-solid fa-trophy"></i>
 </h3>
 </div>
 <div class="timer">

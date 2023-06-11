@@ -1,33 +1,3 @@
-:root {
-  --gunmetal: rgba(0, 39, 43, 1);
-  --shadow: rgba(0, 39, 43, 0.5);
-  --antique-white: rgb(255, 246, 235);
-  --scope: 'Scope One', serif;
-  --mukta: 'Mukta', sans-serif;
-  --cursive: 'Shadows Into Light', cursive;
-  --light: 200;
-  --regular: 400;
-  --bold: 700;
-}
-
-
-body {
-  height: fit-content;
-  width: 100vw;
-  background-color: white;
-  color: var(--gunmetal);
-  font-family: 'Mukta', sans-serif;
-  position: absolute;
-  overflow: hidden;
-  -webkit-overflow-scrolling: touch;
-  min-width: 250px;
-}
-
-.container {
-  max-width: 400px;
-  margin: auto;
-}
-
 #answer {
   height: 4rem;
   display: flex;
@@ -64,7 +34,7 @@ body {
   min-height: 11rem;
   display: flex;
   align-items: center;
-  align-content: flex-start;
+  align-content: center;
   justify-content: center;
   flex-wrap: wrap;
   width: 75%;
@@ -76,7 +46,7 @@ body {
   font-family: var(--scope);
   margin: 0.25rem 0.35rem;
   border: 1px solid var(--shadow);
-  background-color: var(--antique-white);
+  background-color: white;
   border-radius: 10px;
   box-shadow: 2px 3px rgba(0, 39, 43, 0.5);
   display: flex;
@@ -122,7 +92,7 @@ body {
     font-family: var(--scope);
     border-radius: 10px;
     box-shadow: 5px 5px var(--shadow);
-    background-color: var(--antique-white);
+    background-color: white;
   }
 }
 
@@ -131,15 +101,6 @@ body {
   width: 2rem;
   height: 2rem;
   margin: 0rem 0.25rem;
-}
-
-.title {
-  font-size: 2rem;
-  text-align: center;
-  padding: 1rem 0rem 0.5rem 0rem;
-  font-family: var(--scope);
-  border-bottom: 1px solid var(--gunmetal);
-  letter-spacing: 5px;
 }
 
 .hide {
