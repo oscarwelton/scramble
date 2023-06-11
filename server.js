@@ -28,17 +28,16 @@ app.get('/day', (req, res) => {
 
 app.use(express.json());
 
-app.post('/calculate-percentiles', (req, res) => {
+app.post('/calculate-percentiles', async (req, res) => {
   const score = req.body.score;
-  const result = calculatePercentiles(score);
+  const result = await calculatePercentiles(score);
 
   res.json({ result });
 });
 
-app.post('/recalculate-percentiles', (req, res) => {
+app.post('/recalculate-percentiles', async (req, res) => {
   const score = req.body.score;
-  const result = recalculatePercentiles(score);
-
+  const result = await recalculatePercentiles(score);
   res.json({ result });
 });
 

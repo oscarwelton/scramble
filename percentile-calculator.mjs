@@ -1,49 +1,52 @@
+import { Mutex } from "async-mutex";
+
 let scores = [];
 let scoreIndex;
-scores.sort((a, b) => a - b)
+const mutex = new Mutex();
 
-function calculatePercentiles(score) {
-  console.log(score)
-  scores.push(score);
-  scores.sort((a, b) => a - b)
-  console.log(scores, scores.length, "pushed score")
+async function calculatePercentiles(score) {
+  const release = await mutex.acquire();
 
-  if (scores.length <= 1) {
-    scoreIndex = 1
-  } else {
-    scoreIndex = scores.indexOf(score) + 1;
+  try {
+    scores.push(score);
+    scores.sort((a, b) => a - b);
+
+    if (scores.length <= 1) {
+      scoreIndex = 1;
+    } else {
+      scoreIndex = scores.indexOf(score) + 1;
+    }
+
+    const numberOfScores = scores.length;
+
+    let percentile = (scoreIndex / numberOfScores) * 100;
+    const updatedPercentile = Math.round(percentile);
+    return updatedPercentile
+  } finally {
+    release();
   }
-
-  const numberOfScores = scores.length;
-
-  console.log(scoreIndex, "score Index")
-  let percentile = ((scoreIndex) / numberOfScores) * 100;
-  console.log("percentile = ", percentile)
-  const updatedPercentile = Math.round(percentile);
-
-  return updatedPercentile;
 }
 
+async function recalculatePercentiles(score) {
+  const release = await mutex.acquire();
 
-function recalculatePercentiles(score) {
-  console.log(score)
-  console.log("before sort", scores, scores.length)
-  scores.sort((a, b) => a - b)
-  console.log(scores, scores.length, "did not push score")
+  try {
+    scores.sort((a, b) => a - b);
 
-  const numberOfScores = scores.length;
+    const numberOfScores = scores.length;
 
-  if (scores.length <= 1) {
-    scoreIndex = 1
-  } else {
-    scoreIndex = scores.indexOf(score) + 1;
+    if (scores.length <= 1) {
+      scoreIndex = 1;
+    } else {
+      scoreIndex = scores.indexOf(score) + 1;
+    }
+
+    let percentile = (scoreIndex / numberOfScores) * 100;
+    const recalculatedPercentile = Math.round(percentile);
+    return recalculatedPercentile;
+  } finally {
+    release();
   }
-
-  let percentile = ((scoreIndex) / numberOfScores) * 100;
-  console.log("percentile = ", percentile)
-  const recalculatedPercentile = Math.round(percentile);
-
-  return recalculatedPercentile;
 }
 
 export { calculatePercentiles, recalculatePercentiles };
