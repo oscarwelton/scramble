@@ -20,9 +20,6 @@ let letterIndex = 0;
 let day = 0;
 
 
-
-console.log(scoreValue, storedPercentile, indexPosition)
-
 fetch("/wordList")
   .then((response) => response.json())
   .then((data) => {
@@ -102,6 +99,7 @@ if (isNaN(savedMidnight.getTime())) {
   localStorage.setItem("timer", JSON.stringify(countdownTime));
 }
 
+
 document.addEventListener("click", () => {
   let answerListItems = document.getElementById("answer");
 
@@ -164,6 +162,9 @@ function startClock() {
 const startButton = document.querySelector(".start");
 if (startButton) {
   const container = document.querySelector(".container");
+  if (indexPosition != 0 || countdownTime != 300) {
+    startButton.innerText = "Continue"
+  }
   startButton.addEventListener("click", () => {
     if (indexPosition === 5) {
       gameOver(wordList);
