@@ -272,7 +272,7 @@ h2 {
 }
 
 .examples {
-  margin: 0.25rem auto;
+  margin: 0.75rem auto;
   max-width: 400px;
   background: white;
   padding: 0.75rem;
@@ -323,12 +323,11 @@ h2 {
 
 .rules {
   margin-top: 1rem;
+  list-style: circle;
+  padding: 0rem 1rem 0rem 1.5rem;
 }
 .rules li {
-  font-size: 1.2rem;
   margin-bottom: 1rem;
-  font-family: var(--mukta);
-  font-weight: var(--light);
 }
 
 .game-over {
