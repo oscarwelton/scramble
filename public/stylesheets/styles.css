@@ -397,7 +397,10 @@ h2 {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -51%);
-  width: 85vw;
+  width: 60vw;
+}
+.word-list ul li {
+  font-size: 1rem;
 }
 
 .d-none {
@@ -562,5 +565,6 @@ hr {
   background-color: transparent;
   border: none;
   padding: 0;
-  font-size: 1.5rem;
+  font-size: 1rem;
+  margin-top: 0.75rem;
 }
