@@ -394,10 +394,10 @@ h2 {
   border: 1px solid var(--shadow);
   box-shadow: 3px 3px var(--shadow);
   position: absolute;
-  top: 50%;
+  top: 55%;
   left: 50%;
   transform: translate(-50%, -51%);
-  width: 60vw;
+  width: 65vw;
 }
 .word-list ul li {
   font-size: 1rem;
@@ -503,7 +503,7 @@ h2 {
   position: absolute;
   width: fit-content;
   max-width: max-content;
-  top: 25%;
+  top: 45%;
   left: 50%;
   font-size: 1.5rem;
   font-weight: 100;
@@ -567,4 +567,5 @@ hr {
   padding: 0;
   font-size: 1rem;
   margin-top: 0.75rem;
+  color: var(--gunmetal);
 }

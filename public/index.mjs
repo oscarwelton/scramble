@@ -229,12 +229,16 @@ async function gameOver() {
   const showWordList = document.getElementById("show-list")
   const wordListDiv = document.querySelector(".word-list")
   showWordList.addEventListener("click", () => {
-    wordListDiv.classList.toggle("d-none")
+    wordListDiv.classList.toggle("d-none");
+    document.getElementById("share").disabled = true;
+
   })
 
   const closeList = document.getElementById("close-list")
   closeList.addEventListener("click", () => {
-    wordListDiv.classList.toggle("d-none")
+    wordListDiv.classList.toggle("d-none");
+    document.getElementById("share").disabled = false;
+
   })
 }
 

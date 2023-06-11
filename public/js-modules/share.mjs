@@ -21,11 +21,13 @@ function share(day, indexPosition, scoreValue, timeTaken, gradeEmoji, gradeValue
     document.querySelector("body").insertAdjacentHTML("beforeend", popupHTML);
     document.querySelector(".game-over").style.opacity = 0.8;
     share.disabled = true;
+    document.getElementById("show-list").disabled = true;
 
     setTimeout(() => {
       const popup = document.getElementById("popup");
       document.querySelector(".game-over").style.opacity = 1;
       share.disabled = false;
+      document.getElementById("show-list").disabled = false;
       if (popup) {
         popup.parentNode.removeChild(popup);
       }
