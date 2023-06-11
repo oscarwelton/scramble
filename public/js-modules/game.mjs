@@ -1,9 +1,9 @@
-function htmlBlock(indexPosition) {
+function htmlBlock(scoreValue, indexPosition) {
  return `<div class="game">
 <div class="sub-header">
 <div class="score">
 <h3>
-<span id="score">0</span> <i class="fa-solid fa-trophy"></i>
+<span id="score">${scoreValue}</span> <i class="fa-solid fa-trophy"></i>
 </h3>
 </div>
 <div class="timer">

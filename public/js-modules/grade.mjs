@@ -1,4 +1,5 @@
 function grades(scoreValue) {
+  console.log(scoreValue)
   const grade = document.getElementById("grade");
   const gradeMessage = document.getElementById("grade-message");
   let emoji = ''
@@ -49,42 +50,43 @@ function grades(scoreValue) {
       gradeMessage.innerText = "so-so";
       emoji = "🤔";
       break;
-    case scoreValue >= 900 && scoreValue <= 999:
+    case scoreValue >= 1000 && scoreValue <= 1099:
       grade.innerText = "D+";
       gradeMessage.innerText = "hmm...";
       emoji = "😐";
       break;
-    case scoreValue >= 800 && scoreValue <= 899:
+    case scoreValue >= 900 && scoreValue <= 999:
       grade.innerText = "D";
       gradeMessage.innerText = "substandard";
       emoji = "🫢";
       break;
-    case scoreValue >= 700 && scoreValue <= 799:
+    case scoreValue >= 800 && scoreValue <= 899:
       grade.innerText = "D-";
       gradeMessage.innerText = "poor";
       emoji = "🥲";
       break;
-    case scoreValue >= 600 && scoreValue <= 699:
+    case scoreValue >= 700 && scoreValue <= 799:
       grade.innerText = "E+";
       gradeMessage.innerText = "not good";
       emoji = "☹️";
       break;
-    case scoreValue >= 500 && scoreValue <= 599:
+    case scoreValue >= 600 && scoreValue <= 699:
       grade.innerText = "E";
       gradeMessage.innerText = "just bad";
       emoji = "😰";
       break;
-    case scoreValue >= 300 && scoreValue <= 399:
+    case scoreValue >= 400 && scoreValue <= 599:
       grade.innerText = "E-";
       gradeMessage.innerText = "really?";
       emoji = "😵";
       break;
-    case scoreValue >= 0 && scoreValue <= 299:
+    case scoreValue >= 0 && scoreValue <= 399:
       grade.innerText = "F";
       gradeMessage.innerText = "fail!";
       emoji = "🤬";
       break;
     default:
+      console.log("from inside invalid", scoreValue)
       grade.innerText = "Invalid score value";
       break;
   }

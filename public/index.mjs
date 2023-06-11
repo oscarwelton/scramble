@@ -1,6 +1,6 @@
 import { htmlBlock } from "./js-modules/game.mjs";
 import { endHtml } from "./js-modules/end.mjs";
-import { hintPrompt } from "./js-modules/hint.mjs";
+import { hintPrompt, resetHint } from "./js-modules/hint.mjs";
 import { share } from "./js-modules/share.mjs";
 import { shuffle } from "./js-modules/shuffle.mjs";
 import { grades } from "./js-modules/grade.mjs";
@@ -18,7 +18,6 @@ let wordList, definitions;
 let now = new Date();
 let letterIndex = 0;
 let day = 0;
-
 
 fetch("/wordList")
   .then((response) => response.json())
@@ -99,7 +98,6 @@ if (isNaN(savedMidnight.getTime())) {
   localStorage.setItem("timer", JSON.stringify(countdownTime));
 }
 
-
 document.addEventListener("click", () => {
   let answerListItems = document.getElementById("answer");
 
@@ -163,30 +161,34 @@ const startButton = document.querySelector(".start");
 if (startButton) {
   const container = document.querySelector(".container");
   if (indexPosition != 0 || countdownTime != 300) {
-    startButton.innerText = "Continue"
+    startButton.innerText = "Continue";
   }
   startButton.addEventListener("click", () => {
     if (indexPosition === 5) {
       gameOver(wordList);
     } else {
       document.querySelector(".start-screen").remove();
-      container.insertAdjacentHTML("afterbegin", htmlBlock(indexPosition));
+      container.insertAdjacentHTML("afterbegin", htmlBlock(scoreValue, indexPosition));
       refresh();
       startClock();
-      hintPrompt(definitions, countdownTime, indexPosition);
+      resetHint(definitions, indexPosition);
+      hintPrompt(definitions, indexPosition);
     }
   });
 }
 
 async function percentiles() {
-  console.log(storedPercentile, scoreValue)
-  const percentileValue = await calculatePercentiles(scoreValue, storedPercentile)
-  return percentileValue
+  console.log(storedPercentile, scoreValue);
+  const percentileValue = await calculatePercentiles(
+    scoreValue,
+    storedPercentile
+  );
+  return percentileValue;
 }
 
 async function gameOver() {
   let percentileValue = await percentiles();
-  localStorage.setItem(Math.abs(percentileValue), "percentile")
+  localStorage.setItem(Math.abs(percentileValue), "percentile");
   let times = localStorage.getItem("timer");
 
   times = 300 - times;
@@ -208,7 +210,7 @@ async function gameOver() {
     indexPosition,
     scoreValue,
     timeTaken,
-    percentileValue,
+    percentileValue
   );
 
   const grade = grades(scoreValue);
@@ -227,20 +229,18 @@ async function gameOver() {
     mark.style.color = "green";
   });
 
-  const showWordList = document.getElementById("show-list")
-  const wordListDiv = document.querySelector(".word-list")
+  const showWordList = document.getElementById("show-list");
+  const wordListDiv = document.querySelector(".word-list");
   showWordList.addEventListener("click", () => {
     wordListDiv.classList.toggle("d-none");
     document.getElementById("share").disabled = true;
+  });
 
-  })
-
-  const closeList = document.getElementById("close-list")
+  const closeList = document.getElementById("close-list");
   closeList.addEventListener("click", () => {
     wordListDiv.classList.toggle("d-none");
     document.getElementById("share").disabled = false;
-
-  })
+  });
 }
 
 function anagram() {
@@ -330,7 +330,6 @@ function updateValues() {
   score.innerHTML = scoreValue;
   localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
   localStorage.setItem("currentScore", JSON.stringify(scoreValue));
-  hintPrompt(definitions, countdownTime, indexPosition);
 }
 
 function submitButtonClick() {
@@ -365,5 +364,7 @@ function submitButtonClick() {
       answer.classList.remove("correct");
       refresh();
     }, 800);
+    resetHint(definitions, indexPosition);
+    hintPrompt(definitions, indexPosition);
   }
 }
