@@ -172,7 +172,7 @@ if (startButton) {
       refresh();
       startClock();
       resetHint(definitions, indexPosition);
-      hintPrompt(definitions, indexPosition);
+      hintPrompt(definitions, indexPosition, wordList);
     }
   });
 }
@@ -365,6 +365,8 @@ function submitButtonClick() {
       refresh();
     }, 800);
     resetHint(definitions, indexPosition);
-    hintPrompt(definitions, indexPosition);
+    hintPrompt(definitions, indexPosition, wordList);
   }
 }
+
+export { wordList }

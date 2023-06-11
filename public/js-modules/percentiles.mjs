@@ -1,7 +1,6 @@
 let percentage;
 
 function percentile(scoreValue) {
-  console.log(scoreValue, "correct score sent")
   return fetch("/calculate-percentiles", {
     method: "POST",
     headers: {
@@ -16,7 +15,6 @@ function percentile(scoreValue) {
 }
 
 function recalculatePercentile(scoreValue) {
-  console.log("score recalculated");
   return fetch("/recalculate-percentiles", {
     method: "POST",
     headers: {

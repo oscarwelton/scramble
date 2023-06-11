@@ -1,10 +1,22 @@
+import { wordList } from "../index.mjs";
+
 let hintTimer;
 
-function hintHandler(definitions, indexPosition) {
+function definitionCensor(definitions, indexPosition, wordList) {
+  let hintDefinition = definitions[indexPosition];
+  const word = wordList[indexPosition]
+  const regex = new RegExp('\\b' + word + '\\b', 'g');
+  const stars = '*'.repeat(word.length)
+
+  hintDefinition = hintDefinition.replace(regex, `${stars}`)
+  return hintDefinition
+}
+
+function hintHandler(definitions, indexPosition, wordList) {
   const hintSound = new Audio("../resources/audio/hint.mp3");
   const hintButton = document.querySelector(".hint-button");
   const hint = document.querySelector(".hint");
-  let hintDefinition = definitions[indexPosition];
+  let hintDefinition = definitionCensor(definitions, indexPosition, wordList)
   if (hintDefinition.length >= 110) {
     hintDefinition = `${hintDefinition.substring(0, 110)}...`
   }
@@ -14,8 +26,8 @@ function hintHandler(definitions, indexPosition) {
   hintSound.play();
 }
 
-function callHint(definitions, indexPosition) {
-  hintHandler(definitions, indexPosition);
+function callHint(definitions, indexPosition, wordList) {
+  hintHandler(definitions, indexPosition, wordList);
 }
 
 function resetHint(definitions, indexPosition) {
@@ -23,7 +35,7 @@ function resetHint(definitions, indexPosition) {
   const hint = document.querySelector(".hint");
   hint.innerHTML = "";
   const hintButton = document.querySelector(".hint-button");
-  hintButton.removeEventListener("click", () => callHint(definitions, indexPosition));
+  hintButton.removeEventListener("click", () => callHint(definitions, indexPosition, wordList));
   hintButton.disabled = true;
   hintButton.classList.add("disabled");
   hintButton.classList.remove("used");
@@ -36,7 +48,7 @@ function hintPrompt(definitions, indexPosition) {
   hintTimer = setTimeout(() => {
     hintButton.classList.remove("disabled");
     hintButton.disabled = false;
-    hintButton.addEventListener("click", () => callHint(definitions, indexPosition))
+    hintButton.addEventListener("click", () => callHint(definitions, indexPosition, wordList))
   }, 30000);
 }
 
