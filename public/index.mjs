@@ -7,7 +7,7 @@ import { grades } from "./js-modules/grade.mjs";
 import { timeUntilMidnight } from "./js-modules/midnight-timer.mjs";
 import { calculatePercentiles } from "./js-modules/percentiles.mjs";
 
-localStorage.clear();
+// localStorage.clear();
 
 let indexPosition = JSON.parse(localStorage.getItem("currentIndex")) || 0;
 let countdownTime = localStorage.getItem("timer") || 300;
