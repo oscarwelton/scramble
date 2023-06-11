@@ -69,10 +69,11 @@ body {
   position: absolute;
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
+  min-width: 250px;
 }
 
 .container {
-  max-width: 600px;
+  max-width: 400px;
   margin: auto;
 }
 
@@ -108,9 +109,10 @@ body {
 
 #anagram {
   margin: 0.5rem auto;
-  height: 150px;
+  min-height: 11rem;
   display: flex;
   align-items: center;
+  align-content: flex-start;
   justify-content: center;
   flex-wrap: wrap;
   width: 75%;
@@ -163,7 +165,7 @@ body {
 #submit-div button {
   font-size: 2rem;
   width: 60%;
-  padding: 1rem 0rem 0.75rem 0rem;
+  padding: 0.75rem 0rem 0.5rem 0rem;
   border: 1px solid var(--shadow);
   font-family: var(--scope);
   border-radius: 10px;
@@ -285,7 +287,8 @@ h5 {
 }
 
 .start-screen {
-  max-width: 600px;
+  max-width: 400px;
+  margin: auto;
   height: 100vh;
   padding: 1rem;
   background-color: var(--antique-white);
@@ -351,9 +354,20 @@ h2 {
 
 .ready {
   text-align: center;
-  font-family: var(--scope);
   font-size: 1.5rem;
   margin: 1rem 0rem 0rem 0rem;
+  font-style: italic;
+}
+
+.rules {
+  margin-top: 1rem;
+}
+.rules li {
+  text-align: justify;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-family: var(--mukta);
+  font-weight: var(--light);
 }
 
 .game-over {
@@ -456,7 +470,7 @@ h2 {
   background-repeat: no-repeat;
   position: absolute;
   top: 2.5rem;
-  right: 1rem;
+  right: 0.25rem;
   height: 8.5rem;
   width: 8.5rem;
   display: flex;

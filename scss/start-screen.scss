@@ -15,7 +15,8 @@
 }
 
 .start-screen {
-  max-width: 600px;
+  max-width: 400px;
+  margin: auto;
   height: 100vh;
   padding: 1rem;
   background-color: var(--antique-white);
@@ -84,7 +85,19 @@ h2 {
 
 .ready {
   text-align: center;
-  font-family: var(--scope);
   font-size: 1.5rem;
   margin: 1rem 0rem 0rem 0rem;
+  font-style: italic;
+}
+
+.rules {
+  margin-top: 1rem;
+
+  li {
+    text-align: justify;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    font-family: var(--mukta);
+    font-weight: var(--light);
+  }
 }
