@@ -29,11 +29,17 @@
 
 .word-list {
   margin: 0.25rem auto;
+  list-style-type: none;
   background: white;
   padding: 0.75rem;
   border-radius: 10px;
   border: 1px solid var(--shadow);
   box-shadow: 3px 3px var(--shadow);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -51%);
+  width: 85vw;
 }
 
 .d-none {
@@ -120,8 +126,8 @@
 
 .end {
   display: flex;
-  align-items: flex-end;
-  justify-content: right;
+  align-items: center;
+  justify-content: space-between;
 }
 
 
@@ -129,7 +135,6 @@
   position: relative;
   letter-spacing: 2px;
   right: 0;
-  margin: 0.25rem 1.5rem 0.25rem 0rem;
   padding: 0.75rem 1rem;
   font-size: 1rem;
   border-radius: 10px;
@@ -196,16 +201,23 @@ hr {
   margin: 0.25rem 0rem;
 }
 
-#list {
+#show-list {
   position: relative;
   letter-spacing: 2px;
   right: 0;
-  margin: 0.25rem 1.5rem 0.25rem 0rem;
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  border-radius: 10px px;
+  border-radius: 10px;
   background-color: var(--gunmetal);
   color: var(--antique-white);
   font-family: "Scope One";
   font-weight: 700;
+}
+
+#close-list {
+  float: right;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  font-size: 1.5rem;
 }

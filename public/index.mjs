@@ -225,6 +225,17 @@ async function gameOver() {
     mark.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
     mark.style.color = "green";
   });
+
+  const showWordList = document.getElementById("show-list")
+  const wordListDiv = document.querySelector(".word-list")
+  showWordList.addEventListener("click", () => {
+    wordListDiv.classList.toggle("d-none")
+  })
+
+  const closeList = document.getElementById("close-list")
+  closeList.addEventListener("click", () => {
+    wordListDiv.classList.toggle("d-none")
+  })
 }
 
 function anagram() {

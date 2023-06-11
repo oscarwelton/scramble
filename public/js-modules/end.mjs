@@ -18,10 +18,6 @@ function endHtml(wordList, definitions, indexPosition, scoreValue, timeTaken, pe
                     <h4><span class="icon"><i class="fa-solid fa-ranking-star"></i></span> ${percentageShow} <span id="percentile">(percentile)</span></h4>
                   </div>
               </div>
-              <div class="end">
-                <button id="share">Share <i class="fa-solid fa-share-from-square"></i></button>
-              </div>
-
               </div>
             </div>
 
@@ -29,33 +25,38 @@ function endHtml(wordList, definitions, indexPosition, scoreValue, timeTaken, pe
         <h3 id="grade"></h3>
         <p id="grade-message"></p>
       </div>
-      <button id="list">View Words</i></button>
+      <div class="end">
+        <button id="show-list">Words <i class="fa-solid fa-list-check"></i></i></button>
+        <button id="share">Share <i class="fa-solid fa-share-from-square"></i></button>
+      </div>
 
-    <div class="word-list">
+    <div class="word-list d-none">
+    <button id="close-list"><i class="fa-solid fa-circle-xmark"></i></button
       <ul>
-      <li class="word">1. ${wordList[0]} <span class="mark"></li>
-        <ul>
-          <li class="definition">${definitions[0]}</li>
-        </ul>
-      <li class="word">2. ${wordList[1]} <span class="mark"><i class="fa-solid fa-circle-xmark"></i></span></li>
-        <ul>
-          <li class="definition">${definitions[1]}</li>
-        </ul>
-      <li class="word">3. ${wordList[2]} <span class="mark"><i class="fa-solid fa-circle-xmark"></i></span></li>
-        <ul>
-          <li class="definition">${definitions[2]}</li>
-        </ul>
-      <li class="word">4. ${wordList[3]} <span class="mark"><i class="fa-solid fa-circle-xmark"></i></span></li>
-        <ul>
-          <li class="definition">${definitions[3]}</li>
-        </ul>
-      <li class="word">5. ${wordList[4]} <span class="mark"><i class="fa-solid fa-circle-xmark"></i></span></li>
-        <ul>
-          <li class="definition">${definitions[4]}</li>
-        </ul>
+        <li class="word">1. ${wordList[0]} <span class="mark"></li>
+          <ul>
+            <li class="definition">${definitions[0]}</li>
+          </ul>
+        <li class="word">2. ${wordList[1]} <span class="mark"><i class="fa-solid fa-circle-xmark"></i></span></li>
+          <ul>
+            <li class="definition">${definitions[1]}</li>
+          </ul>
+        <li class="word">3. ${wordList[2]} <span class="mark"><i class="fa-solid fa-circle-xmark"></i></span></li>
+          <ul>
+            <li class="definition">${definitions[2]}</li>
+          </ul>
+        <li class="word">4. ${wordList[3]} <span class="mark"><i class="fa-solid fa-circle-xmark"></i></span></li>
+          <ul>
+            <li class="definition">${definitions[3]}</li>
+          </ul>
+        <li class="word">5. ${wordList[4]} <span class="mark"><i class="fa-solid fa-circle-xmark"></i></span></li>
+          <ul>
+            <li class="definition">${definitions[4]}</li>
+          </ul>
+      </ul>
       </div>
       <div>
-        <h4 class="midnight-countdown">Resets in: &nbsp <span id="time"></span></h4>
+        <h4 class="midnight-countdown">Reset in: &nbsp <span id="time"></span></h4>
       </div>
     </div>`;
     return gameOverHtml
