@@ -215,3 +215,17 @@ h5 {
     transform: translateY(0);
   }
 }
+
+.slide-to-bottom {
+  position: relative;
+  animation: slide-to-bottom 1s forwards;
+}
+
+@keyframes slide-to-bottom {
+  0% {
+    transform: translateY(0%);
+  }
+  100% {
+    transform: translateY(135%);
+  }
+}

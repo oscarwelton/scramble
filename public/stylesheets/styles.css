@@ -250,6 +250,19 @@ h5 {
     transform: translateY(0);
   }
 }
+.slide-to-bottom {
+  position: relative;
+  animation: slide-to-bottom 1s forwards;
+}
+
+@keyframes slide-to-bottom {
+  0% {
+    transform: translateY(0%);
+  }
+  100% {
+    transform: translateY(135%);
+  }
+}
 .start-button {
   text-align: center;
 }
@@ -386,8 +399,6 @@ h2 {
   box-shadow: 3px 3px var(--shadow);
   position: absolute;
   top: 1rem;
-  left: 50%;
-  transform: translate(-50%, 0%);
   width: 85vw;
   min-width: 250px;
 }

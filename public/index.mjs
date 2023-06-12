@@ -263,13 +263,19 @@ async function gameOver() {
   const showWordList = document.getElementById("show-list");
   const wordListDiv = document.querySelector(".word-list");
   showWordList.addEventListener("click", () => {
-    wordListDiv.classList.toggle("d-none");
+    wordListDiv.classList.remove("slide-to-bottom");
+    wordListDiv.classList.remove("d-none");
+    wordListDiv.classList.add("slide-in-from-bottom");
     document.getElementById("share").disabled = true;
   });
 
   const closeList = document.getElementById("close-list");
   closeList.addEventListener("click", () => {
-    wordListDiv.classList.toggle("d-none");
+    wordListDiv.classList.remove("slide-in-from-bottom");
+    wordListDiv.classList.add("slide-to-bottom");
+    setTimeout(() => {
+      wordListDiv.classList.add("d-none");
+    }, 1000);
     document.getElementById("share").disabled = false;
   });
 }
