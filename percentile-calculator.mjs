@@ -1,20 +1,23 @@
 import { Mutex } from "async-mutex";
 import fetch from "node-fetch";
+import 'dotenv/config'
 
 const mutex = new Mutex();
 const url = `https://api.jsonbin.io/v3/b/648702148e4aa6225ead0b60`;
-const apiKey = `$2b$10$8RTwTXIW08NAev7bHuiPd.MUJff7.e3zn3StonuOdR2tnE1dYrbG2`;
+const updateKey = process.env['UPDATE_JSON']
+const readKey = process.env['READ_JSON']
 
 async function getScores() {
   return fetch(url, {
     method: "GET",
     headers: {
-      "X-Master-Key": apiKey,
+      "X-Access-Key": readKey,
       "X-Bin-Meta": false,
     },
   })
     .then((response) => response.text())
     .then((data) => {
+      console.log(data)
       return data;
     })
     .catch((error) => {
@@ -27,7 +30,7 @@ async function getScores() {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "X-Master-Key": apiKey,
+        "X-Access-Key": updateKey,
       },
       body: JSON.stringify({ scores }),
     })
@@ -57,6 +60,7 @@ async function recalculatePercentiles(scoreValue, scores) {
   const release = await mutex.acquire();
 
   try {
+    console.log(scoreValue, "scoreValue", scores, "scores")
     scores.sort((a, b) => a - b);
     const numberOfScores = scores.length;
     const scoreIndex = scores.indexOf(scoreValue) + 1;

@@ -45,12 +45,11 @@ async function getData() {
     .then((response) => response.json())
     .then((data) => {
       scores = JSON.parse(data)["scores"];
+      console.log(scores)
     });
 }
 
 await getData();
-console.log(scores, "from index.mjs")
-console.log(wordList)
 
 if (indexPosition === 5 || countdownTime <= 0) {
   gameOver(wordList);
