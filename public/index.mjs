@@ -79,6 +79,10 @@ if (indexPosition === 5 || countdownTime <= 0) {
       startButton.innerText = "Resume";
     }
     startButton.addEventListener("click", () => {
+
+
+
+
       document.querySelector(".start-screen").remove();
       container.insertAdjacentHTML(
         "afterbegin",
