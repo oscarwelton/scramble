@@ -49,4 +49,4 @@ async function recalculatePercentiles(score) {
   }
 }
 
-export { calculatePercentiles, recalculatePercentiles };
+export { calculatePercentiles, recalculatePercentiles, scores };

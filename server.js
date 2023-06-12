@@ -5,7 +5,7 @@ import { dirname } from "path";
 import { exec } from 'child_process';
 import { fileURLToPath } from "url";
 import { wordList, day } from './wordgenerator.mjs';
-import { calculatePercentiles, recalculatePercentiles } from "./percentile-calculator.mjs";
+import { calculatePercentiles, recalculatePercentiles, scores } from "./percentile-calculator.mjs";
 
 
 const app = express();
@@ -24,6 +24,10 @@ app.get('/wordList', (req, res) => {
 
 app.get('/day', (req, res) => {
   res.send({ day });
+});
+
+app.get('/scores', (req, res) => {
+  res.json(scores);
 });
 
 app.use(express.json());

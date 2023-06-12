@@ -1,5 +1,4 @@
 function grades(scoreValue) {
-  console.log(scoreValue)
   const grade = document.getElementById("grade");
   const gradeMessage = document.getElementById("grade-message");
   let emoji = ''
@@ -86,7 +85,6 @@ function grades(scoreValue) {
       emoji = "🤬";
       break;
     default:
-      console.log("from inside invalid", scoreValue)
       grade.innerText = "Invalid score value";
       break;
   }

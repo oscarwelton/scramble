@@ -19,6 +19,14 @@ let now = new Date();
 let letterIndex = 0;
 let day = 0;
 
+fetch("/scores")
+  .then((response) => response.json())
+  .then((data) => {
+    const scores = data;
+    console.log(data)
+    return scores;
+  });
+
 fetch("/wordList")
   .then((response) => response.json())
   .then((data) => {
@@ -168,7 +176,10 @@ if (startButton) {
       gameOver(wordList);
     } else {
       document.querySelector(".start-screen").remove();
-      container.insertAdjacentHTML("afterbegin", htmlBlock(scoreValue, indexPosition));
+      container.insertAdjacentHTML(
+        "afterbegin",
+        htmlBlock(scoreValue, indexPosition)
+      );
       refresh();
       startClock();
       resetHint(definitions, indexPosition);
@@ -178,7 +189,6 @@ if (startButton) {
 }
 
 async function percentiles() {
-  console.log(storedPercentile, scoreValue);
   const percentileValue = await calculatePercentiles(
     scoreValue,
     storedPercentile
@@ -369,4 +379,4 @@ function submitButtonClick() {
   }
 }
 
-export { wordList }
+export { wordList };
