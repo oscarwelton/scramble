@@ -200,3 +200,18 @@ h5 {
 .red {
   color: red;
 }
+
+
+.slide-in-from-bottom {
+  position: relative;
+  animation: slideInFromBottom 1s forwards;
+}
+
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}

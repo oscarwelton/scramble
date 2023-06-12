@@ -1,7 +1,7 @@
 const startHtml =
-` <div class="container" role="main">
+` <div class="container slide-in-from-bottom" role="main">
 <div class="start-screen">
-  <h2>How to Play</h2>
+<h2>How to Play</h2>
   <h4>Solve all five scrambles before the time runs out.</h4>
 
   <div class="examples">
@@ -55,4 +55,4 @@ const startHtml =
 </div>
 </div>`
 
-// export { startHtml }
+export { startHtml }

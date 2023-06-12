@@ -1,8 +1,8 @@
-function endHtml(wordList, definitions, indexPosition, scoreValue, timeTaken, percentageShow) {
+function endHtml(wordList, definitions, indexPosition, scoreValue, timeTaken, percentageShow, day) {
   const gameOverHtml = `
-      <div class="game-over">
+      <div class="game-over slide-in-from-bottom">
         <div class="results">
-          <h2 class="game-over-header">Results</h2>
+          <h2 class="game-over-header">Results <span class="day-count">(${day})</span></h2>
             <div class="statistics">
               <div class="stats">
                 <div class="stat">

@@ -1,0 +1,71 @@
+.load-screen {
+  position: absolute;
+  top: 0%;
+  background-color: white;
+  border-bottom: 1px solid var(--gunmetal);
+  left: 50%;
+  transform: translate(-50%, 0%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: absolute;
+  padding: 1rem 0rem 0.5rem 0rem;
+}
+
+.load-letter {
+  font-size: 2rem;
+  font-family: var(--scope);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 5px;
+}
+
+.wave span {
+  position: relative;
+  animation: wave 0.75s ease-in-out;
+}
+
+@keyframes wave {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.wave span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.wave span:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.wave span:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.wave span:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+.wave span:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+.wave span:nth-child(6) {
+  animation-delay: 0.5s;
+}
+
+.wave span:nth-child(7) {
+  animation-delay: 0.6s;
+}
+.wave span:nth-child(8) {
+  animation-delay: 0.7s;
+}

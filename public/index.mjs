@@ -1,5 +1,7 @@
-import { htmlBlock } from "./js-modules/game.mjs";
+import { loadHtml } from "./js-modules/load.mjs";
+import { startHtml } from "./js-modules/start.mjs";
 import { endHtml } from "./js-modules/end.mjs";
+import { gameHtml } from "./js-modules/game.mjs";
 import { hintPrompt, resetHint } from "./js-modules/hint.mjs";
 import { share } from "./js-modules/share.mjs";
 import { shuffle } from "./js-modules/shuffle.mjs";
@@ -21,7 +23,6 @@ let day = 0;
 let scores = [];
 
 async function getData() {
-
   await fetch("/wordList")
     .then((response) => response.json())
     .then((data) => {
@@ -41,7 +42,7 @@ async function getData() {
       console.error(error);
     });
 
-    await fetch("/scores")
+  await fetch("/scores")
     .then((response) => response.json())
     .then((data) => {
       scores = JSON.parse(data)["scores"];
@@ -50,8 +51,45 @@ async function getData() {
 
 await getData();
 
+async function loadScreen(loadHtml) {
+  const container = document.querySelector(".container");
+  container.innerHTML = loadHtml;
+
+  const loadScreen = document.querySelector(".load-screen");
+  loadScreen.classList.add("wave");
+
+}
+
+function renderStart(startHtml) {
+  document.querySelector(".title").classList.remove("d-none");
+  document.querySelector(".loader").remove();
+  document.querySelector(".container").innerHTML = startHtml;
+}
+
 if (indexPosition === 5 || countdownTime <= 0) {
   gameOver(wordList);
+} else {
+  await loadScreen(loadHtml);
+
+  setTimeout(() => {
+    renderStart(startHtml);
+    const startButton = document.querySelector(".start");
+    const container = document.querySelector(".container");
+    if (indexPosition != 0 || countdownTime != 300) {
+      startButton.innerText = "Resume";
+    }
+    startButton.addEventListener("click", () => {
+      document.querySelector(".start-screen").remove();
+      container.insertAdjacentHTML(
+        "afterbegin",
+        gameHtml(scoreValue, indexPosition)
+      );
+      refresh();
+      startClock();
+      resetHint(definitions, indexPosition);
+      hintPrompt(definitions, indexPosition, wordList);
+    });
+  }, 1400);
 }
 
 if (isNaN(savedMidnight.getTime())) {
@@ -158,42 +196,23 @@ function startClock() {
   const clock = document.getElementById("clock");
   clock.innerHTML = updateTimer(countdownTime);
 
-  setInterval(() => {
+  const gameIntervalTimer = setInterval(() => {
     countdownTime--;
     if (countdownTime <= 0) {
-      clearInterval(intervalClock);
       gameOver(wordList);
+      clearInterval(gameIntervalTimer);
     }
     localStorage.setItem("timer", countdownTime);
     clock.innerHTML = updateTimer();
   }, 1000);
 }
 
-const startButton = document.querySelector(".start");
-if (startButton) {
-  const container = document.querySelector(".container");
-  if (indexPosition != 0 || countdownTime != 300) {
-    startButton.innerText = "Continue";
-  }
-  startButton.addEventListener("click", () => {
-    if (indexPosition === 5) {
-      gameOver(wordList);
-    } else {
-      document.querySelector(".start-screen").remove();
-      container.insertAdjacentHTML(
-        "afterbegin",
-        htmlBlock(scoreValue, indexPosition)
-      );
-      refresh();
-      startClock();
-      resetHint(definitions, indexPosition);
-      hintPrompt(definitions, indexPosition, wordList);
-    }
-  });
-}
-
 async function percentiles() {
-  const percentileValue = await calculatePercentiles(scores, scoreValue, storedPercentile);
+  const percentileValue = await calculatePercentiles(
+    scores,
+    scoreValue,
+    storedPercentile
+  );
   return percentileValue;
 }
 
@@ -221,7 +240,8 @@ async function gameOver() {
     indexPosition,
     scoreValue,
     timeTaken,
-    percentileValue
+    percentileValue,
+    day
   );
 
   const grade = grades(scoreValue);

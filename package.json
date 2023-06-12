@@ -1,7 +1,7 @@
 {
-  "name": "anagram-new",
+  "name": "scramble",
   "version": "1.0.0",
-  "description": "A fun anagram game, deployed on heroku.",
+  "description": "A fun anagram game.",
   "main": "index.mjs",
   "type": "module",
   "scripts": {

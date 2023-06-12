@@ -1,4 +1,4 @@
-function htmlBlock(scoreValue, indexPosition) {
+function gameHtml(scoreValue, indexPosition) {
  return `<div class="game">
 <div class="sub-header">
 <div class="score">
@@ -32,4 +32,4 @@ function htmlBlock(scoreValue, indexPosition) {
   </div>`
 }
 
-export { htmlBlock }
+export { gameHtml }
