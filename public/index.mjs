@@ -45,7 +45,6 @@ async function getData() {
     .then((response) => response.json())
     .then((data) => {
       scores = JSON.parse(data)["scores"];
-      console.log(scores)
     });
 }
 

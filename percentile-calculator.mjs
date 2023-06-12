@@ -17,7 +17,6 @@ async function getScores() {
   })
     .then((response) => response.text())
     .then((data) => {
-      console.log(data)
       return data;
     })
     .catch((error) => {
@@ -35,10 +34,9 @@ async function getScores() {
       body: JSON.stringify({ scores }),
     })
       .then((response) => response.json())
-      .then((data) => console.log(data))
+      .then((data) => data)
       .catch((error) => console.error(error));
   }
-
 
 async function calculatePercentiles(scoreValue, scores) {
   const release = await mutex.acquire();
@@ -60,7 +58,6 @@ async function recalculatePercentiles(scoreValue, scores) {
   const release = await mutex.acquire();
 
   try {
-    console.log(scoreValue, "scoreValue", scores, "scores")
     scores.sort((a, b) => a - b);
     const numberOfScores = scores.length;
     const scoreIndex = scores.indexOf(scoreValue) + 1;
