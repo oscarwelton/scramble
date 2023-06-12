@@ -1,12 +1,12 @@
 let percentage;
 
-function percentile(scoreValue) {
+function percentile(scores, scoreValue) {
   return fetch("/calculate-percentiles", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ score: scoreValue }),
+    body: JSON.stringify({ playerScores: scores, score: scoreValue }),
   })
     .then((response) => response.json())
     .then((result) => {
@@ -14,13 +14,13 @@ function percentile(scoreValue) {
     });
 }
 
-function recalculatePercentile(scoreValue) {
+function recalculatePercentile(scores, scoreValue) {
   return fetch("/recalculate-percentiles", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ score: scoreValue }),
+    body: JSON.stringify({ playerScores: scores, score: scoreValue }),
   })
     .then((response) => response.json())
     .then((result) => {
@@ -39,17 +39,19 @@ function toOrdinalSuffix(percentage) {
     : int + ordinals[3];
 }
 
-async function calculatePercentiles(scoreValue, storedPercentile) {
+async function calculatePercentiles(scores, scoreValue, storedPercentile) {
   if (storedPercentile == null) {
-    percentage = await percentile(scoreValue);
+    percentage = await percentile(scores, scoreValue);
     localStorage.setItem("percentile", Math.abs(percentage));
+    console.log("percentile calculated.")
     return toOrdinalSuffix(percentage);
   } else if (storedPercentile >= 0 && scoreValue !== null) {
-    percentage = await recalculatePercentile(scoreValue);
+    percentage = await recalculatePercentile(scores, scoreValue);
     localStorage.setItem("percentile", Math.abs(percentage));
+    console.log("percentile recalculated.")
     return toOrdinalSuffix(percentage);
   } else {
-    percentage = await percentile(scoreValue);
+    percentage = await percentile(scores, scoreValue);
     localStorage.setItem("percentile", Math.abs(percentage));
     return toOrdinalSuffix(percentage);
   }

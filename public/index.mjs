@@ -18,36 +18,43 @@ let wordList, definitions;
 let now = new Date();
 let letterIndex = 0;
 let day = 0;
+let scores = [];
 
-fetch("/scores")
-  .then((response) => response.json())
-  .then((data) => {
-    const scores = data;
-    console.log(data)
-    return scores;
-  });
+async function getData() {
 
-fetch("/wordList")
-  .then((response) => response.json())
-  .then((data) => {
-    wordList = Object.keys(data);
-    definitions = Object.values(data);
-    if (indexPosition === 5 || countdownTime <= 0) {
-      gameOver(wordList);
-    }
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+  await fetch("/wordList")
+    .then((response) => response.json())
+    .then((data) => {
+      wordList = Object.keys(data);
+      definitions = Object.values(data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 
-fetch("/day")
-  .then((response) => response.json())
-  .then((data) => {
-    day = parseInt(data.day);
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+  await fetch("/day")
+    .then((response) => response.json())
+    .then((data) => {
+      day = parseInt(data.day);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+    await fetch("/scores")
+    .then((response) => response.json())
+    .then((data) => {
+      scores = JSON.parse(data)["scores"];
+    });
+}
+
+await getData();
+console.log(scores, "from index.mjs")
+console.log(wordList)
+
+if (indexPosition === 5 || countdownTime <= 0) {
+  gameOver(wordList);
+}
 
 if (isNaN(savedMidnight.getTime())) {
   localStorage.removeItem(
@@ -146,11 +153,6 @@ function startClock() {
       }, 400);
     }
 
-    if (countdownTime <= 0) {
-      clearInterval(intervalClock);
-      gameOver(wordList);
-    }
-
     const clockInnerHTML = `${minutes.toString().padStart(1, "0")}:
     ${seconds.toString().padStart(2, "0")}`;
     return clockInnerHTML;
@@ -160,6 +162,10 @@ function startClock() {
 
   setInterval(() => {
     countdownTime--;
+    if (countdownTime <= 0) {
+      clearInterval(intervalClock);
+      gameOver(wordList);
+    }
     localStorage.setItem("timer", countdownTime);
     clock.innerHTML = updateTimer();
   }, 1000);
@@ -189,10 +195,7 @@ if (startButton) {
 }
 
 async function percentiles() {
-  const percentileValue = await calculatePercentiles(
-    scoreValue,
-    storedPercentile
-  );
+  const percentileValue = await calculatePercentiles(scores, scoreValue, storedPercentile);
   return percentileValue;
 }
 

@@ -5,7 +5,7 @@ import { dirname } from "path";
 import { exec } from 'child_process';
 import { fileURLToPath } from "url";
 import { wordList, day } from './wordgenerator.mjs';
-import { calculatePercentiles, recalculatePercentiles, scores } from "./percentile-calculator.mjs";
+import { calculatePercentiles, recalculatePercentiles, getScores } from "./percentile-calculator.mjs";
 
 
 const app = express();
@@ -14,6 +14,7 @@ const __dirname = dirname(__filename);
 
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use(express.json());
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
@@ -26,22 +27,23 @@ app.get('/day', (req, res) => {
   res.send({ day });
 });
 
-app.get('/scores', (req, res) => {
+app.get('/scores', async (req, res) => {
+  const scores = await getScores();
   res.json(scores);
 });
 
-app.use(express.json());
-
 app.post('/calculate-percentiles', async (req, res) => {
-  const score = req.body.score;
-  const result = await calculatePercentiles(score);
+  const scores = req.body.playerScores
+  const scoreValue = req.body.score;
+  const result = await calculatePercentiles(scoreValue, scores);
 
   res.json({ result });
 });
 
 app.post('/recalculate-percentiles', async (req, res) => {
-  const score = req.body.score;
-  const result = await recalculatePercentiles(score);
+  const scores = req.body.playerScores
+  const scoreValue = req.body.score;
+  const result = await recalculatePercentiles(scoreValue, scores);
   res.json({ result });
 });
 
