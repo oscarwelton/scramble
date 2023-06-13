@@ -4,9 +4,8 @@ import cron from "node-cron";
 import { dirname } from "path";
 import { exec } from 'child_process';
 import { fileURLToPath } from "url";
-import { wordList, day } from './wordgenerator.mjs';
+import { wordList } from './wordgenerator.mjs';
 import { calculatePercentiles, recalculatePercentiles, getScores } from "./percentile-calculator.mjs";
-
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -24,6 +23,7 @@ app.get('/wordList', (req, res) => {
   res.json(wordList);
 });
 
+let day = 1;
 app.get('/day', (req, res) => {
   res.send({ day });
 });
@@ -52,7 +52,7 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   cron.schedule("0 0 * * *", () => {
-    console.log("Executing scheduled task...");
+    day++;
     exec("node wordGenerator.mjs", (error, stdout, stderr) => {
       if (error) {
         console.error(`Script execution error: ${error}`);

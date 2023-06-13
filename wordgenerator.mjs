@@ -1,7 +1,8 @@
+// import { unwatchFile } from "fs";
 import fetch from "node-fetch";
 
 let wordList = {};
-let day = 0;
+let wordLength = 4;
 
 async function generateWord(length) {
   const response = await fetch(
@@ -11,7 +12,12 @@ async function generateWord(length) {
   const data = await response.json();
   const word = data[0];
   const regex = /^[a-zA-Z]+$/;
-  return regex.test(word) ? word : generateWord(length);
+  if (regex.test(word)) {
+    return word;
+  } else {
+    console.log(`Invalid word: ${word}`)
+    return generateWord(length);
+  }
 }
 
 async function fetchDefinitions(word) {
@@ -23,55 +29,35 @@ async function fetchDefinitions(word) {
   try {
     const response = await fetch(url, options);
     const result = await response.json();
-    const definition = result[0]['meanings'][0]['definitions'][0]['definition'];
+    const definitionString = result[0]['meanings'][0]['definitions'][0]['definition'];
     const partOfSpeech = result[0]['meanings'][0]['partOfSpeech'];
-    const definitions = `(${partOfSpeech}) : ${definition}`
-    return definitions;
+    const definition = `(${partOfSpeech}) ${definitionString}`
+    return definition;
   } catch (error) {
     console.log(`Failed to fetch definitions for ${word}: ${error}`);
-    const newWord = await generateWord(word.length);
-    return await fetchDefinitions(newWord);
   }
 }
 
 async function addToObject() {
-  const one = await generateWord(4);
-  wordList[one] = await fetchDefinitions(one);
-  const two = await generateWord(5);
-  wordList[two] = await fetchDefinitions(two);
-  const three = await generateWord(6);
-  wordList[three] = await fetchDefinitions(three);
-  const four = await generateWord(7);
-  wordList[four] = await fetchDefinitions(four);
-  const five = await generateWord(8);
-  wordList[five] = await fetchDefinitions(five);
-}
 
-async function runScheduledTask() {
-  const times = 1;
-  for (let i = 0; i < times; i++) {
-    await addToObject();
+  const word = await generateWord(wordLength);
+  const definition= await fetchDefinitions(word);
+  if (!definition) {
+    return addToObject();
   }
-  return wordList;
+  wordList[word] = definition;
+
+  wordLength++;
 }
 
 async function main() {
-  let list = {};
-  while (Object.keys(list).length !== 5) {
-    list = await runScheduledTask();
+  while (Object.keys(wordList).length !== 5) {
+    await addToObject();
   }
-  console.log(list);
-  return list;
+  console.log(wordList);
+  return wordList;
 }
 
 main();
 
-
-function dayCount() {
-  day += 1
-  return day
-}
-
-dayCount();
-
-export { wordList, day };
+export { wordList };
