@@ -1,8 +1,11 @@
 .start-button {
   text-align: center;
+  position: relative;
 
   button {
     font-size: 2rem;
+    position: relative;
+    z-index: 2;
     width: 50%;
     padding: 0.75rem 0rem 0.5rem 0rem;
     border: 1px solid var(--shadow);
@@ -10,8 +13,13 @@
     border-radius: 10px;
     box-shadow: 5px 5px var(--shadow);
     background-color: white;
+    color: var(--gunmetal);
 
+    &:hover {
+      cursor: pointer;
+    }
   }
+
 }
 
 .start-screen {
@@ -31,6 +39,7 @@ p {
 h4 {
   margin: 0.25rem 0.25rem 0.25rem 0rem;
   font-family: var(--scope);
+  text-align: justify;
 }
 
 h2 {
@@ -85,9 +94,10 @@ h2 {
 }
 
 .ready {
+  opacity: 0;
   text-align: center;
   font-size: 1.5rem;
-  margin: 1rem 0rem 0rem 0rem;
+  margin: 1rem 0rem 0.25rem 0rem;
   font-style: italic;
 }
 
@@ -99,4 +109,43 @@ h2 {
   li {
     margin-bottom: 1rem;
   }
+}
+
+
+.start-button-animation {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 50% 0);
+  animation: spin 0.8s linear infinite;
+  background: white;
+}
+
+@keyframes spin {
+  0% {
+    clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 50% 0);
+  }
+  12.5% {
+    clip-path: polygon(50% 50%, 100% 0, 100% 0, 100% 100%, 0 100%, 0 0, 50% 0);
+  }
+  37.5% {
+    clip-path: polygon(50% 50%, 100% 100%, 100% 100%, 100% 100%, 0 100%, 0 0, 50% 0);
+  }
+  62.5% {
+    clip-path: polygon(50% 50%, 0 100%, 0 100%, 0 100%, 0 100%, 0 0, 50% 0);
+  }
+  87.5% {
+    clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0, 50% 0);
+  }
+  100% {
+    clip-path: polygon(50% 50%, 50% 0, 50% 0, 50% 0, 50% 0, 50% 0, 50% 0);
+  }
+}
+
+.num {
+  height: 100%;
+  width: 50%;
+  position: absolute;
+  z-index: 1;
+  background-color: white;
+  top: 0;
+  left: 25%;
+  border-radius: 10px;
 }

@@ -7,6 +7,7 @@ import { shuffle } from "./js-modules/shuffle.mjs";
 import { grades } from "./js-modules/grade.mjs";
 import { timeUntilMidnight } from "./js-modules/midnight-timer.mjs";
 import { calculatePercentiles } from "./js-modules/percentiles.mjs";
+import { reset } from "./js-modules/reset.mjs"
 
 // localStorage.clear();
 
@@ -16,10 +17,17 @@ let scoreValue = JSON.parse(localStorage.getItem("currentScore")) || 0;
 let savedMidnight = new Date(localStorage.getItem("midnight"));
 let storedPercentile = parseInt(localStorage.getItem("percentile")) || null;
 let wordList, definitions;
-let now = new Date();
 let letterIndex = 0;
 let day = 0;
 let scores = [];
+let now = new Date();
+
+if (isNaN(savedMidnight.getTime())) {
+  reset(now, savedMidnight, scoreValue, indexPosition, countdownTime);
+} else if ((savedMidnight instanceof Date) &(savedMidnight.getTime() < now.getTime())) {
+  reset(now, savedMidnight, scoreValue, indexPosition, countdownTime);
+}
+
 
 async function getData() {
   await fetch("/wordList")
@@ -50,29 +58,51 @@ async function getData() {
 
 await getData();
 
-function renderStart(startHtml) {
-  document.querySelector(".container").innerHTML = startHtml;
-}
+function startButtonCountDown(num) {
+  return new Promise((resolve) => {
+    const startButton = document.querySelector(".start");
+    const numDiv = document.querySelector(".num");
+    numDiv.classList.add("start-button-animation")
+    startButton.innerText = num;
+    startButton.style.background = "transparent";
+    const startInterval = setInterval(() => {
+      num--;
+      if (num === 0) {
+        clearInterval(startInterval);
+        resolve();
+      }
+      startButton.innerText = num;
+    }, 800);
+  });
+};
+
 
 if (indexPosition === 5 || countdownTime <= 0) {
   gameOver(wordList);
 } else {
-  renderStart(startHtml);
+  document.querySelector(".container").innerHTML = startHtml;
+  const startButton = document.querySelector(".start");
+  if (indexPosition != 0 || countdownTime != 300) {
+    startButton.innerText = "Resume";
+  }
 
   setTimeout(() => {
     const title = document.querySelector(".title");
-    const examples = Array.from(document.querySelectorAll(".example"))
+    const examples = Array.from(document.querySelectorAll(".example"));
     examples.forEach((element) => {
-      element.classList.add("wave")
-    })
+      element.classList.add("wave");
+    });
     title.classList.add("wave");
 
-    const startButton = document.querySelector(".start");
     const container = document.querySelector(".container");
-    if (indexPosition != 0 || countdownTime != 300) {
-      startButton.innerText = "Resume";
-    }
-    startButton.addEventListener("click", () => {
+
+    startButton.addEventListener("click", async () => {
+      let num = 3;
+      const ready = document.querySelector(".ready");
+      ready.innerText = "Ready!";
+      ready.style.fontStyle = "normal";
+      startButton.innerText = num
+      await startButtonCountDown(num);
       document.querySelector(".start-screen").remove();
       container.insertAdjacentHTML(
         "afterbegin",
@@ -86,62 +116,6 @@ if (indexPosition === 5 || countdownTime <= 0) {
   }, 1400);
 }
 
-if (isNaN(savedMidnight.getTime())) {
-  localStorage.removeItem(
-    "midnight",
-    "currentIndex",
-    "currentScore",
-    "countdownTime",
-    "percentile"
-  );
-
-  savedMidnight = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate() + 1,
-    0,
-    0,
-    0
-  );
-  localStorage.setItem("midnight", savedMidnight.toISOString());
-
-  indexPosition = 0;
-  localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
-
-  scoreValue = 0;
-  localStorage.setItem("currentScore", JSON.stringify(scoreValue));
-  console.log("incorrect format, data reset.");
-
-  countdownTime = 300;
-  localStorage.setItem("timer", JSON.stringify(countdownTime));
-} else if (
-  (savedMidnight instanceof Date) &
-  (savedMidnight.getTime() < now.getTime())
-) {
-  localStorage.removeItem(
-    "midnight",
-    "currentIndex",
-    "currentScore",
-    "countdownTime",
-    "percentile"
-  );
-  savedMidnight = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate() + 1,
-    0,
-    0,
-    0
-  );
-  indexPosition = 0;
-  countdownTime = 300;
-  scoreValue = 0;
-
-  localStorage.setItem("currentIndex", JSON.stringify(indexPosition));
-  localStorage.setItem("currentScore", JSON.stringify(scoreValue));
-  localStorage.setItem("midnight", savedMidnight.toISOString());
-  localStorage.setItem("timer", JSON.stringify(countdownTime));
-}
 
 document.addEventListener("click", () => {
   let answerListItems = document.getElementById("answer");
@@ -202,17 +176,13 @@ function startClock() {
 }
 
 async function percentiles() {
-  const percentileValue = await calculatePercentiles(
-    scores,
-    scoreValue,
-    storedPercentile
-  );
+  const percentileValue = await calculatePercentiles(scores, scoreValue, storedPercentile);
+  localStorage.setItem(Math.abs(percentileValue), "percentile");
   return percentileValue;
 }
 
 async function gameOver() {
   let percentileValue = await percentiles();
-  localStorage.setItem(Math.abs(percentileValue), "percentile");
   let times = localStorage.getItem("timer");
 
   times = 300 - times;
@@ -226,8 +196,6 @@ async function gameOver() {
     ":" +
     seconds.toString().padStart(2, "0");
 
-  document.querySelector(".start-screen")?.remove();
-  document.querySelector(".game")?.remove();
   document.querySelector(".container").innerHTML = endHtml(
     wordList,
     definitions,
@@ -257,16 +225,16 @@ async function gameOver() {
   const showWordList = document.getElementById("show-list");
   const wordListDiv = document.querySelector(".word-list");
   showWordList.addEventListener("click", () => {
-    wordListDiv.classList.remove("slide-to-bottom");
     wordListDiv.classList.remove("d-none");
+    wordListDiv.classList.remove("slide-to-bottom");
     wordListDiv.classList.add("slide-in-from-bottom");
     document.getElementById("share").disabled = true;
   });
 
   const closeList = document.getElementById("close-list");
   closeList.addEventListener("click", () => {
-    wordListDiv.classList.remove("slide-in-from-bottom");
     wordListDiv.classList.add("slide-to-bottom");
+    wordListDiv.classList.remove("slide-in-from-bottom");
     setTimeout(() => {
       wordListDiv.classList.add("d-none");
     }, 1000);
@@ -354,6 +322,7 @@ function updateValues() {
 
   counter.innerHTML = counterValue + 1;
   counter.classList.add("score-animation");
+
   setTimeout(() => {
     counter.classList.remove("score-animation");
   }, 1000);

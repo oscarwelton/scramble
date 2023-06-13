@@ -129,59 +129,6 @@ h5 {
   width: 5rem;
 }
 
-@keyframes shake {
-  0% {
-    transform: translateX(0);
-  }
-
-  20% {
-    transform: translateX(-10px)
-  }
-
-  40% {
-    transform: translateX(10px);
-    color: red
-  }
-
-  60% {
-    transform: translateX(-10px)
-  }
-
-  80% {
-    transform: translateX(10px)
-  }
-
-  100% {
-    transform: translateX(0)
-  }
-}
-
-.shake {
-  animation: shake 0.4s ease-in-out;
-}
-
-
-@keyframes scoreAnimation {
-  0% {
-    transform: scale(1);
-  }
-
-  50% {
-    color: green;
-    font-weight: 700;
-    transform: scale(1.5);
-  }
-
-  100% {
-    color: inherit;
-    font-weight: inherit;
-    transform: scale(1);
-  }
-}
-
-.score-animation {
-  animation: scoreAnimation 0.8s ease-in-out;
-}
 
 #clear {
   &:hover {
@@ -199,33 +146,4 @@ h5 {
 
 .red {
   color: red;
-}
-
-
-.slide-in-from-bottom {
-  position: relative;
-  animation: slideInFromBottom 1s forwards;
-}
-
-@keyframes slideInFromBottom {
-  0% {
-    transform: translateY(100%);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-
-.slide-to-bottom {
-  position: relative;
-  animation: slide-to-bottom 0.5s forwards;
-}
-
-@keyframes slide-to-bottom {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
 }

@@ -48,9 +48,10 @@ const startHtml =
       </h4>
     </li>
   </ul>
-  <h2 class="ready">Ready?</h2>
+  <h2 class="ready fade">Ready?</h2>
   <div class="start-button">
     <button class="start">Start</button>
+    <div class="num"></div>
   </div>
 </div>`
 

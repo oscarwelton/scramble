@@ -30,7 +30,7 @@
 }
 
 .word-list {
-  margin: 0.25rem auto;
+  margin: 0.5rem;
   list-style-type: none;
   background: white;
   padding: 0.75rem;
@@ -38,8 +38,7 @@
   border: 1px solid var(--shadow);
   box-shadow: 3px 3px var(--shadow);
   position: absolute;
-  top: 1rem;
-  width: 85vw;
+  top: 0.5rem;
   min-width: 250px;
 
   ul {
@@ -182,6 +181,9 @@
   margin-top: 0.5rem;
   font-size: 1.2rem;
   padding-top: 1rem;
+  animation: fade 1s linear forwards;
+  animation-delay: 3s;
+  opacity: 0;
 }
 
 #time {

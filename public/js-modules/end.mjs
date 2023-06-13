@@ -5,9 +5,9 @@ function endHtml(wordList, definitions, indexPosition, scoreValue, timeTaken, pe
           <h2 class="game-over-header">Results <span class="day-count">(${day})</span></h2>
             <div class="statistics">
               <div class="stats">
-                <div class="stat">
-                  <h4><span class="icon"><i class="fa-solid fa-square-check"></i></span> ${indexPosition} / 5 </h4>
-                </div>
+                  <div class="stat">
+                    <h4><span class="icon"><i class="fa-solid fa-square-check"></i></span> ${indexPosition} / 5 </h4>
+                  </div>
                   <div class="stat">
                     <h4><span class="icon"><i class="fa-solid fa-trophy"></i></span> ${scoreValue}</h4>
                   </div>
@@ -18,9 +18,8 @@ function endHtml(wordList, definitions, indexPosition, scoreValue, timeTaken, pe
                     <h4><span class="icon"><i class="fa-solid fa-ranking-star"></i></span> ${percentageShow} <span id="percentile">(percentile)</span></h4>
                   </div>
               </div>
-              </div>
             </div>
-
+        </div>
       <div class="grading">
         <h3 id="grade"></h3>
         <p id="grade-message"></p>
@@ -29,6 +28,12 @@ function endHtml(wordList, definitions, indexPosition, scoreValue, timeTaken, pe
         <button id="show-list">Words <i class="fa-solid fa-list-check"></i></i></button>
         <button id="share">Share <i class="fa-solid fa-share-from-square"></i></button>
       </div>
+      <div>
+        <h4 class="fade midnight-countdown">Reset in: &nbsp <span id="time"></span></h4>
+      </div>
+    </div>
+  </div>
+
 
     <div class="word-list d-none">
       <ul>
@@ -52,12 +57,7 @@ function endHtml(wordList, definitions, indexPosition, scoreValue, timeTaken, pe
       <ul>
       <li class="definition">${definitions[4]}</li>
       </ul>
-      <button id="close-list"><i class="fa-solid fa-circle-xmark"> Close</i></button
-    </div>
-    </div>
-      <div>
-        <h4 class="midnight-countdown">Reset in: &nbsp <span id="time"></span></h4>
-      </div>
+      <button id="close-list"><i class="fa-solid fa-circle-xmark"> Close</i></button>
     </div>`;
     return gameOverHtml
 }
