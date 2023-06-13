@@ -1,4 +1,3 @@
-import { loadHtml } from "./js-modules/load.mjs";
 import { startHtml } from "./js-modules/start.mjs";
 import { endHtml } from "./js-modules/end.mjs";
 import { gameHtml } from "./js-modules/game.mjs";
@@ -51,38 +50,29 @@ async function getData() {
 
 await getData();
 
-async function loadScreen(loadHtml) {
-  const container = document.querySelector(".container");
-  container.innerHTML = loadHtml;
-
-  const loadScreen = document.querySelector(".load-screen");
-  loadScreen.classList.add("wave");
-
-}
-
 function renderStart(startHtml) {
-  document.querySelector(".title").classList.remove("d-none");
-  document.querySelector(".loader").remove();
   document.querySelector(".container").innerHTML = startHtml;
 }
 
 if (indexPosition === 5 || countdownTime <= 0) {
   gameOver(wordList);
 } else {
-  await loadScreen(loadHtml);
+  renderStart(startHtml);
 
   setTimeout(() => {
-    renderStart(startHtml);
+    const title = document.querySelector(".title");
+    const examples = Array.from(document.querySelectorAll(".example"))
+    examples.forEach((element) => {
+      element.classList.add("wave")
+    })
+    title.classList.add("wave");
+
     const startButton = document.querySelector(".start");
     const container = document.querySelector(".container");
     if (indexPosition != 0 || countdownTime != 300) {
       startButton.innerText = "Resume";
     }
     startButton.addEventListener("click", () => {
-
-
-
-
       document.querySelector(".start-screen").remove();
       container.insertAdjacentHTML(
         "afterbegin",
