@@ -1,4 +1,3 @@
-// import { unwatchFile } from "fs";
 import fetch from "node-fetch";
 
 let wordList = {};
