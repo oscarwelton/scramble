@@ -481,7 +481,7 @@ h2 {
   position: absolute;
   width: fit-content;
   max-width: max-content;
-  top: 45%;
+  top: 25%;
   left: 50%;
   font-size: 1.5rem;
   font-weight: 100;
@@ -572,7 +572,17 @@ hr {
 
 @keyframes slide-to-bottom {
   0% {
+    opacity: 1;
     transform: translateY(0);
+  }
+  25% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  75% {
+    opacity: 0.25;
   }
   100% {
     opacity: 0;
@@ -585,10 +595,20 @@ hr {
 
 @keyframes slide-in-from-bottom {
   0% {
-    opacity: 0.5;
+    opacity: 0;
     transform: translateY(100%);
   }
+  25% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  75% {
+    opacity: 0.75;
+  }
   100% {
+    opacity: 1;
     transform: translateY(0);
   }
 }
@@ -645,8 +665,35 @@ hr {
   0% {
     opacity: 0;
   }
+  10% {
+    opacity: 0.1;
+  }
+  20% {
+    opacity: 0.2;
+  }
+  30% {
+    opacity: 0.3;
+  }
+  40% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  60% {
+    opacity: 0.6;
+  }
+  70% {
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.9;
+  }
   100% {
-    opacity: 0.75;
+    opacity: 1;
   }
 }
 .wave span {
