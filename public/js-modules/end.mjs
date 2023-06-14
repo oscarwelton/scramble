@@ -12,7 +12,7 @@ function endHtml(
       <div class="game-over slide-in-from-bottom">
         <div class="results">
           <h2 class="game-over-header">Results <span class="day-count">(${day})</span></h2>
-          <table class="score-board">
+          <table class="score-board" border="0" cellspacing="0" cellpadding="0">
       <thead>
         <tr>
           <th colspan="2">Rankings <i class="fa-solid fa-ranking-star"></i></th>
