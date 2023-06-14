@@ -57,4 +57,4 @@ async function calculatePercentiles(scores, scoreValue, storedPercentile) {
   }
 }
 
-export { calculatePercentiles };
+export { calculatePercentiles, toOrdinalSuffix };

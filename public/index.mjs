@@ -6,8 +6,11 @@ import { share } from "./js-modules/share.mjs";
 import { shuffle } from "./js-modules/shuffle.mjs";
 import { grades } from "./js-modules/grade.mjs";
 import { timeUntilMidnight } from "./js-modules/midnight-timer.mjs";
-import { calculatePercentiles } from "./js-modules/percentiles.mjs";
-import { reset } from "./js-modules/reset.mjs"
+import {
+  calculatePercentiles,
+  toOrdinalSuffix,
+} from "./js-modules/percentiles.mjs";
+import { reset } from "./js-modules/reset.mjs";
 
 // localStorage.clear();
 
@@ -24,10 +27,12 @@ let now = new Date();
 
 if (isNaN(savedMidnight.getTime())) {
   reset(now, savedMidnight, scoreValue, indexPosition, countdownTime);
-} else if ((savedMidnight instanceof Date) &(savedMidnight.getTime() < now.getTime())) {
+} else if (
+  (savedMidnight instanceof Date) &
+  (savedMidnight.getTime() < now.getTime())
+) {
   reset(now, savedMidnight, scoreValue, indexPosition, countdownTime);
 }
-
 
 async function getData() {
   await fetch("/wordList")
@@ -59,12 +64,11 @@ async function getData() {
 
 await getData();
 
-
 function startButtonCountDown(num) {
   return new Promise((resolve) => {
     const startButton = document.querySelector(".start");
     const numDiv = document.querySelector(".num");
-    numDiv.classList.add("start-button-animation")
+    numDiv.classList.add("start-button-animation");
     startButton.innerText = num;
     startButton.style.background = "transparent";
     const startInterval = setInterval(() => {
@@ -76,8 +80,7 @@ function startButtonCountDown(num) {
       startButton.innerText = num;
     }, 800);
   });
-};
-
+}
 
 if (indexPosition === 5 || countdownTime <= 0) {
   gameOver(wordList);
@@ -103,7 +106,7 @@ if (indexPosition === 5 || countdownTime <= 0) {
       const ready = document.querySelector(".ready");
       ready.innerText = "Ready!";
       ready.style.fontStyle = "normal";
-      startButton.innerText = num
+      startButton.innerText = num;
       await startButtonCountDown(num);
       document.querySelector(".start-screen").remove();
       container.insertAdjacentHTML(
@@ -117,7 +120,6 @@ if (indexPosition === 5 || countdownTime <= 0) {
     });
   }, 1400);
 }
-
 
 document.addEventListener("click", () => {
   let answerListItems = document.getElementById("answer");
@@ -163,14 +165,16 @@ function startClock() {
     ${seconds.toString().padStart(2, "0")}`;
     return clockInnerHTML;
   }
+
   const clock = document.getElementById("clock");
   clock.innerHTML = updateTimer(countdownTime);
 
   const gameIntervalTimer = setInterval(() => {
     countdownTime--;
-    if (countdownTime <= 0) {
-      gameOver(wordList);
+    if (countdownTime <= 0 || indexPosition === 5) {
       clearInterval(gameIntervalTimer);
+      localStorage.setItem("timer", countdownTime);
+      gameOver(wordList);
     }
     localStorage.setItem("timer", countdownTime);
     clock.innerHTML = updateTimer();
@@ -178,7 +182,11 @@ function startClock() {
 }
 
 async function percentiles() {
-  const percentileValue = await calculatePercentiles(scores, scoreValue, storedPercentile);
+  const percentileValue = await calculatePercentiles(
+    scores,
+    scoreValue,
+    storedPercentile
+  );
   localStorage.setItem(Math.abs(percentileValue), "percentile");
   return percentileValue;
 }
@@ -198,6 +206,8 @@ async function gameOver() {
     ":" +
     seconds.toString().padStart(2, "0");
 
+  const rank = toOrdinalSuffix(scores.indexOf(scoreValue));
+
   document.querySelector(".container").innerHTML = endHtml(
     wordList,
     definitions,
@@ -205,7 +215,8 @@ async function gameOver() {
     scoreValue,
     timeTaken,
     percentileValue,
-    day
+    day,
+    scores, rank
   );
 
   const grade = grades(scoreValue);
@@ -338,8 +349,8 @@ function submitButtonClick() {
   const correctAnswer = wordList[indexPosition];
   const answer = document.getElementById("answer");
   const answerString = Array.from(answer.childNodes)
-  .map((letter) => letter.innerHTML)
-  .join("");
+    .map((letter) => letter.innerHTML)
+    .join("");
 
   if (answerString != correctAnswer) {
     const wrong = new Audio("/resources/audio/error.mp3");
