@@ -763,7 +763,7 @@ body {
   font-family: "Mukta", sans-serif;
   position: absolute;
   overflow: hidden;
-  -webkit-overflow-scrolling: touch;
+  -webkit-overflow-scrolling: auto;
   min-width: 250px;
 }
 
