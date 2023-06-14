@@ -10,7 +10,7 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-let day = 0;
+let day = 1;
 let wordList = {};
 
 
