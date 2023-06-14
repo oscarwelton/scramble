@@ -476,7 +476,7 @@ h2 {
   border-radius: 10px;
   color: var(--gunmetal);
   background-color: white;
-  box-shadow: 3px 3px var(--shadow);
+  box-shadow: 5px 5px var(--shadow);
   font-family: "Scope One";
   font-weight: 700;
 }
@@ -542,7 +542,7 @@ hr {
   border-radius: 10px;
   color: var(--gunmetal);
   background-color: var(--antique-white);
-  box-shadow: 3px 3px var(--shadow);
+  box-shadow: 5px 5px var(--shadow);
   font-family: "Scope One";
   font-weight: 700;
   margin-top: 1rem;
