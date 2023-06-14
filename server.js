@@ -4,7 +4,7 @@ import cron from "node-cron";
 import { dirname } from "path";
 import { exec } from "child_process";
 import { fileURLToPath } from "url";
-import { wordList } from "./wordgenerator.mjs";
+import { wordList } from "./word-generator.mjs";
 import {
   calculatePercentiles,
   recalculatePercentiles,
@@ -56,7 +56,7 @@ const MAX_ATTEMPTS = 3;
 let attempts = 0;
 
 const runTask = () => {
-  exec("node wordGenerator.mjs", (error, stdout, stderr) => {
+  exec("node word-generator.mjs", (error, stdout, stderr) => {
     if (error) {
       console.error(`Failed to execute script: ${error}`);
       attempts++;
@@ -76,7 +76,7 @@ const runTask = () => {
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
-  cron.schedule("*/20 * * * *", () => {
+  cron.schedule("*/10 * * * *", () => {
     console.log("Running schedule task...");
     attempts = 0;
     runTask();
