@@ -22,7 +22,6 @@ function hintHandler(definitions, indexPosition, wordList) {
   hintButton.classList.add("used");
   hint.innerHTML = `<span><i>${hintDefinition}</i></span>`;
   hintButton.classList.add("used");
-  hintSound.play(new Audio("../resources/audio/hint.mp3"));
 }
 
 function callHint(definitions, indexPosition, wordList) {

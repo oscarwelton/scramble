@@ -4,7 +4,6 @@ import cron from "node-cron";
 import { dirname } from "path";
 import { exec } from 'child_process';
 import { fileURLToPath } from "url";
-import { wordList } from './word-generator.mjs';
 import { calculatePercentiles, recalculatePercentiles, getScores } from "./percentile-calculator.mjs";
 
 const app = express();
@@ -12,6 +11,42 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 let day = 0;
+let wordList = {};
+
+
+function getUpdatedWordList(stdout) {
+  let updatedWordList;
+  try {
+    updatedWordList = JSON.parse(stdout);
+  } catch (error) {
+    console.error(`Error parsing stdout: ${error}`, stdout);
+  }
+  return updatedWordList;
+}
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
+  exec('node word-generator.mjs', (error, stdout) => {
+    if (error) {
+      console.error(`Script execution error: ${error}`);
+      return;
+    }
+    wordList = getUpdatedWordList(stdout);
+    console.log(wordList)
+  });
+});
+
+cron.schedule('0 0 0 * * *', () => {
+  exec('node word-generator.mjs', (error, stdout) => {
+    if (error) {
+      console.error(`Script execution error: ${error}`);
+      return;
+    }
+    wordList = getUpdatedWordList(stdout);
+  });
+  day++;
+});
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -22,8 +57,8 @@ app.get("/", (req, res) => {
 });
 
 app.get('/wordList', (req, res) => {
-  res.json(wordList);
-});
+    res.json(wordList);
+  });
 
 app.get('/day', (req, res) => {
   res.send({ day });
@@ -47,20 +82,4 @@ app.post('/recalculate-percentiles', async (req, res) => {
   const scoreValue = req.body.score;
   const result = await recalculatePercentiles(scoreValue, scores);
   res.json({ result });
-});
-
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-  cron.schedule("*/1 * * * *", () => {
-    day++;
-    console.log("Executing scheduled task...");
-    exec("node word-generator.mjs", (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Script execution error: ${error}`);
-        return;
-      }
-      console.log(typeof stdout, stdout);
-    });
-  });
 });
