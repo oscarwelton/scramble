@@ -9,7 +9,7 @@ import { timeUntilMidnight } from "./js-modules/midnight-timer.mjs";
 import { calculatePercentiles } from "./js-modules/percentiles.mjs";
 import { reset } from "./js-modules/reset.mjs"
 
-localStorage.clear();
+// localStorage.clear();
 
 let indexPosition = JSON.parse(localStorage.getItem("currentIndex")) || 0;
 let countdownTime = localStorage.getItem("timer") || 300;
@@ -33,6 +33,7 @@ async function getData() {
   await fetch("/wordList")
     .then((response) => response.json())
     .then((data) => {
+      console.log(data);
       wordList = Object.keys(data);
       definitions = Object.values(data);
     })
@@ -57,6 +58,7 @@ async function getData() {
 }
 
 await getData();
+
 
 function startButtonCountDown(num) {
   return new Promise((resolve) => {

@@ -24,7 +24,6 @@ async function fetchDefinitions(word) {
   const options = {
     method: "GET"
   };
-
   try {
     const response = await fetch(url, options);
     const result = await response.json();
@@ -33,12 +32,10 @@ async function fetchDefinitions(word) {
     const definition = `(${partOfSpeech}) ${definitionString}`
     return definition;
   } catch (error) {
-    console.log(`Failed to fetch definitions for ${word}: ${error}`);
   }
 }
 
 async function addToObject() {
-
   const word = await generateWord(wordLength);
   const definition= await fetchDefinitions(word);
   if (!definition) {
@@ -52,9 +49,8 @@ async function main() {
   while (Object.keys(wordList).length !== 5) {
     await addToObject();
   }
-  console.log(wordList);
+  console.log(JSON.stringify(wordList));
+  return JSON.stringify(wordList);
 }
 
-await main();
-
-export { wordList };
+main();
