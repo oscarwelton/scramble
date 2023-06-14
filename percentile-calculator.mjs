@@ -38,6 +38,21 @@ async function getScores() {
       .catch((error) => console.error(error));
   }
 
+  function resetScores() {
+    const scores = [];
+    fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Access-Key": updateKey,
+      },
+      body: JSON.stringify({ scores }),
+    })
+      .then((response) => response.json())
+      .then((data) => data)
+      .catch((error) => console.error(error));
+  }
+
 async function calculatePercentiles(scoreValue, scores) {
   const release = await mutex.acquire();
   try {
@@ -69,4 +84,4 @@ async function recalculatePercentiles(scoreValue, scores) {
   }
 }
 
-export { calculatePercentiles, recalculatePercentiles, getScores };
+export { calculatePercentiles, recalculatePercentiles, getScores, resetScores };

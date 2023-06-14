@@ -4,7 +4,7 @@ import cron from "node-cron";
 import { dirname } from "path";
 import { exec } from 'child_process';
 import { fileURLToPath } from "url";
-import { calculatePercentiles, recalculatePercentiles, getScores } from "./percentile-calculator.mjs";
+import { calculatePercentiles, recalculatePercentiles, getScores, resetScores } from "./percentile-calculator.mjs";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -46,6 +46,10 @@ cron.schedule('0 0 0 * * *', () => {
     wordList = getUpdatedWordList(stdout);
   });
   day++;
+});
+
+cron.schedule('0 0 * * 0', () => {
+  resetScores();
 });
 
 app.use(express.static(path.join(__dirname, "public")));
