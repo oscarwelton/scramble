@@ -33,6 +33,7 @@ async function getData() {
   await fetch("/wordList")
     .then((response) => response.json())
     .then((data) => {
+      console.log(data);
       wordList = Object.keys(data);
       definitions = Object.values(data);
     })
@@ -57,6 +58,7 @@ async function getData() {
 }
 
 await getData();
+
 
 function startButtonCountDown(num) {
   return new Promise((resolve) => {

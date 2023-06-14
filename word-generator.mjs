@@ -45,6 +45,7 @@ async function addToObject() {
     return addToObject();
   }
   wordList[word] = definition;
+
   wordLength++;
 }
 
@@ -53,8 +54,9 @@ async function main() {
     await addToObject();
   }
   console.log(wordList);
+  return wordList;
 }
 
-await main();
+main();
 
 export { wordList };
