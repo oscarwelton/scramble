@@ -76,7 +76,8 @@ const runTask = () => {
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
-  cron.schedule("0 0 * * *", () => {
+  cron.schedule("*/20 * * * *", () => {
+    console.log("Running schedule task...");
     attempts = 0;
     runTask();
   });
