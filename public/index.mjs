@@ -25,14 +25,18 @@ let day = 0;
 let scores = [];
 let now = new Date();
 
-if (isNaN(savedMidnight.getTime())) {
-  reset(now, savedMidnight, scoreValue, indexPosition, countdownTime);
-} else if (
-  (savedMidnight instanceof Date) &
-  (savedMidnight.getTime() < now.getTime())
-) {
-  reset(now, savedMidnight, scoreValue, indexPosition, countdownTime);
+async function checkForReset() {
+  if (isNaN(savedMidnight.getTime())) {
+    reset(now, savedMidnight, scoreValue, indexPosition, countdownTime);
+  } else if (
+    (savedMidnight instanceof Date) &
+    (savedMidnight.getTime() < now.getTime())
+  ) {
+    reset(now, savedMidnight, scoreValue, indexPosition, countdownTime);
+  }
 }
+
+await checkForReset();
 
 async function getData() {
   await fetch("/wordList")
@@ -206,8 +210,9 @@ async function gameOver() {
     ":" +
     seconds.toString().padStart(2, "0");
 
-  const rank = toOrdinalSuffix(scores.indexOf(scoreValue));
-
+  const rank = toOrdinalSuffix(
+    scores.length - (scores.indexOf(scoreValue) + 1)
+  );
   document.querySelector(".container").innerHTML = endHtml(
     wordList,
     definitions,
@@ -216,7 +221,8 @@ async function gameOver() {
     timeTaken,
     percentileValue,
     day,
-    scores, rank
+    scores,
+    rank
   );
 
   const grade = grades(scoreValue);
