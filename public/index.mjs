@@ -335,13 +335,12 @@ function updateValues() {
 function submitButtonClick() {
   const correctAnswer = wordList[indexPosition];
   const answer = document.getElementById("answer");
-  const correct = new Audio("/resources/audio/correct.mp3");
-  const wrong = new Audio("/resources/audio/error.mp3");
   const answerString = Array.from(answer.childNodes)
-    .map((letter) => letter.innerHTML)
-    .join("");
+  .map((letter) => letter.innerHTML)
+  .join("");
 
   if (answerString != correctAnswer) {
+    const wrong = new Audio("/resources/audio/error.mp3");
     wrong.play();
     answer.classList.add("shake");
     setTimeout(() => {
@@ -351,6 +350,7 @@ function submitButtonClick() {
   } else if (answerString == correctAnswer && indexPosition === 4) {
     updateValues();
     answer.classList.add("correct");
+    const correct = new Audio("/resources/audio/correct.mp3");
     correct.play();
     setTimeout(() => {
       answer.classList.remove("correct");
@@ -359,6 +359,7 @@ function submitButtonClick() {
   } else {
     updateValues();
     answer.classList.add("correct");
+    const correct = new Audio("/resources/audio/correct.mp3");
     correct.play();
     setTimeout(() => {
       answer.classList.remove("correct");

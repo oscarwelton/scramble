@@ -59,7 +59,7 @@ const runTask = () => {
   exec("node wordGenerator.mjs", (error, stdout, stderr) => {
     if (error) {
       console.error(`Failed to execute script: ${error}`);
-      retries++;
+      attempts++;
       if (attempts <= MAX_ATTEMPTS) {
         console.log(`Retrying... Attempt ${attempts}`);
         runTask();
