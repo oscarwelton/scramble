@@ -1,12 +1,7 @@
-function endHtml(
-  wordList,
-  definitions,
-  indexPosition,
-  scoreValue,
-  timeTaken,
-  percentageShow,
-  day, scores, rank
+function endHtml(wordList, definitions, indexPosition, scoreValue, timeTaken, percentageShow, day, scores, rank
 ) {
+  scores.includes(scoreValue) ? scores : scores.push(scoreValue);
+
   const gameOverHtml = `
       <div class="game-over slide-in-from-bottom">
         <div class="results">
