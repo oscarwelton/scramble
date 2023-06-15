@@ -27,7 +27,6 @@ async function getData() {
   await fetch("/wordList")
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
       wordList = Object.keys(data);
       definitions = Object.values(data);
     })
@@ -75,7 +74,6 @@ async function checkForReset() {
 await checkForReset();
 
 function start() {
-  console.log("start");
   function startButtonCountDown(num) {
     return new Promise((resolve) => {
       const startButton = document.querySelector(".start");
@@ -169,11 +167,11 @@ function startClock() {
   clock.innerHTML = updateTimer(countdownTime);
 
   const gameIntervalTimer = setInterval(() => {
+    console.log("timer running")
     countdownTime--;
-    if (countdownTime <= 0) {
+    if (countdownTime <= 0 || indexPosition === 5) {
       clearInterval(gameIntervalTimer);
       localStorage.setItem("timer", countdownTime);
-      gameOver(wordList);
     }
     localStorage.setItem("timer", countdownTime);
     clock.innerHTML = updateTimer();
@@ -190,7 +188,6 @@ async function percentiles() {
 
 async function gameOver() {
   let percentileValue = await percentiles();
-  console.log(percentileValue);
   let times = localStorage.getItem("timer");
 
   times = 300 - times;
