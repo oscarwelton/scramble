@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 import 'dotenv/config'
 
 const mutex = new Mutex();
-const url = `https://api.jsonbin.io/v3/b/648702148e4aa6225ead0b60`;
+const url = `https://api.jsonbin.io/v3/b/648b08539d312622a37005c3`;
 const updateKey = process.env['UPDATE_JSON']
 const readKey = process.env['READ_JSON']
 

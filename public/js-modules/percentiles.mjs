@@ -41,7 +41,7 @@ function toOrdinalSuffix(percentage) {
 }
 
 async function newRank(scores, scoreValue) {
-  const rank = scores.length - (scores.indexOf(scoreValue));
+  const rank = scores.length - (scores.indexOf(scoreValue) + 1);
   return toOrdinalSuffix(rank);
 }
 

@@ -10,7 +10,7 @@ function endHtml(
   const gameOverHtml = `
       <div class="game-over slide-in-from-bottom">
         <div class="results">
-          <h2 class="game-over-header">Results <span class="day-count">(${day})</span></h2>
+
           <table class="score-board" border="0" cellspacing="0" cellpadding="0">
       <thead>
         <tr>
@@ -55,7 +55,7 @@ function endHtml(
         <p id="grade-message"></p>
       </div>
 
-      <h2 class="game-over-stats-header">Stats</h2>
+      <h2 class="game-over-stats-header">Stats <span class="day-count">(Day ${day})</span></h2>
       <div class="statistics">
         <div class="stats">
           <div class="stat">

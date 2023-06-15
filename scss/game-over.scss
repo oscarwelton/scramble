@@ -16,7 +16,7 @@
 
 .game-over-stats-header {
   margin-left: 0.25rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   font-family: var(--scope);
   letter-spacing: 5px;
   border-bottom: 1px solid var(--gunmetal);
@@ -137,14 +137,14 @@
   flex-direction: column;
   position: fixed;
   right: 1rem;
-  top: 11rem;
+  top: 10.35rem;
 
   #show-list {
     margin-bottom: 0.9rem;
   }
 
   button {
-    width: 9rem;
+    width: 8rem;
     letter-spacing: 2px;
     right: 0;
     padding: 0.75rem 1rem;
@@ -188,7 +188,7 @@
   align-items: center;
   justify-content: center;
   font-size: 1.2rem;
-  padding-top: 0.5rem;
+  margin-top: 1.5rem;
   animation: fade 1s linear forwards;
   animation-delay: 3s;
   opacity: 0;
@@ -234,7 +234,7 @@ hr {
 }
 
 .day-count {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
 }
 
 
@@ -242,12 +242,13 @@ hr {
   border-collapse: separate;
   border: 1px solid var(--gunmetal);
   border-radius: 10px;
-  width: 50%;
+  width: 55%;
   box-shadow: 5px 5px var(--shadow);
+  min-width: 200px;
 
   th {
     text-align: left;
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-family: var(--scope);
     padding: 0.5rem;
     width: 50%;
@@ -260,7 +261,7 @@ hr {
   }
 
   td {
-    padding: 0.35rem;
+    padding: 0.5rem;
     text-align: center;
     font-size: 1.2rem;
     width: 50%;
