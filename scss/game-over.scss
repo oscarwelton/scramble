@@ -87,6 +87,7 @@
   #percentile {
     font-size: small;
     font-weight: 100;
+    margin: 0;
   }
 }
 
@@ -289,5 +290,18 @@ hr {
       background-color: var(--highlight);
       font-size: 1.2rem;
     }
+  }
+}
+
+.percentile-stat {
+  display: flex;
+  flex-direction: column;
+
+  #percentile {
+    margin: 0;
+    padding: 0;
+    line-height: 0;
+    text-align: center;
+    font-style: italic;
   }
 }

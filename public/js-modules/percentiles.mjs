@@ -1,4 +1,5 @@
 let percentage;
+let rank;
 
 function percentile(scores, scoreValue) {
   return fetch("/calculate-percentiles", {
@@ -39,22 +40,37 @@ function toOrdinalSuffix(percentage) {
     : int + ordinals[3];
 }
 
+async function newRank(scores, scoreValue) {
+  const rank = scores.length - (scores.indexOf(scoreValue));
+  return toOrdinalSuffix(rank);
+}
+
 async function calculatePercentiles(scores, scoreValue, storedPercentile) {
   if (storedPercentile == null) {
     percentage = await percentile(scores, scoreValue);
+    rank = await newRank(scores, scoreValue);
     localStorage.setItem("percentile", Math.abs(percentage));
-    console.log("percentile calculated.")
-    return toOrdinalSuffix(percentage);
+    return {
+      percentile: toOrdinalSuffix(Math.abs(percentage)),
+      rank: rank,
+    };
   } else if (storedPercentile >= 0 && scoreValue !== null) {
     percentage = await recalculatePercentile(scores, scoreValue);
+    rank = await newRank(scores, scoreValue);
     localStorage.setItem("percentile", Math.abs(percentage));
-    console.log("percentile recalculated.")
-    return toOrdinalSuffix(percentage);
+    return {
+      percentile: toOrdinalSuffix(Math.abs(percentage)),
+      rank: rank,
+    };
   } else {
     percentage = await percentile(scores, scoreValue);
+    rank = await newRank(scores, scoreValue);
     localStorage.setItem("percentile", Math.abs(percentage));
-    return toOrdinalSuffix(percentage);
+    return {
+      percentile: toOrdinalSuffix(Math.abs(percentage)),
+      rank: rank,
+    };
   }
 }
 
-export { calculatePercentiles, toOrdinalSuffix };
+export { calculatePercentiles };

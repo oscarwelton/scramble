@@ -48,9 +48,9 @@ cron.schedule('0 0 0 * * *', () => {
   day++;
 });
 
-cron.schedule('0 0 * * 0', () => {
-  resetScores();
-});
+// cron.schedule('0 0 * * 0', () => {
+//   resetScores();
+// });
 
 app.use(express.static(path.join(__dirname, "public")));
 

@@ -1,6 +1,21 @@
 function timeUntilMidnight(savedMidnight) {
   let now = new Date();
-  const timeUntil = savedMidnight - now;
+  let timeUntil = savedMidnight - now;
+
+  if (timeUntil < 0) {
+    now = new Date(now.getTime());
+    savedMidnight = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + 1,
+      0,
+      0,
+      0
+    );
+    timeUntil = savedMidnight - now;
+    return timeUntil
+  }
+
   const seconds = Math.floor((timeUntil % 60000) / 1000);
   const minutes = Math.floor((timeUntil % 3600000) / 60000);
   const hours = Math.floor(timeUntil / 3600000);

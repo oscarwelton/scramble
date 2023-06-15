@@ -418,6 +418,7 @@ h2 {
 .statistics #percentile {
   font-size: small;
   font-weight: 100;
+  margin: 0;
 }
 
 .disabled {
@@ -603,6 +604,18 @@ hr {
   font-size: 1.2rem;
 }
 
+.percentile-stat {
+  display: flex;
+  flex-direction: column;
+}
+.percentile-stat #percentile {
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+  text-align: center;
+  font-style: italic;
+}
+
 .slide-to-bottom {
   animation: slide-to-bottom 1s forwards;
 }
@@ -765,6 +778,7 @@ body {
   overflow: hidden;
   -webkit-overflow-scrolling: auto;
   min-width: 250px;
+  user-select: none;
 }
 
 .title {

@@ -1,4 +1,4 @@
-function reset(now, savedMidnight, scoreValue, indexPosition, countdownTime) {
+async function reset(now, savedMidnight, scoreValue, indexPosition, countdownTime) {
   localStorage.removeItem(
     "midnight",
     "currentIndex",

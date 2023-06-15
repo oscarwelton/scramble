@@ -6,10 +6,7 @@ import { share } from "./js-modules/share.mjs";
 import { shuffle } from "./js-modules/shuffle.mjs";
 import { grades } from "./js-modules/grade.mjs";
 import { timeUntilMidnight } from "./js-modules/midnight-timer.mjs";
-import {
-  calculatePercentiles,
-  toOrdinalSuffix,
-} from "./js-modules/percentiles.mjs";
+import { calculatePercentiles } from "./js-modules/percentiles.mjs";
 import { reset } from "./js-modules/reset.mjs";
 
 // localStorage.clear();
@@ -24,19 +21,7 @@ let letterIndex = 0;
 let day = 0;
 let scores = [];
 let now = new Date();
-
-async function checkForReset() {
-  if (isNaN(savedMidnight.getTime())) {
-    reset(now, savedMidnight, scoreValue, indexPosition, countdownTime);
-  } else if (
-    (savedMidnight instanceof Date) &
-    (savedMidnight.getTime() < now.getTime())
-  ) {
-    reset(now, savedMidnight, scoreValue, indexPosition, countdownTime);
-  }
-}
-
-await checkForReset();
+let rank;
 
 async function getData() {
   await fetch("/wordList")
@@ -68,31 +53,45 @@ async function getData() {
 
 await getData();
 
-function startButtonCountDown(num) {
-  return new Promise((resolve) => {
-    const startButton = document.querySelector(".start");
-    const numDiv = document.querySelector(".num");
-    numDiv.classList.add("start-button-animation");
-    startButton.innerText = num;
-    startButton.style.background = "transparent";
-    const startInterval = setInterval(() => {
-      num--;
-      if (num === 0) {
-        clearInterval(startInterval);
-        resolve();
-      }
-      startButton.innerText = num;
-    }, 800);
-  });
+async function checkForReset() {
+  if (isNaN(savedMidnight.getTime())) {
+    await reset(now, savedMidnight, scoreValue, indexPosition, countdownTime);
+  } else if (
+    (savedMidnight instanceof Date) &
+    (savedMidnight.getTime() < now.getTime())
+  ) {
+    await reset(now, savedMidnight, scoreValue, indexPosition, countdownTime);
+  }
+  if ((indexPosition <= 4 && countdownTime === 0) || indexPosition === 5) {
+    gameOver();
+  } else {
+    document.querySelector(".container").innerHTML = startHtml;
+    if (indexPosition > 0 || countdownTime < 300) {
+      document.querySelector(".start").innerText = "Continue";
+    }
+    start();
+  }
 }
+await checkForReset();
 
-if (indexPosition === 5 || countdownTime <= 0) {
-  gameOver(wordList);
-} else {
-  document.querySelector(".container").innerHTML = startHtml;
-  const startButton = document.querySelector(".start");
-  if (indexPosition != 0 || countdownTime != 300) {
-    startButton.innerText = "Resume";
+function start() {
+  console.log("start");
+  function startButtonCountDown(num) {
+    return new Promise((resolve) => {
+      const startButton = document.querySelector(".start");
+      const numDiv = document.querySelector(".num");
+      numDiv.classList.add("start-button-animation");
+      startButton.innerText = num;
+      startButton.style.background = "transparent";
+      const startInterval = setInterval(() => {
+        num--;
+        if (num === 0) {
+          clearInterval(startInterval);
+          resolve();
+        }
+        startButton.innerText = num;
+      }, 800);
+    });
   }
 
   setTimeout(() => {
@@ -104,6 +103,7 @@ if (indexPosition === 5 || countdownTime <= 0) {
     title.classList.add("wave");
 
     const container = document.querySelector(".container");
+    const startButton = document.querySelector(".start");
 
     startButton.addEventListener("click", async () => {
       let num = 3;
@@ -112,11 +112,7 @@ if (indexPosition === 5 || countdownTime <= 0) {
       ready.style.fontStyle = "normal";
       startButton.innerText = num;
       await startButtonCountDown(num);
-      document.querySelector(".start-screen").remove();
-      container.insertAdjacentHTML(
-        "afterbegin",
-        gameHtml(scoreValue, indexPosition)
-      );
+      container.innerHTML = gameHtml(scoreValue, indexPosition)
       refresh();
       startClock();
       resetHint(definitions, indexPosition);
@@ -127,7 +123,6 @@ if (indexPosition === 5 || countdownTime <= 0) {
 
 document.addEventListener("click", () => {
   let answerListItems = document.getElementById("answer");
-
   if (answerListItems) {
     answerListItems = answerListItems.querySelectorAll("li");
 
@@ -175,7 +170,7 @@ function startClock() {
 
   const gameIntervalTimer = setInterval(() => {
     countdownTime--;
-    if (countdownTime <= 0 || indexPosition === 5) {
+    if (countdownTime <= 0) {
       clearInterval(gameIntervalTimer);
       localStorage.setItem("timer", countdownTime);
       gameOver(wordList);
@@ -186,17 +181,16 @@ function startClock() {
 }
 
 async function percentiles() {
-  const percentileValue = await calculatePercentiles(
-    scores,
-    scoreValue,
-    storedPercentile
-  );
-  localStorage.setItem(Math.abs(percentileValue), "percentile");
+  const percentileCalculation = await calculatePercentiles(scores, scoreValue, storedPercentile);
+  const percentileValue = percentileCalculation["percentile"];
+  rank = percentileCalculation["rank"];
+  localStorage.setItem(percentileValue, "percentile");
   return percentileValue;
 }
 
 async function gameOver() {
   let percentileValue = await percentiles();
+  console.log(percentileValue);
   let times = localStorage.getItem("timer");
 
   times = 300 - times;
@@ -207,12 +201,10 @@ async function gameOver() {
   var seconds = times % 60;
   const timeTaken =
     minutes.toString().padStart(1, "0") +
-    ":" +
+    " : " +
     seconds.toString().padStart(2, "0");
 
-  const rank = toOrdinalSuffix(
-    scores.length - (scores.indexOf(scoreValue) + 1)
-  );
+
   document.querySelector(".container").innerHTML = endHtml(
     wordList,
     definitions,
@@ -228,6 +220,7 @@ async function gameOver() {
   const grade = grades(scoreValue);
   const gradeValue = grade["grade"];
   const gradeEmoji = grade["emoji"];
+
   share(day, indexPosition, scoreValue, timeTaken, gradeEmoji, gradeValue);
 
   const time = document.getElementById("time");

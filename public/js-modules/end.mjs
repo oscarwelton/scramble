@@ -5,8 +5,7 @@ function endHtml(
   scoreValue,
   timeTaken,
   percentageShow,
-  day, scores,
-  rank
+  day, scores, rank
 ) {
   const gameOverHtml = `
       <div class="game-over slide-in-from-bottom">
@@ -63,15 +62,17 @@ function endHtml(
             <h4><span class="icon"><i class="fa-solid fa-square-check"></i></span> ${indexPosition} / 5 </h4>
           </div>
           <div class="stat">
-            <h4><span class="icon"><i class="fa-solid fa-trophy"></i></span> ${scoreValue}</h4>
-          </div>
+          <h4><span class="icon"><i class="fa-solid fa-hourglass-end"></i></span> ${timeTaken}</h4>
+        </div>
         </div>
         <div class="stats">
+
           <div class="stat">
-            <h4><span class="icon"><i class="fa-solid fa-hourglass-end"></i></span> ${timeTaken}</h4>
-          </div>
-          <div class="stat">
-            <h4><span class="icon"><i class="fa-solid fa-chart-simple"></i></i></span> ${percentageShow} <span id="percentile">(percentile)</span></h4>
+          <h4><span class="icon"><i class="fa-solid fa-trophy"></i></span> ${scoreValue}</h4>
+        </div>
+          <div class="stat percentile-stat">
+            <h4><span class="icon"><i class="fa-solid fa-chart-simple"></i></i></span> ${percentageShow}</h4>
+            <p id="percentile">percentile</p>
           </div>
         </div>
       </div>

@@ -19,6 +19,8 @@
 }
 
 
+
+
 body {
   height: 100vh;
   width: 100vw;
@@ -29,6 +31,7 @@ body {
   overflow: hidden;
   -webkit-overflow-scrolling: auto;
   min-width: 250px;
+  user-select: none;
 }
 
 .title {
