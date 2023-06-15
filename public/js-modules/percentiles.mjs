@@ -41,6 +41,14 @@ function toOrdinalSuffix(percentage) {
 }
 
 async function newRank(scores, scoreValue) {
+  scores.push(scoreValue);
+  scores.sort((a, b) => a - b);
+  const rank = scores.length - (scores.indexOf(scoreValue));
+  return toOrdinalSuffix(rank);
+}
+
+async function updateRank(scores, scoreValue) {
+  scores.sort((a, b) => a - b);
   const rank = scores.length - (scores.indexOf(scoreValue));
   return toOrdinalSuffix(rank);
 }
@@ -56,7 +64,7 @@ async function calculatePercentiles(scores, scoreValue, storedPercentile) {
     };
   } else if (storedPercentile >= 0 && scoreValue !== null) {
     percentage = await recalculatePercentile(scores, scoreValue);
-    rank = await newRank(scores, scoreValue);
+    rank = await updateRank(scores, scoreValue);
     localStorage.setItem("percentile", Math.abs(percentage));
     return {
       percentile: toOrdinalSuffix(Math.abs(percentage)),
