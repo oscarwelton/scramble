@@ -1,10 +1,11 @@
 import express from "express";
 import path from "path";
-import cron from "node-cron";
-import { dirname } from "path";
-import { exec } from 'child_process';
 import { fileURLToPath } from "url";
-import { calculatePercentiles, recalculatePercentiles, getScores, resetScores } from "./percentile-calculator.mjs";
+import { dirname } from "path";
+
+import cron from "node-cron";
+import { exec } from 'child_process';
+import { calculatePercentiles, recalculatePercentiles, getScores } from "./percentile-calculator.mjs";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -13,6 +14,12 @@ const __dirname = dirname(__filename);
 let day = 1;
 let wordList = {};
 
+app.use((req, res, next) => {
+  if (req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect('https://' + req.headers.host + req.url);
+  }
+  next();
+});
 
 function getUpdatedWordList(stdout) {
   let updatedWordList;
@@ -24,7 +31,7 @@ function getUpdatedWordList(stdout) {
   return updatedWordList;
 }
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   exec('node word-generator.mjs', (error, stdout) => {
@@ -47,10 +54,6 @@ cron.schedule('0 0 0 * * *', () => {
   });
   day++;
 });
-
-// cron.schedule('0 0 * * 0', () => {
-//   resetScores();
-// });
 
 app.use(express.static(path.join(__dirname, "public")));
 

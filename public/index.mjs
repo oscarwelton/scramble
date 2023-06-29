@@ -48,9 +48,8 @@ async function getData() {
     .then((data) => {
       scores = JSON.parse(data)["scores"];
     });
+  console.log(scores, wordList, definitions);
 }
-
-await getData();
 
 async function checkForReset() {
   if (isNaN(savedMidnight.getTime())) {
@@ -71,7 +70,12 @@ async function checkForReset() {
     start();
   }
 }
-await checkForReset();
+
+// location.reload();
+document.addEventListener("DOMContentLoaded", async () => {
+  await getData();
+  await checkForReset();
+});
 
 function start() {
   function startButtonCountDown(num) {
@@ -110,7 +114,7 @@ function start() {
       ready.style.fontStyle = "normal";
       startButton.innerText = num;
       await startButtonCountDown(num);
-      container.innerHTML = gameHtml(scoreValue, indexPosition)
+      container.innerHTML = gameHtml(scoreValue, indexPosition);
       refresh();
       startClock();
       resetHint(definitions, indexPosition);
@@ -167,7 +171,6 @@ function startClock() {
   clock.innerHTML = updateTimer(countdownTime);
 
   const gameIntervalTimer = setInterval(() => {
-    console.log("timer running")
     countdownTime--;
     if (countdownTime <= 0 || indexPosition === 5) {
       clearInterval(gameIntervalTimer);
@@ -179,7 +182,11 @@ function startClock() {
 }
 
 async function percentiles() {
-  const percentileCalculation = await calculatePercentiles(scores, scoreValue, storedPercentile);
+  const percentileCalculation = await calculatePercentiles(
+    scores,
+    scoreValue,
+    storedPercentile
+  );
   const percentileValue = percentileCalculation["percentile"];
   rank = percentileCalculation["rank"];
   localStorage.setItem(percentileValue, "percentile");
@@ -200,7 +207,6 @@ async function gameOver() {
     minutes.toString().padStart(1, "0") +
     " : " +
     seconds.toString().padStart(2, "0");
-
 
   document.querySelector(".container").innerHTML = endHtml(
     wordList,
