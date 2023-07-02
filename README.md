@@ -14,7 +14,7 @@ To install and set up Scramble, follow these steps:
 
 1. Clone the repository:
    ```shell
-   $ git clone https://github.com/your-username/scramble.git
+   $ git clone https://github.com/oscarwelton/scramble.git
    ```
 2. Install dependencies: 
     ```shell
